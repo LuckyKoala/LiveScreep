@@ -5,15 +5,21 @@ mod.loop = function(room, cnt) {
     var spawns = _.filter(Game.spawns, function(spawn) { return spawn.room == room; });
     var spawn = spawns[0];
     //Check energy available first
-    if(room.energyAvailable < 200) {
+    if(room.energyAvailable < 150) {
         //console.log('Not enough energy to spawn next creep');
         return;
     }
     
     //Population control
-    if(cnt.harvester < 2) {
+    //At least, we need one harvester and one hauler
+    // if there is no more creep, so we can make spawn back to life
+    if(cnt.harvester < 1) {
         this.spawnHarvester(spawn);
     } else if(cnt.hauler < 1) {
+        this.spawnHauler(spawn);
+    } else if(cnt.harvester < 2) {
+        this.spawnHarvester(spawn);
+    } else if(cnt.hauler < 2) {
         this.spawnHauler(spawn);
     } else if(cnt.upgrader < 3) {
         this.spawnUpgrader(spawn);

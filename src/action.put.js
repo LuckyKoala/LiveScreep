@@ -13,9 +13,11 @@ mod.loop = function(creep) {
         //Maintain container first
         //So result is creep will harvest -> repair util
         // container hits equal to hitsMax.
-        if(target.hits < target.hitsMax 
-            && creep.repair(target) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
+        if(target.hits < target.hitsMax) {
+            creep.say('🚧 repair');
+            if(creep.repair(target) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
+            }
         } else if(creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
         }

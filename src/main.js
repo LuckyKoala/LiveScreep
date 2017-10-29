@@ -9,10 +9,11 @@ var mod = {};
 module.exports = mod;
 mod.loop = function () {
     var cnt = {
-        'harvester': 0,
-        'builder': 0,
-        'upgrader': 0,
-        'hauler': 0,
+        total: 0,
+        harvester: 0,
+        upgrader: 0,
+        builder: 0,
+        hauler: 0,
     }
 
     for(var name in Game.creeps) {
@@ -20,6 +21,7 @@ mod.loop = function () {
         var role = creep.memory.role;
         var roleModule = Role[_.capitalize(role)];
         _.set(cnt, role, _.get(cnt, role, 0)+1); //_.update(cnt, role, function(n) { return n ? n + 1 : 0; });
+        cnt['total']++;
         if(roleModule) {
             roleModule.loop(creep);
         } else {
