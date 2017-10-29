@@ -4,6 +4,7 @@ var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var utilSpawner = require('util.spawner');
+var utilTower = require('util.tower');
 
 var mod = {};
 module.exports = mod;
@@ -32,6 +33,7 @@ mod.loop = function () {
     //FIXME cnt is not pair with every room
     _.forEach(Game.rooms, function(room) {
         utilSpawner.loop(room, cnt);
+        utilTower.loop(room);
     });
     //utilSpawner.loop(Game.spawns['S-E48S9-1'].room, cnt);
 }

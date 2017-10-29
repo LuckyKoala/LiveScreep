@@ -7,6 +7,7 @@ global.Action = {
     Build: require('action.build'),
     Withdraw: require('action.withdraw'),
     Put: require('action.put'),
+    Fuel: require('action.fuel'),
 };
 global.Role = {
     Harvester: require('role.harvester'),

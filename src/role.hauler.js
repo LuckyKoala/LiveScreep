@@ -3,5 +3,5 @@ module.exports = mod;
 
 mod.roleConfig = {
     inStack: [Action.Withdraw],
-    outStack: [Action.Feed],
+    outStack: [Action.Feed, Action.Fuel],
 };
