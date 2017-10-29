@@ -2,10 +2,11 @@ let mod = new ActionObj('Withdraw');
 module.exports = mod;
 //Haul energy from container
 mod.nextTarget = function() {
+    var creep = this.creep; //For filter closure (this)
     var targets = this.creep.room.find(FIND_STRUCTURES, {
         filter: function(o) { 
-            if(o.structureType == STRUCTURE_CONTAIENR) {
-                var need = this.creep.carryCapacity - this.creep.carry.energy;
+            if(o.structureType == STRUCTURE_CONTAINER) {
+                var need = creep.carryCapacity - creep.carry.energy;
                 if(o.store[RESOURCE_ENERGY] > need) {
                     //Should match with Marker
                     return true;

@@ -11,7 +11,7 @@ mod.loop = function () {
     var cntH = 0;
     var cntB = 0;
     var cntU = 0;
-    var cntH = 0;
+    var cntHu = 0;
 
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
@@ -28,7 +28,7 @@ mod.loop = function () {
             Role.Builder.loop(creep);
         }
         if(creep.memory.role == 'hauler') {
-            cntH++;
+            cntHu++;
             Role.Hauler.loop(creep);
         }
     }
@@ -36,6 +36,7 @@ mod.loop = function () {
         'harvester': cntH,
         'builder': cntB,
         'upgrader': cntU,
+        'hauler': cntHu,
     }
     //FIXME cnt is not pair with every room
     _.forEach(Game.rooms, function(room) {
