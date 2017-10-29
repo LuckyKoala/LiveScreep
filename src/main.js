@@ -8,36 +8,25 @@ var utilSpawner = require('util.spawner');
 var mod = {};
 module.exports = mod;
 mod.loop = function () {
-    var cntH = 0;
-    var cntB = 0;
-    var cntU = 0;
-    var cntHu = 0;
+    var cnt = {
+        'harvester': 0,
+        'builder': 0,
+        'upgrader': 0,
+        'hauler': 0,
+    }
 
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
-        if(creep.memory.role == 'harvester') {
-            cntH++;
-            Role.Harvester.loop(creep);
-        }
-        if(creep.memory.role == 'upgrader') {
-            cntU++;
-            Role.Upgrader.loop(creep);
-        }
-        if(creep.memory.role == 'builder') {
-            cntB++;
-            Role.Builder.loop(creep);
-        }
-        if(creep.memory.role == 'hauler') {
-            cntHu++;
-            Role.Hauler.loop(creep);
+        var role = creep.memory.role;
+        var roleModule = Role[_.capitalize(role)];
+        _.set(cnt, role, _.get(cnt, role, 0)+1); //_.update(cnt, role, function(n) { return n ? n + 1 : 0; });
+        if(roleModule) {
+            Role[roleModule].loop(creep);
+        } else {
+            console.log('[Error] Undefined role module is in memory of creep -> '+name);
         }
     }
-    var cnt = {
-        'harvester': cntH,
-        'builder': cntB,
-        'upgrader': cntU,
-        'hauler': cntHu,
-    }
+    
     //FIXME cnt is not pair with every room
     _.forEach(Game.rooms, function(room) {
         utilSpawner.loop(room, cnt);

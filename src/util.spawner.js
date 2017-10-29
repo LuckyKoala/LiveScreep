@@ -2,8 +2,8 @@ var mod = {};
 module.exports = mod;
 
 mod.loop = function(room, cnt) {
-    var spawns = _.filter(Game.spawns, function(spawn) { return spawn.room == room; });
-    var spawn = spawns[0];
+    //var spawns = _.filter(Game.spawns, function(spawn) { return spawn.room == room; });
+    var spawn = Game.spawns[0];
     //Check energy available first
     if(room.energyAvailable < 200) {
         //console.log('Not enough energy to spawn next creep');
@@ -35,13 +35,14 @@ mod.spawnHarvester = function(spawn) {
     for(var i=0;i<a.length;i++) {
         name = a[i];
         result = spawn.spawnCreep([WORK, CARRY, MOVE], name, { dryRun: true });
-        if(result==OK) break; 
+        if(result==OK) {
+            spawn.spawnCreep([WORK, CARRY, MOVE], name, {
+                memory: {role: 'harvester'}
+            });
+            console.log('Spawning '+name);
+            break;
+        } 
     }
-    
-    spawn.spawnCreep([WORK, CARRY, MOVE], name, {
-        memory: {role: 'harvester'}
-    });
-    console.log('Spawning '+name);
 };
 
 mod.spawnHauler = function(spawn) {
@@ -52,13 +53,14 @@ mod.spawnHauler = function(spawn) {
     for(var i=0;i<a.length;i++) {
         name = a[i];
         result = spawn.spawnCreep([CARRY, MOVE], name, { dryRun: true });
-        if(result==OK) break; 
+        if(result==OK) {
+            spawn.spawnCreep([CARRY, MOVE], name, {
+                memory: {role: 'hauler'}
+            });
+            console.log('Spawning '+name);
+            break;
+        } 
     }
-    
-    spawn.spawnCreep([CARRY, MOVE], name, {
-        memory: {role: 'hauler'}
-    });
-    console.log('Spawning '+name);
 };
 
 mod.spawnUpgrader = function(spawn) {
@@ -69,13 +71,14 @@ mod.spawnUpgrader = function(spawn) {
     for(var i=0;i<a.length;i++) {
         name = a[i];
         result = spawn.spawnCreep([WORK, CARRY, MOVE], name, { dryRun: true });
-        if(result==OK) break; 
+        if(result==OK) {
+            spawn.spawnCreep([WORK, CARRY, MOVE], name, {
+                memory: {role: 'upgrader'}
+            });
+            console.log('Spawning '+name);
+            break; 
+        }
     }
-    
-    spawn.spawnCreep([WORK, CARRY, MOVE], name, {
-        memory: {role: 'upgrader'}
-    });
-    console.log('Spawning '+name);
 };
 
 mod.spawnBuilder = function(spawn) {
@@ -86,13 +89,14 @@ mod.spawnBuilder = function(spawn) {
     for(var i=0;i<a.length;i++) {
         name = a[i];
         result = spawn.spawnCreep([WORK, CARRY, MOVE], name, { dryRun: true });
-        if(result==OK) break; 
+        if(result==OK) {
+            spawn.spawnCreep([WORK, CARRY, MOVE], name, {
+                memory: {role: 'builder'}
+            });
+            console.log('Spawning '+name);
+            break; 
+        }
     }
-    
-    spawn.spawnCreep([WORK, CARRY, MOVE], name, {
-        memory: {role: 'builder'}
-    });
-    console.log('Spawning '+name);
 };
 
 
