@@ -7,12 +7,10 @@ mod.nextTarget = function() {
 };
 
 mod.loop = function(creep) {
-    this.creep = creep;
-    var target = this.nextTarget();
-    if(target) {
+    return this.loop0(creep, (creep, target) => {
         if(creep.harvest(target) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
         }
-    }
+    });
 };
 

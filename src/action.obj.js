@@ -3,12 +3,23 @@ var mod = function(name) {
     this.nextTarget = function() {
         return false;
     };
-    this.loop = function(creep) {
+    //Util function
+    //False means this action can't process
+    this.loop0 = function(creep, actionFunc) {
         this.creep = creep;
-        //Find target
-        var target = nextTarget();
-        //Action
-        console.log(target);
+        var target = this.nextTarget();
+        if(target) {
+            actionFunc(creep, target);
+            return true;
+        } else {
+            return false;
+        }
+    };
+    //Default behaviour
+    this.loop = function(creep) {
+        return this.loop0(creep, (creep, target) => {
+            //Do nothing
+        });
     };
 };
 
