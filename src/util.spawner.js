@@ -13,6 +13,8 @@ mod.loop = function(room, cnt) {
     //Population control
     if(cnt.harvester < 2) {
         this.spawnHarvester(spawn);
+    } else if(cnt.hauler < 1) {
+        this.spawnHauler(spawn);
     } else if(cnt.upgrader < 3) {
         this.spawnUpgrader(spawn);
     } else {
@@ -38,6 +40,23 @@ mod.spawnHarvester = function(spawn) {
     
     spawn.spawnCreep([WORK, CARRY, MOVE], name, {
         memory: {role: 'harvester'}
+    });
+    console.log('Spawning '+name);
+};
+
+mod.spawnHauler = function(spawn) {
+    var a = ['[Ha]Gold','[Ha]Iron']
+    var result = OK;
+    var name;
+    
+    for(var i=0;i<a.length;i++) {
+        name = a[i];
+        result = spawn.spawnCreep([CARRY, CARRY, CARRY, MOVE], name, { dryRun: true });
+        if(result==OK) break; 
+    }
+    
+    spawn.spawnCreep([CARRY, CARRY, CARRY, MOVE], name, {
+        memory: {role: 'hauler'}
     });
     console.log('Spawning '+name);
 };
