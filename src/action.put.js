@@ -2,7 +2,7 @@ let mod = new ActionObj('Put');
 module.exports = mod;
 
 mod.nextTarget = function() {
-    var targets = this.creep.room.find(FIND_STRUCTURES, {
+    var targets = this.creep.pos.findClosestByRange(FIND_STRUCTURES, {
         filter: { structureType: STRUCTURE_CONTAINER }
     });
     return targets.length>0 ? targets[0] : false;
