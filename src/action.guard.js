@@ -15,7 +15,7 @@ mod.nextTarget = function() {
     });
     const sortHostiles = _.sortBy(hostileMap, ['threat', 'range', 'id']);
     if(sortHostiles.length) {
-        return Game.getObjectById(_.last(_.last(sortHostiles)));
+        return Game.getObjectById(_.last(sortHostiles).id);
     } else {
         return false;
     }

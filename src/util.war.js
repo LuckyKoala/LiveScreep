@@ -3,10 +3,10 @@ var mod = {};
 module.exports = mod;
 
 const ThreatValue = {
-    ATTACK: 3,
-    RANGED_ATTACK: 2,
-    TOUGH: 1,
-    HEAL: 0,
+    attack: 3,
+    ranged_attack: 2,
+    tough: 1,
+    heal: 0,
 }
 
 //TODO honour boost part
