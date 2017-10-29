@@ -1,11 +1,11 @@
-let task = new TaskObj('Upgrade');
-module.exports = task;
+let mod = new ActionObj('Upgrade');
+module.exports = mod;
 
-task.nextTarget = function() {
+mod.nextTarget = function() {
     return this.creep.room.controller;
 };
 
-task.loop = function(creep) {
+mod.loop = function(creep) {
     this.creep = creep;
     var target = this.nextTarget();
     if(creep.upgradeController(target) == ERR_NOT_IN_RANGE) {

@@ -2,8 +2,8 @@ var mod = new RoleObj('Upgrader');
 module.exports = mod;
 
 mod.roleConfig = {
-    inStack: [Task.Harvest],
-    outStack: [Task.Upgrade],
+    inStack: [Action.Harvest],
+    outStack: [Action.Upgrade],
 };
 mod.loop = function(creep) {
     if(creep.memory.upgrading && creep.carry.energy == 0) {
@@ -16,11 +16,11 @@ mod.loop = function(creep) {
     }
 
     if(creep.memory.upgrading) {
-        var task = this.roleConfig.outStack[0];
-        task.loop(creep);
+        var action = this.roleConfig.outStack[0];
+        action.loop(creep);
     }
     else {
-        var task = this.roleConfig.inStack[0];
-        task.loop(creep);
+        var action = this.roleConfig.inStack[0];
+        action.loop(creep);
     }
 };

@@ -2,8 +2,8 @@ var mod = new RoleObj('Builder');
 module.exports = mod;
 
 mod.roleConfig = {
-    inStack: [Task.Harvest],
-    outStack: [Task.Build],
+    inStack: [Action.Harvest],
+    outStack: [Action.Build],
 };
 mod.loop = function(creep) {
 	if(creep.memory.building && creep.carry.energy == 0) {
@@ -16,11 +16,11 @@ mod.loop = function(creep) {
 	}
 
 	if(creep.memory.building) {
-		var task = this.roleConfig.outStack[0];
-        task.loop(creep);
+		var action = this.roleConfig.outStack[0];
+        action.loop(creep);
 	}
 	else {
-		var task = this.roleConfig.inStack[0];
-        task.loop(creep);
+		var action = this.roleConfig.inStack[0];
+        action.loop(creep);
 	}
 };

@@ -1,5 +1,5 @@
 var mod = function(name) {
-    this.taskName = name;
+    this.actionName = name;
     this.nextTarget = function() {
         return false;
     };

@@ -1,12 +1,12 @@
-let task = new TaskObj('Harvest');
-module.exports = task;
+let mod = new ActionObj('Harvest');
+module.exports = mod;
 
-task.nextTarget = function() {
+mod.nextTarget = function() {
     var targets = this.creep.room.find(FIND_SOURCES);
     return targets.length>0 ? targets[0] : false;
 };
 
-task.loop = function(creep) {
+mod.loop = function(creep) {
     this.creep = creep;
     var target = this.nextTarget();
     if(target) {

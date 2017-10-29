@@ -1,12 +1,12 @@
-let task = new TaskObj('Build');
-module.exports = task;
+let mod = new ActionObj('Build');
+module.exports = mod;
 
-task.nextTarget = function() {
+mod.nextTarget = function() {
     var targets = this.creep.room.find(FIND_CONSTRUCTION_SITES);
     return targets.length>0 ? targets[0] : false;
 };
 
-task.loop = function(creep) {
+mod.loop = function(creep) {
     this.creep = creep;
     var target = this.nextTarget();
     if(target) {

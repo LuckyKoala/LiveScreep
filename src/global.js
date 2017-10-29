@@ -1,12 +1,12 @@
 global.RoleObj = require('role.obj');
-global.TaskObj = require('task.obj');
-global.Task = {
-    Harvest: require('task.harvest'),
-    Feed: require('task.feed'),
-    Upgrade: require('task.upgrade'),
-    Build: require('task.build'),
-    Withdraw: require('task.withdraw'),
-    Put: require('task.put'),
+global.ActionObj = require('action.obj');
+global.Action = {
+    Harvest: require('action.harvest'),
+    Feed: require('action.feed'),
+    Upgrade: require('action.upgrade'),
+    Build: require('action.build'),
+    Withdraw: require('action.withdraw'),
+    Put: require('action.put'),
 };
 global.Role = {
     Harvester: require('role.harvester'),
