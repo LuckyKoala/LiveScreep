@@ -3,8 +3,7 @@ module.exports = mod;
 
 //TODO Order by priority and range
 mod.nextTarget = function() {
-    var targets = this.creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
-    return targets.length>0 ? targets[0] : false;
+    return this.creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
 };
 
 mod.loop = function(creep) {

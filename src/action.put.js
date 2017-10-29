@@ -1,11 +1,11 @@
 let mod = new ActionObj('Put');
 module.exports = mod;
 
+//TODO consider storage
 mod.nextTarget = function() {
-    var targets = this.creep.pos.findClosestByRange(FIND_STRUCTURES, {
+    return this.creep.pos.findClosestByRange(FIND_STRUCTURES, {
         filter: { structureType: STRUCTURE_CONTAINER }
     });
-    return targets.length>0 ? targets[0] : false;
 };
 //Override
 mod.loop = function(creep) {

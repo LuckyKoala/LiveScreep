@@ -3,7 +3,7 @@ module.exports = mod;
 //Haul energy from container
 mod.nextTarget = function() {
     var creep = this.creep; //For filter closure (this)
-    var targets = this.creep.pos.findClosestByRange(FIND_STRUCTURES, {
+    return this.creep.pos.findClosestByRange(FIND_STRUCTURES, {
         filter: function(o) { 
             if(o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE) {
                 var need = creep.carryCapacity - creep.carry.energy;
@@ -15,7 +15,6 @@ mod.nextTarget = function() {
             return false;
         }
     });
-    return targets.length>0 ? targets[0] : false;
 };
 
 mod.loop = function(creep) {
