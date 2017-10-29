@@ -9,9 +9,9 @@
  * -1. Upgrade Controller
  * -2. Build Structure
  * -3. Feed Spawn/Extension
- * 4. Fuel Tower
+ * -4. Fuel Tower
  * 5. Repair Structure
- * /6. Put Container/Storage
+ * -6. Put Container/Storage
  * 7. Maintain Rampart
  * War
  * 1. Attack

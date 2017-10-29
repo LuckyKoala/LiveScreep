@@ -8,11 +8,13 @@ global.Action = {
     Withdraw: require('action.withdraw'),
     Put: require('action.put'),
     Fuel: require('action.fuel'),
+    Guard: require('action.guard'),
 };
 global.Role = {
     Harvester: require('role.harvester'),
     Upgrader: require('role.upgrader'),
     Builder: require('role.builder'),
     Hauler: require('role.hauler'),
+    Guardian: require('role.guardian'),
 };
 global.State= {};

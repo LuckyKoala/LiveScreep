@@ -15,6 +15,7 @@ mod.loop = function () {
         upgrader: 0,
         builder: 0,
         hauler: 0,
+        guardian: 0,
     }
 
     for(var name in Game.creeps) {

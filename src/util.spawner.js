@@ -1,3 +1,5 @@
+//var utilWar = require('util.war');
+
 var mod = {};
 module.exports = mod;
 
@@ -12,9 +14,20 @@ mod.loop = function(room, cnt) {
     // if there is no more creep, so we can make spawn back to life
     if(cnt.harvester < 1) {
         this.spawnHarvester(true);
+        return;
     } else if(cnt.hauler < 1) {
         this.spawnHauler(true);
-    } else if(cnt.harvester < 2) {
+        return;
+    } 
+    //Try spawn guardian
+    //TODO honour threat value
+    const hostiles = room.find(FIND_HOSTILE_CREEPS);
+    if(hostiles.length && cnt.guardian < 1) {
+        this.spawnGuardian();
+        return;
+    }
+    //Then other creep
+    if(cnt.harvester < 2) {
         this.spawnHarvester();
     } else if(cnt.hauler < 2) {
         this.spawnHauler();
@@ -56,6 +69,13 @@ mod.spawnBuilder = function(minimum) {
     var extraBody = [WORK, CARRY];
     var names = ['[B]Amd','[B]Lucky','[B]Gentleman'];
     this.spawn0(essBody, extraBody, minimum, names, {role: 'builder'});
+};
+
+mod.spawnGuardian = function(minimum) {
+    var essBody = [ATTACK, MOVE];
+    var extraBody = [ATTACK, MOVE];
+    var names = ['[G]Maze','[B]Bug'];
+    this.spawn0(essBody, extraBody, minimum, names, {role: 'guardian'});
 };
 
 mod.spawn0 = function(essBody, extraBody, minimum, names, memory) {
