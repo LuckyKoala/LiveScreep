@@ -1,8 +1,8 @@
-let task = new TaskObj();
+let task = new TaskObj('Withdraw');
 module.exports = task;
 //Haul energy from container
 task.nextTarget = function() {
-    var targets = this.creep.room.find(FIND_MY_STRUCTURES, {
+    var targets = this.creep.room.find(FIND_STRUCTURES, {
         filter: function(o) { 
             if(o.structureType == STRUCTURE_CONTAIENR) {
                 var need = this.creep.carryCapacity - this.creep.carry.energy;

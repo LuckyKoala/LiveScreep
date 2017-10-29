@@ -1,4 +1,4 @@
-let task = new TaskObj();
+let task = new TaskObj('Harvest');
 module.exports = task;
 
 task.nextTarget = function() {
