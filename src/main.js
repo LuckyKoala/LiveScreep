@@ -21,7 +21,7 @@ mod.loop = function () {
         var roleModule = Role[_.capitalize(role)];
         _.set(cnt, role, _.get(cnt, role, 0)+1); //_.update(cnt, role, function(n) { return n ? n + 1 : 0; });
         if(roleModule) {
-            Role[roleModule].loop(creep);
+            roleModule.loop(creep);
         } else {
             console.log('[Error] Undefined role module is in memory of creep -> '+name);
         }

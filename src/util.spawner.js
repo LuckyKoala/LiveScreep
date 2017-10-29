@@ -2,8 +2,8 @@ var mod = {};
 module.exports = mod;
 
 mod.loop = function(room, cnt) {
-    //var spawns = _.filter(Game.spawns, function(spawn) { return spawn.room == room; });
-    var spawn = Game.spawns[0];
+    var spawns = _.filter(Game.spawns, function(spawn) { return spawn.room == room; });
+    var spawn = spawns[0];
     //Check energy available first
     if(room.energyAvailable < 200) {
         //console.log('Not enough energy to spawn next creep');
