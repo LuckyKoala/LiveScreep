@@ -5,7 +5,7 @@ mod.nextTarget = function() {
     var creep = this.creep; //For filter closure (this)
     var targets = this.creep.room.find(FIND_STRUCTURES, {
         filter: function(o) { 
-            if(o.structureType == STRUCTURE_CONTAINER) {
+            if(o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE) {
                 var need = creep.carryCapacity - creep.carry.energy;
                 if(o.store[RESOURCE_ENERGY] > need) {
                     //Should match with Marker
