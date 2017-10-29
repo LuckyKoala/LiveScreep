@@ -6,6 +6,7 @@ global.Task = {
     Upgrade: require('task.upgrade'),
     Build: require('task.build'),
     Withdraw: require('task.withdraw'),
+    Put: require('task.put'),
 };
 global.Role = {
     Harvester: require('role.harvester'),
