@@ -15,12 +15,5 @@ mod.loop = function(creep) {
         creep.say('⚡ upgrade');
     }
 
-    if(creep.memory.upgrading) {
-        var action = this.roleConfig.outStack[0];
-        action.loop(creep);
-    }
-    else {
-        var action = this.roleConfig.inStack[0];
-        action.loop(creep);
-    }
+    this.loop0(creep, creep.memory.upgrading);
 };

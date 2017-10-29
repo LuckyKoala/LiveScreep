@@ -15,12 +15,5 @@ mod.loop = function(creep) {
 		creep.say('🚧 build');
 	}
 
-	if(creep.memory.building) {
-		var action = this.roleConfig.outStack[0];
-        action.loop(creep);
-	}
-	else {
-		var action = this.roleConfig.inStack[0];
-        action.loop(creep);
-	}
+	this.loop0(creep, creep.memory.building);
 };
