@@ -11,6 +11,7 @@
  * 4. Fuel Tower
  * 5. Repair Structure
  * 6. Put Container/Storage
+ * 7. Maintain Rampart
  * War
  * 1. Attack
  * 2. Guard
