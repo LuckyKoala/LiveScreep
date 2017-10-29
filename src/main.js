@@ -1,4 +1,5 @@
 var _global = require('global');
+var _extension = require('extension');
 
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
