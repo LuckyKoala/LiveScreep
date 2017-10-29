@@ -11,6 +11,7 @@ mod.loop = function () {
     var cntH = 0;
     var cntB = 0;
     var cntU = 0;
+    var cntH = 0;
 
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
@@ -25,6 +26,10 @@ mod.loop = function () {
         if(creep.memory.role == 'builder') {
             cntB++;
             Role.Builder.loop(creep);
+        }
+        if(creep.memory.role == 'hauler') {
+            cntH++;
+            Role.Hauler.loop(creep);
         }
     }
     var cnt = {

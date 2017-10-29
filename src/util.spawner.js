@@ -51,11 +51,11 @@ mod.spawnHauler = function(spawn) {
     
     for(var i=0;i<a.length;i++) {
         name = a[i];
-        result = spawn.spawnCreep([CARRY, CARRY, CARRY, MOVE], name, { dryRun: true });
+        result = spawn.spawnCreep([CARRY, MOVE], name, { dryRun: true });
         if(result==OK) break; 
     }
     
-    spawn.spawnCreep([CARRY, CARRY, CARRY, MOVE], name, {
+    spawn.spawnCreep([CARRY, MOVE], name, {
         memory: {role: 'hauler'}
     });
     console.log('Spawning '+name);
