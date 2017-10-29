@@ -1,20 +1,9 @@
-/*
- * Module code goes here. Use 'module.exports' to export things:
- * module.exports.thing = 'a thing';
- *
- * You can import it from another modules like this:
- * var mod = require('util.spawner');
- * mod.thing == 'a thing'; // true
- 
- Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE], 'Worker1', {
-    memory: {role: 'harvester'}
-});
- */
 var mod = {};
 module.exports = mod;
 
 mod.loop = function(room, cnt) {
-    var spawn = Game.spawns['S-E48S9-1'];
+    var spawns = _.filter(Game.spawns, function(spawn) { return spawn.room == room; });
+    var spawn = spawns[0];
     //Check energy available first
     if(room.energyAvailable < 200) {
         //console.log('Not enough energy to spawn next creep');

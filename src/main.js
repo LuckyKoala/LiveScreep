@@ -32,6 +32,9 @@ mod.loop = function () {
         'builder': cntB,
         'upgrader': cntU,
     }
-    
-    utilSpawner.loop(Game.spawns['S-E48S9-1'].room, cnt);
+    //FIXME cnt is not pair with every room
+    _.forEach(Game.rooms, function(room) {
+        utilSpawner.loop(room, cnt);
+    });
+    //utilSpawner.loop(Game.spawns['S-E48S9-1'].room, cnt);
 }
