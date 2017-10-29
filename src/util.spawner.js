@@ -3,107 +3,105 @@ module.exports = mod;
 
 mod.loop = function(room, cnt) {
     var spawns = _.filter(Game.spawns, function(spawn) { return spawn.room == room; });
-    var spawn = spawns[0];
-    //Check energy available first
-    if(room.energyAvailable < 150) {
-        //console.log('Not enough energy to spawn next creep');
-        return;
-    }
+    this.spawn = spawns[0];
+
+    this.energyAvailable = room.energyAvailable;
     
     //Population control
     //At least, we need one harvester and one hauler
     // if there is no more creep, so we can make spawn back to life
     if(cnt.harvester < 1) {
-        this.spawnHarvester(spawn);
+        this.spawnHarvester(true);
     } else if(cnt.hauler < 1) {
-        this.spawnHauler(spawn);
+        this.spawnHauler(true);
     } else if(cnt.harvester < 2) {
-        this.spawnHarvester(spawn);
+        this.spawnHarvester();
     } else if(cnt.hauler < 2) {
-        this.spawnHauler(spawn);
+        this.spawnHauler();
     } else if(cnt.upgrader < 3) {
-        this.spawnUpgrader(spawn);
+        this.spawnUpgrader();
     } else {
         var targets = room.find(FIND_CONSTRUCTION_SITES);
         if(targets.length && cnt.builder < 2) {
-            this.spawnBuilder(spawn);
+            this.spawnBuilder();
         } else if(cnt.upgrader < 5) {
-            this.spawnUpgrader(spawn);
+            this.spawnUpgrader();
         }
     }
 };
+//TODO memorize source and mark it, calcaulate available spot
+mod.spawnHarvester = function(minimum = false) {
+    var essBody = [WORK, CARRY, MOVE];
+    var extraBody = [WORK];
+    var names = ['[H]John','[H]Amy','[H]Bob']
+    this.spawn0(essBody, extraBody, minimum, names, {role: 'harvester'});
+};
 
-mod.spawnHarvester = function(spawn) {
-    var a = ['[H]John','[H]Amy','[H]Bob']
-    var result = OK;
+mod.spawnHauler = function(minimum) {
+    var essBody = [CARRY, MOVE];
+    var extraBody = [CARRY, MOVE];
+    var names = ['[Ha]Gold','[Ha]Iron'];
+    this.spawn0(essBody, extraBody, minimum, names, {role: 'hauler'});
+};
+
+mod.spawnUpgrader = function(minimum) {
+    var essBody = [WORK, CARRY, MOVE];
+    var extraBody = [WORK, WORK, CARRY];
+    var names = ['[U]Dog','[U]Cat','[U]Meow','[U]Mummy','[U]Ass','[U]God']
+    this.spawn0(essBody, extraBody, minimum, names, {role: 'upgrader'});
+};
+
+mod.spawnBuilder = function(minimum) {
+    var essBody = [WORK, CARRY, MOVE];
+    var extraBody = [WORK, CARRY];
+    var names = ['[B]Amd','[B]Lucky','[B]Gentleman'];
+    this.spawn0(essBody, extraBody, minimum, names, {role: 'builder'});
+};
+
+mod.spawn0 = function(essBody, extraBody, minimum, names, memory) {
+    var spawn = this.spawn;
+    //Calculate body and examine whether energyAvailable is enough
+    var body = minimum ? essBody : this.getMaxiumBody(essBody, extraBody);
+    var bodyCost = this.getBodyCost(body);
+    if(this.energyAvailable < bodyCost) return;
+    //Calculate name
     var name;
-    
-    for(var i=0;i<a.length;i++) {
-        name = a[i];
-        result = spawn.spawnCreep([WORK, CARRY, MOVE], name, { dryRun: true });
+    var result;
+    for(var i=0;i<names.length;i++) {
+        name = names[i];
+        result = spawn.spawnCreep(body, name, { dryRun: true });
         if(result==OK) {
-            spawn.spawnCreep([WORK, CARRY, MOVE], name, {
-                memory: {role: 'harvester'}
+            spawn.spawnCreep(body, name, {
+                memory: memory,
             });
             console.log('Spawning '+name);
             break;
         } 
     }
-};
+}
 
-mod.spawnHauler = function(spawn) {
-    var a = ['[Ha]Gold','[Ha]Iron']
-    var result = OK;
-    var name;
-    
-    for(var i=0;i<a.length;i++) {
-        name = a[i];
-        result = spawn.spawnCreep([CARRY, MOVE], name, { dryRun: true });
-        if(result==OK) {
-            spawn.spawnCreep([CARRY, MOVE], name, {
-                memory: {role: 'hauler'}
-            });
-            console.log('Spawning '+name);
-            break;
-        } 
+mod.getMaxiumBody = function(essBody, extraBody) {
+    var essCost = this.getBodyCost(essBody);
+    var extraCost = this.getBodyCost(extraBody); 
+    var extraAmount = _.floor((this.energyAvailable - essCost) / extraCost);
+    var body = essBody;
+    for(var i=0; i<extraAmount; i++) {
+        body.push(extraBody);
     }
-};
+    return _.flattenDeep(body);
+}
 
-mod.spawnUpgrader = function(spawn) {
-    var a = ['[U]Dog','[U]Cat','[U]Meow','[U]Mummy','[U]Ass','[U]God']
-    var result = OK;
-    var name;
-    
-    for(var i=0;i<a.length;i++) {
-        name = a[i];
-        result = spawn.spawnCreep([WORK, CARRY, MOVE], name, { dryRun: true });
-        if(result==OK) {
-            spawn.spawnCreep([WORK, CARRY, MOVE], name, {
-                memory: {role: 'upgrader'}
-            });
-            console.log('Spawning '+name);
-            break; 
-        }
+mod.getBodyCost = function(bodyParts) {
+    var cost = 0;
+    for(var i=0; i<bodyParts.length; i++) {
+        cost += BODYPART_COST[bodyParts[i]];
     }
-};
+    return cost;
+}
 
-mod.spawnBuilder = function(spawn) {
-    var a = ['[B]Amd','[B]Lucky','[B]Gentleman']
-    var result = OK;
-    var name;
-    
-    for(var i=0;i<a.length;i++) {
-        name = a[i];
-        result = spawn.spawnCreep([WORK, CARRY, MOVE], name, { dryRun: true });
-        if(result==OK) {
-            spawn.spawnCreep([WORK, CARRY, MOVE], name, {
-                memory: {role: 'builder'}
-            });
-            console.log('Spawning '+name);
-            break; 
-        }
-    }
-};
+
+
+
 
 
 
