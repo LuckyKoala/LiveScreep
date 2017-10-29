@@ -52,28 +52,28 @@ mod.spawnHarvester = function(minimum = false) {
 
 mod.spawnHauler = function(minimum) {
     var essBody = [CARRY, MOVE];
-    var extraBody = [CARRY, MOVE];
+    var extraBody = [CARRY, CARRY, MOVE];
     var names = ['[Ha]Gold','[Ha]Iron'];
     this.spawn0(essBody, extraBody, minimum, names, {role: 'hauler'});
 };
 
 mod.spawnUpgrader = function(minimum) {
     var essBody = [WORK, CARRY, MOVE];
-    var extraBody = [WORK, WORK, CARRY];
+    var extraBody = [WORK, WORK, CARRY, MOVE, MOVE];
     var names = ['[U]Dog','[U]Cat','[U]Meow','[U]Mummy','[U]Ass','[U]God']
     this.spawn0(essBody, extraBody, minimum, names, {role: 'upgrader'});
 };
 
 mod.spawnBuilder = function(minimum) {
     var essBody = [WORK, CARRY, MOVE];
-    var extraBody = [WORK, CARRY];
+    var extraBody = [WORK, CARRY, MOVE];
     var names = ['[B]Amd','[B]Lucky','[B]Gentleman'];
     this.spawn0(essBody, extraBody, minimum, names, {role: 'builder'});
 };
 
 mod.spawnGuardian = function(minimum) {
     var essBody = [ATTACK, MOVE];
-    var extraBody = [ATTACK, MOVE];
+    var extraBody = [ATTACK, TOUGH, MOVE];
     var names = ['[G]Maze','[B]Bug'];
     this.spawn0(essBody, extraBody, minimum, names, {role: 'guardian'});
 };

@@ -3,5 +3,5 @@ module.exports = mod;
 
 mod.roleConfig = {
     inStack: [Action.Harvest],
-    outStack: [Action.Put, Action.Feed],
+    outStack: [Action.Put, Action.Drop],
 };

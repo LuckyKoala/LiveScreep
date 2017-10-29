@@ -2,7 +2,7 @@ var mod = new RoleObj('Upgrader');
 module.exports = mod;
 
 mod.roleConfig = {
-    inStack: [Action.Withdraw, Action.Harvest],
+    inStack: [Action.Withdraw, Action.Pickup],
     outStack: [Action.Upgrade],
 };
 mod.loop = function(creep) {

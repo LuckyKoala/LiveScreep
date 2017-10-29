@@ -2,7 +2,7 @@ var mod = new RoleObj('Builder');
 module.exports = mod;
 
 mod.roleConfig = {
-    inStack: [Action.Harvest],
+    inStack: [Action.Withdraw, Action.Pickup],
     outStack: [Action.Build],
 };
 mod.loop = function(creep) {

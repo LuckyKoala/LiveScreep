@@ -9,6 +9,8 @@ global.Action = {
     Put: require('action.put'),
     Fuel: require('action.fuel'),
     Guard: require('action.guard'),
+    Pickup: require('action.pickup'),
+    Drop: require('action.drop'),
 };
 global.Role = {
     Harvester: require('role.harvester'),

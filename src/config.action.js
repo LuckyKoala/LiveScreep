@@ -2,7 +2,7 @@
  * - finished / half
  * Get Resource
  * -1. Harvest
- * 2. Pick
+ * -2. Pickup
  * 3. Dismantle
  * -4. Withdraw
  * Use Resource
@@ -13,8 +13,9 @@
  * 5. Repair Structure
  * -6. Put Container/Storage
  * 7. Maintain Rampart
+ * -8. Drop
  * War
  * 1. Attack
- * 2. Guard
+ * -2. Guard
  * 3. Flee
  */
