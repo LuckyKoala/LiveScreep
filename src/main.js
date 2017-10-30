@@ -5,12 +5,13 @@ var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 
-const CARRY_TO_ENERGY_POWER = 5; //hardcode
+const CARRY_TO_ENERGY_POWER = 1; //hardcode
 
 var mod = {};
 module.exports = mod;
 mod.loop = function () {
     Util.GC.loop();
+    Util.Mark.loop();
 
     var cnt = {
         total: 0,
@@ -53,6 +54,4 @@ mod.loop = function () {
         Util.Spawner.loop(room, cnt, energyInPerTick, energyOutPerTick);
         Util.Tower.loop(room);
     });
-
-    Util.Mark.loop();
 }
