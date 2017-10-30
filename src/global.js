@@ -19,4 +19,10 @@ global.Role = {
     Hauler: require('role.hauler'),
     Guardian: require('role.guardian'),
 };
+global.Util = {
+    Spawner: require('util.spawner'),
+    Tower: require('util.tower'),
+    War: require('util.war'),
+    Mark: require('util.mark',)
+}
 global.State= {};

@@ -1,5 +1,3 @@
-var utilWar = require('util.war');
-
 let mod = new ActionObj('Guard');
 module.exports = mod;
 
@@ -8,7 +6,7 @@ mod.nextTarget = function() {
     const hostiles = creep.room.find(FIND_HOSTILE_CREEPS);
     const hostileMap = _.map(hostiles, function(o) {
         return {
-            threat: utilWar.getThreatValue(o.body),
+            threat: Util.War.getThreatValue(o.body),
             range: creep.pos.getRangeTo(o),
             id: o.id,
         }

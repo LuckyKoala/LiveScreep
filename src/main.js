@@ -4,8 +4,6 @@ var _extension = require('extension');
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
-var utilSpawner = require('util.spawner');
-var utilTower = require('util.tower');
 
 const CARRY_TO_ENERGY_POWER = 5; //hardcode
 
@@ -50,7 +48,7 @@ mod.loop = function () {
     
     //FIXME cnt is not pair with every room
     _.forEach(Game.rooms, function(room) {
-        utilSpawner.loop(room, cnt, energyInPerTick, energyOutPerTick);
-        utilTower.loop(room);
+        Util.Spawner.loop(room, cnt, energyInPerTick, energyOutPerTick);
+        Util.Tower.loop(room);
     });
 }
