@@ -10,6 +10,8 @@ const CARRY_TO_ENERGY_POWER = 5; //hardcode
 var mod = {};
 module.exports = mod;
 mod.loop = function () {
+    Util.GC.loop();
+
     var cnt = {
         total: 0,
         harvester: 0,

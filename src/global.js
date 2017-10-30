@@ -23,6 +23,7 @@ global.Util = {
     Spawner: require('util.spawner'),
     Tower: require('util.tower'),
     War: require('util.war'),
-    Mark: require('util.mark',)
+    Mark: require('util.mark'),
+    GC: require('util.gc'),
 }
 global.State= {};
