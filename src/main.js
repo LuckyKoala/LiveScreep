@@ -7,6 +7,8 @@ var roleBuilder = require('role.builder');
 var utilSpawner = require('util.spawner');
 var utilTower = require('util.tower');
 
+const CARRY_TO_ENERGY_POWER = 5; //hardcode
+
 var mod = {};
 module.exports = mod;
 mod.loop = function () {
@@ -18,6 +20,8 @@ mod.loop = function () {
         hauler: 0,
         guardian: 0,
     }
+    var energyInPerTick = 0;
+    var energyOutPerTick = 0;
 
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
@@ -25,7 +29,19 @@ mod.loop = function () {
         var roleModule = Role[_.capitalize(role)];
         _.set(cnt, role, _.get(cnt, role, 0)+1); //_.update(cnt, role, function(n) { return n ? n + 1 : 0; });
         cnt['total']++;
+        
         if(roleModule) {
+            if(role == "harvester") {
+                //Kind of hardcode (Only test harvester in)
+                energyInPerTick += creep.getActiveBodyparts(WORK) * HARVEST_POWER;
+            } else if(role == "builder") {
+                energyOutPerTick += creep.getActiveBodyparts(WORK) * BUILD_POWER;
+            } else if(role == "upgrader") {
+                energyOutPerTick += creep.getActiveBodyparts(WORK) * UPGRADE_CONTROLLER_POWER;
+            } else if(role == "hauler") {
+                energyOutPerTick += creep.getActiveBodyparts(CARRY) * CARRY_TO_ENERGY_POWER;
+            }
+
             roleModule.loop(creep);
         } else {
             console.log('[Error] Undefined role module is in memory of creep -> '+name);
@@ -34,8 +50,7 @@ mod.loop = function () {
     
     //FIXME cnt is not pair with every room
     _.forEach(Game.rooms, function(room) {
-        utilSpawner.loop(room, cnt);
+        utilSpawner.loop(room, cnt, energyInPerTick, energyOutPerTick);
         utilTower.loop(room);
     });
-    //utilSpawner.loop(Game.spawns['S-E48S9-1'].room, cnt);
 }

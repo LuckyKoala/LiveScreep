@@ -22,6 +22,7 @@ var mod = function(name) {
     };
     //Default behaviour, can be override
     this.loop = function(creep) {
+        //What if there is no carry part?
         this.loop0(creep, creep.carry.energy >= creep.carryCapacity);
     };
 };
