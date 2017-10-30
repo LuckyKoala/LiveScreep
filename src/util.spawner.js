@@ -14,8 +14,12 @@ mod.loop = function(room, cnt, energyInPerTick, energyOutPerTick) {
     this.energyAvailable = room.energyAvailable;
     
     //Precise population control
-    if(energyInPerTick < leastEnergyPerTick) {
+    if(cnt.havester < 1) {
         this.spawnHarvester(true);
+        return;
+    } 
+    if(energyInPerTick < leastEnergyPerTick) {
+        this.spawnHarvester();
         return;
     }
     if(energyInPerTick <= energyOutPerTick) {
@@ -57,7 +61,7 @@ mod.loop = function(room, cnt, energyInPerTick, energyOutPerTick) {
 };
 
 mod.spawnHarvester = function(minimum = false) {
-    var essBody = [WORK, CARRY, MOVE];
+    var essBody = [WORK, MOVE];
     var extraBody = [WORK, WORK, MOVE];
     var names = ['[H]John','[H]Amy','[H]Bob']
     this.spawn0(essBody, extraBody, minimum, names, {role: 'harvester'});

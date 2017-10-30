@@ -53,4 +53,6 @@ mod.loop = function () {
         Util.Spawner.loop(room, cnt, energyInPerTick, energyOutPerTick);
         Util.Tower.loop(room);
     });
+
+    Util.Mark.loop();
 }
