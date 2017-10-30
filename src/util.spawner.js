@@ -5,23 +5,35 @@ module.exports = mod;
 
 const factor = 1.2;
 const sourceGeneratePerTick = 2 * (SOURCE_ENERGY_CAPACITY / ENERGY_REGEN_TIME); //Currently 10
-const leastEnergyPerTick = 2 * HARVEST_POWER; //Two work harvesters
 
 //TODO limit max part number
+//TODO not only limit by num, should also consider body part
 mod.loop = function(room, cnt, energyInPerTick, energyOutPerTick) {
     var spawns = _.filter(Game.spawns, function(spawn) { return spawn.room == room; });
     this.spawn = spawns[0];
     this.energyAvailable = room.energyAvailable;
     
     //Precise population control
-    if(cnt.havester < 1) {
-        this.spawnHarvester(true);
-        return;
-    } 
-    if(energyInPerTick < leastEnergyPerTick) {
+    if(cnt.havester < 2) {
         this.spawnHarvester();
         return;
     }
+
+    //const energyOutMaxPerTick = energyInPerTick - energyOutPerTick;
+    //Spawn 1 hauler at least
+    if(cnt.hauler < 2) {
+        this.spawnHauler();
+        return;
+    } 
+    //Try spawn guardian
+    //TODO honour threat value
+    const hostiles = room.find(FIND_HOSTILE_CREEPS);
+    if(hostiles.length && cnt.guardian < 1) {
+        this.spawnGuardian();
+        return;
+    }
+
+    //Now we can consider more type of creep
     if(energyInPerTick <= energyOutPerTick) {
         //It seems we should spawn more harvester
         //Check whether source can take more harvester
@@ -30,24 +42,12 @@ mod.loop = function(room, cnt, energyInPerTick, energyOutPerTick) {
             this.spawnHarvester();
         } 
     } else {
-        const energyOutMaxPerTick = energyInPerTick - energyOutPerTick;
-        //Spawn others
-        if(cnt.hauler < 1) {
-            this.spawnHauler();
-            return;
-        } 
-        //Try spawn guardian
-        //TODO honour threat value
-        const hostiles = room.find(FIND_HOSTILE_CREEPS);
-        if(hostiles.length && cnt.guardian < 1) {
-            this.spawnGuardian();
-            return;
-        }
         if(cnt.upgrader < 1) {
             this.spawnUpgrader();
             return;
         } 
-        //Now we have 1 hauler and 1 upgrader at least
+        
+        //Now we have 2 harvester, 2 hauler and 1 upgrader at least
         //Check if there is any construction site
         var targets = room.find(FIND_CONSTRUCTION_SITES);
         if(targets.length && cnt.builder < 1) {

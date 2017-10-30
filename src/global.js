@@ -11,6 +11,7 @@ global.Action = {
     Guard: require('action.guard'),
     Pickup: require('action.pickup'),
     Drop: require('action.drop'),
+    Listen: require('action.listen'),
 };
 global.Role = {
     Harvester: require('role.harvester'),
@@ -18,6 +19,7 @@ global.Role = {
     Builder: require('role.builder'),
     Hauler: require('role.hauler'),
     Guardian: require('role.guardian'),
+    Ant: require('role.ant'),
 };
 global.Util = {
     Spawner: require('util.spawner'),
@@ -25,5 +27,6 @@ global.Util = {
     War: require('util.war'),
     Mark: require('util.mark'),
     GC: require('util.gc'),
+    Smalltask: require('util.smalltask'),
 }
 global.State= {};
