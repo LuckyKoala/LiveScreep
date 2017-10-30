@@ -10,6 +10,8 @@ const CARRY_TO_ENERGY_POWER = 1; //hardcode
 var mod = {};
 module.exports = mod;
 mod.loop = function () {
+    const startCpu = Game.cpu.getUsed();
+
     Util.GC.loop();
     Util.Mark.loop();
 
@@ -54,4 +56,8 @@ mod.loop = function () {
         Util.Spawner.loop(room, cnt, energyInPerTick, energyOutPerTick);
         Util.Tower.loop(room);
     });
+
+    //Count cpu used stat
+    const elapsed = Game.cpu.getUsed() - startCpu;
+    Util.Stat.memorize('last-cpu-used-total', elapsed);
 }
