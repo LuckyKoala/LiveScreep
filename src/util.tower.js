@@ -2,6 +2,8 @@
 var mod = {};
 module.exports = mod;
 
+const containerMaintainThreshold = 80000; //80K
+
 mod.loop = function(room) {
     //Check whether energy available is enough for next action
     var towers = room.find(FIND_MY_STRUCTURES, {
@@ -20,7 +22,14 @@ mod.loop = function(room) {
         }
         //Repair structure
         var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_CONTAINER
+            filter: (structure) => {
+                if(structure.hits < structure.hitsMax) {
+                    if(structure.structureType == STRUCTURE_CONTAINER) {
+                        return structure.hits < containerMaintainThreshold;
+                    } 
+                    return true;
+                }
+            }
         });
         if(closestDamagedStructure) {
             tower.repair(closestDamagedStructure);
