@@ -19,7 +19,7 @@ mod.loop = function(room) {
         }
         //Repair structure
         var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => structure.hits < structure.hitsMax
+            filter: (structure) => structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_CONTAINER
         });
         if(closestDamagedStructure) {
             tower.repair(closestDamagedStructure);

@@ -51,11 +51,18 @@ mod.loop = function () {
         }
     }
     
+    Util.Stat.memorize('last-energyInPerTick', energyInPerTick);
+    Util.Stat.memorize('last-energyOutPerTick', energyOutPerTick);
+    Util.Stat.memorize('last-creeps-cnt', cnt);
+    
     //FIXME cnt is not pair with every room
+    var entry = {};
     _.forEach(Game.rooms, function(room) {
-        Util.Spawner.loop(room, cnt, energyInPerTick, energyOutPerTick);
+        Util.Spawner.loop(room, cnt);
         Util.Tower.loop(room);
+        entry[room.name] = room.energyAvailable;
     });
+    Util.Stat.memorize('last-energyAvailable', entry);
 
     //Count cpu used stat
     const elapsed = Game.cpu.getUsed() - startCpu;

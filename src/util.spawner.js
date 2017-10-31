@@ -3,15 +3,17 @@
 var mod = {};
 module.exports = mod;
 
-const factor = 1.2;
-const sourceGeneratePerTick = 2 * (SOURCE_ENERGY_CAPACITY / ENERGY_REGEN_TIME); //Currently 10
+//const factor = 1;
+//const sourceGeneratePerTick = 2 * (SOURCE_ENERGY_CAPACITY / ENERGY_REGEN_TIME); //Currently 10
 
 //TODO limit max part number
 //TODO not only limit by num, should also consider body part
-mod.loop = function(room, cnt, energyInPerTick, energyOutPerTick) {
+mod.loop = function(room, cnt) {
     var spawns = _.filter(Game.spawns, function(spawn) { return spawn.room == room; });
     this.spawn = spawns[0];
     this.energyAvailable = room.energyAvailable;
+    
+    Util.Stat.memorize('last-energyAvailable', this.energyAvailable);
     
     //Precise population control
     if(cnt.havester < 2) {
@@ -19,9 +21,8 @@ mod.loop = function(room, cnt, energyInPerTick, energyOutPerTick) {
         return;
     }
 
-    //const energyOutMaxPerTick = energyInPerTick - energyOutPerTick;
     //Spawn 1 hauler at least
-    if(cnt.hauler < 2) {
+    if(cnt.hauler < 1) {
         this.spawnHauler();
         return;
     } 
@@ -32,29 +33,17 @@ mod.loop = function(room, cnt, energyInPerTick, energyOutPerTick) {
         this.spawnGuardian();
         return;
     }
-
-    //Now we can consider more type of creep
-    if(energyInPerTick <= energyOutPerTick) {
-        //It seems we should spawn more harvester
-        //Check whether source can take more harvester
-        if(energyInPerTick < sourceGeneratePerTick*factor) {
-            //Oh!Let's do it
-            this.spawnHarvester();
-        } 
-    } else {
-        if(cnt.upgrader < 1) {
-            this.spawnUpgrader();
-            return;
-        } 
-        
-        //Now we have 2 harvester, 2 hauler and 1 upgrader at least
-        //Check if there is any construction site
-        var targets = room.find(FIND_CONSTRUCTION_SITES);
-        if(targets.length && cnt.builder < 1) {
-            this.spawnBuilder();
-        } else if(cnt.upgrader < 5) {
-            this.spawnUpgrader();
-        }
+    
+    if(cnt.upgrader < 1) {
+        this.spawnUpgrader();
+        return;
+    } 
+    
+    var targets = room.find(FIND_CONSTRUCTION_SITES);
+    if(targets.length && cnt.builder < 1) {
+        this.spawnBuilder();
+    } else if(cnt.upgrader < 2) {
+        this.spawnUpgrader();
     }
 };
 
@@ -133,11 +122,3 @@ mod.getBodyCost = function(bodyParts) {
     }
     return cost;
 }
-
-
-
-
-
-
-
-
