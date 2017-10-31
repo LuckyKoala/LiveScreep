@@ -10,6 +10,24 @@ mod.loop = function() {
 }
 
 /**
+ * Normal Target Mark System
+ * -- Creep --
+ * Memory Path: .memory.targetMark
+ * = %id%
+ */
+mod.markTarget = function(creep, targetId) {
+    creep.memory.targetMark = targetId;
+}
+
+mod.unmarkTarget = function(creep) {
+    creep.memory.targetMark = false;
+}
+
+mod.getMarkTarget = function(creep) {
+    return creep.memory.targetMark;
+}
+
+/**
  * Source Mark System
  *  -- Source --
  * Memory Path: .memory.mark
