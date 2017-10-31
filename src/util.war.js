@@ -29,7 +29,10 @@ mod.getThreatValue = function(body) {
 mod.getCurrentThreatValue = function(room) {
     const outer = this;
     const hostiles = room.find(FIND_HOSTILE_CREEPS);
-    return _.sumBy(hostiles, function(o) { return outer.getThreatValue(o.body); });
+    
+    return _.sum(_.map(hostiles, function(o) {
+        return outer.getThreatValue(o.body)
+    })); //sumBy
 }
 
 mod.getSortedHostiles = function(creep) {

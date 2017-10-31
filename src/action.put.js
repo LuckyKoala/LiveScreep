@@ -1,11 +1,28 @@
 let mod = new ActionObj('Put');
 module.exports = mod;
 
-//TODO consider storage
 mod.nextTarget = function() {
-    return this.creep.pos.findClosestByRange(FIND_STRUCTURES, {
-        filter: { structureType: STRUCTURE_CONTAINER }
-    });
+    const creep = this.creep;
+    const role = creep.memory.role;
+    var targets;
+    
+    if(role == 'harvester') {
+        //Near source container/storage
+        targets = creep.pos.findInRange(FIND_STRUCTURES, 1, {
+            filter: function(o) {
+                return o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE;
+            }
+        });
+    } else if(role == 'hauler') {
+        //Near controller container/storage
+        targets = creep.room.controller.pos.findInRange(FIND_STRUCTURES, 4, {
+            filter: function(o) {
+                return o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE;
+            }
+        });
+    }
+
+    return targets.length>0 ? targets[0] : false; //Other role will not use this action
 };
 //Override
 mod.loop = function(creep) {

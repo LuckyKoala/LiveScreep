@@ -9,7 +9,7 @@ mod.loop = function(room, cnt) {
     this.energyAvailable = room.energyAvailable;
     this.room = room;
     
-    if(cnt.havester < 2) {
+    if(cnt.harvester < 2) {
         this.spawnHarvester();
         return;
     }
@@ -41,7 +41,7 @@ mod.loop = function(room, cnt) {
 };
 
 mod.spawnHarvester = function(minimum = false) {
-    var essBody = [WORK, MOVE];
+    var essBody = [WORK, CARRY, MOVE];
     var extraBody = [WORK, WORK, MOVE];
     var names = ['[H]John','[H]Amy','[H]Bob']
     this.spawn0(essBody, extraBody, minimum, names, {role: 'harvester'});
@@ -69,7 +69,7 @@ mod.spawnBuilder = function(minimum) {
 };
 
 mod.spawnGuardian = function(minimum) {
-    if(!Util.War.shouldSpawnGuardian()) return;
+    if(!Util.War.shouldSpawnGuardian(this.room)) return;
     var essBody = [ATTACK, MOVE];
     var extraBody = [ATTACK, TOUGH, MOVE];
     var names = ['[G]Maze','[B]Bug'];

@@ -2,19 +2,49 @@ let mod = new ActionObj('Withdraw');
 module.exports = mod;
 //Haul energy from container
 mod.nextTarget = function() {
-    var creep = this.creep; //For filter closure (this)
-    return this.creep.pos.findClosestByRange(FIND_STRUCTURES, {
-        filter: function(o) { 
-            if(o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE) {
-                var need = creep.carryCapacity - creep.carry.energy;
-                if(o.store[RESOURCE_ENERGY] > need) {
-                    //Should match with Marker
-                    return true;
-                }
+    const creep = this.creep;
+    const role = creep.memory.role;
+    var targets;
+
+    if(role == 'upgrader') {
+        //Near controller container/storage
+        targets =  creep.room.controller.pos.findInRange(FIND_STRUCTURES, 4, {
+            filter: function(o) {
+                return (o.structureType == STRUCTURE_CONTAINER || 
+                    o.structureType == STRUCTURE_STORAGE);
             }
-            return false;
+        });
+        //If there is no any container/storage nearby, go find others!
+        if(targets.length == 0) {
+            return creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                filter: function(o) { 
+                    if(o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE) {
+                        var need = creep.carryCapacity - creep.carry.energy;
+                        if(o.store[RESOURCE_ENERGY] > need) {
+                            //Should match with Marker
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            });
+        } else {
+            return targets[0];
         }
-    });
+    } else {
+        return creep.pos.findClosestByRange(FIND_STRUCTURES, {
+            filter: function(o) { 
+                if(o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE) {
+                    var need = creep.carryCapacity - creep.carry.energy;
+                    if(o.store[RESOURCE_ENERGY] > need) {
+                        //Should match with Marker
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+    }
 };
 
 mod.loop = function(creep) {
