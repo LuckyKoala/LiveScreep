@@ -5,28 +5,46 @@ mod.nextTarget = function() {
     const creep = this.creep;
     const role = creep.memory.role;
     var targets;
-    var findAvailableContainer = function(o) {
+    const findNotFullContainer = function(o) {
         if(o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE) {
-            if(_.sum(o.store) > o.storeCapacity) {
+            if(o.store[RESOURCE_ENERGY] < o.storeCapacity) {
                 return true;
             }
         }
         return false;
     };
+    const nearSourceContainers = creep.pos.findInRange(FIND_STRUCTURES, 2, {
+        filter: findNotFullContainer
+    });
+    const nearSourceContainerIds = _.map(nearSourceContainers, function(o) {
+        return o.id;
+    });
     
     if(role == 'harvester') {
         //Near source container/storage
-        targets = creep.pos.findInRange(FIND_STRUCTURES, 2, {
-            filter: findAvailableContainer
-        });
-    } else if(role == 'hauler') {
-        //Near controller container/storage
+        return nearSourceContainers[0];
+    } else {
+        //Find near controller container/storage first
         targets = creep.room.controller.pos.findInRange(FIND_STRUCTURES, 5, {
-            filter: findAvailableContainer
+            filter: findNotFullContainer
         });
-    }
-
-    return targets.length>0 ? targets[0] : false; //Other role will not use this action
+        //Then find others
+        //Other roles shouldn't put energy to container/storage which is near source
+        if(targets.length == 0) {
+            return creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                filter: function(o) {
+                    if(o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE) {
+                        if(o.store[RESOURCE_ENERGY] < o.storeCapacity) {
+                            return _.indexOf(nearSourceContainerIds, o.id) == -1; //Not near source
+                        }
+                    }
+                    return false;
+                }
+            });
+        } else {
+            return targets[0];
+        }
+    } 
 };
 //Override
 mod.loop = function(creep) {
