@@ -50,61 +50,58 @@ mod.loop = function(room, cnt, needExtraHarvester) {
 };
 
 mod.spawnHarvester = function(minimum = false) {
-    var essBody = [WORK, CARRY, MOVE];
-    var extraBody = [WORK, WORK, MOVE];
-    var names = ['[H]John','[H]Amy','[H]Bob']
-    this.spawn0(essBody, extraBody, minimum, names, {role: 'harvester'});
+    const essBody = [WORK, CARRY, MOVE];
+    const extraBody = [WORK, WORK, MOVE];
+    const prefix = '[Ha]';
+    const memory = {role: 'harvester'};
+    this.spawn0(essBody, extraBody, minimum, prefix, memory);
 };
 
 mod.spawnHauler = function(minimum = false) {
-    var essBody = [CARRY, MOVE];
-    var extraBody = [CARRY, CARRY, MOVE];
-    var names = ['[Ha]Gold','[Ha]Iron'];
-    this.spawn0(essBody, extraBody, minimum, names, {role: 'hauler'});
+    const essBody = [CARRY, MOVE];
+    const extraBody = [CARRY, CARRY, MOVE];
+    const prefix = '[Ha]';
+    const memory = {role: 'hauler'};
+    this.spawn0(essBody, extraBody, minimum, prefix, memory);
 };
 
 mod.spawnUpgrader = function(minimum = false) {
-    var essBody = [WORK, CARRY, MOVE];
-    var extraBody = [WORK, WORK, CARRY, MOVE, MOVE];
-    var names = ['[U]Dog','[U]Cat','[U]Meow','[U]Mummy','[U]Ass','[U]God']
-    this.spawn0(essBody, extraBody, minimum, names, {role: 'upgrader'});
+    const essBody = [WORK, CARRY, MOVE];
+    const extraBody = [WORK, WORK, CARRY, MOVE, MOVE];
+    const prefix = '[Up]';
+    const memory = {role: 'upgrader'};
+    this.spawn0(essBody, extraBody, minimum, prefix, memory);
 };
 
 mod.spawnBuilder = function(minimum = false) {
-    var essBody = [WORK, CARRY, MOVE];
-    var extraBody = [WORK, CARRY, MOVE];
-    var names = ['[B]Amd','[B]Lucky','[B]Gentleman'];
-    this.spawn0(essBody, extraBody, minimum, names, {role: 'builder'});
+    const essBody = [WORK, CARRY, MOVE];
+    const extraBody = [WORK, CARRY, MOVE];
+    const prefix = '[Bu]';
+    const memory = {role: 'builder'};
+    this.spawn0(essBody, extraBody, minimum, prefix, memory);
 };
 
 mod.spawnGuardian = function(minimum = false) {
     if(!Util.War.shouldSpawnGuardian(this.room)) return;
-    var essBody = [ATTACK, MOVE];
-    var extraBody = [ATTACK, TOUGH, MOVE];
-    var names = ['[G]Maze','[B]Bug'];
-    this.spawn0(essBody, extraBody, minimum, names, {role: 'guardian'});
+    const essBody = [ATTACK, MOVE];
+    const extraBody = [ATTACK, TOUGH, MOVE];
+    const prefix = '[Gu]';
+    const memory = {role: 'guardian'};
+    this.spawn0(essBody, extraBody, minimum, prefix, memory);
 };
 
-mod.spawn0 = function(essBody, extraBody, minimum, names, memory) {
-    var spawn = this.spawn;
+mod.spawn0 = function(essBody, extraBody, minimum, prefix, memory) {
     //Calculate body and examine whether energyAvailable is enough
-    var body = minimum ? essBody : this.getMaxiumBody(essBody, extraBody);
-    var bodyCost = this.getBodyCost(body);
+    const body = minimum ? essBody : this.getMaxiumBody(essBody, extraBody);
+    const bodyCost = this.getBodyCost(body);
+    //Check energyAvailable is enough for this spawn action
     if(this.energyAvailable < bodyCost) return;
     //Calculate name
-    var name;
-    var result;
-    for(var i=0;i<names.length;i++) {
-        name = names[i];
-        result = spawn.spawnCreep(body, name, { dryRun: true });
-        if(result==OK) {
-            spawn.spawnCreep(body, name, {
-                memory: memory,
-            });
-            console.log('Spawning '+name);
-            break;
-        } 
-    }
+    const name = prefix+Game.time;
+    const result = this.spawn.spawnCreep(body, name, {
+        memory: memory,
+    });
+    console.log('Code['+result+']Spawning '+name+" whose cost is "+bodyCost);
 }
 
 mod.getMaxiumBody = function(essBody, extraBody) {
