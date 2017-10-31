@@ -7,7 +7,7 @@ mod.nextTarget = function() {
     var targets;
     const findNotFullContainer = function(o) {
         if(o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE) {
-            if(o.store[RESOURCE_ENERGY] < o.storeCapacity) {
+            if(_.sum(o.store) < o.storeCapacity) {
                 return true;
             }
         }
@@ -34,7 +34,7 @@ mod.nextTarget = function() {
             return creep.pos.findClosestByRange(FIND_STRUCTURES, {
                 filter: function(o) {
                     if(o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE) {
-                        if(o.store[RESOURCE_ENERGY] < o.storeCapacity) {
+                        if(_.sum(o.store) < o.storeCapacity) {
                             return _.indexOf(nearSourceContainerIds, o.id) == -1; //Not near source
                         }
                     }
