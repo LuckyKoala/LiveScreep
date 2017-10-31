@@ -3,19 +3,11 @@
 var mod = {};
 module.exports = mod;
 
-//const factor = 1;
-//const sourceGeneratePerTick = 2 * (SOURCE_ENERGY_CAPACITY / ENERGY_REGEN_TIME); //Currently 10
-
-//TODO limit max part number
-//TODO not only limit by num, should also consider body part
 mod.loop = function(room, cnt) {
     var spawns = _.filter(Game.spawns, function(spawn) { return spawn.room == room; });
     this.spawn = spawns[0];
     this.energyAvailable = room.energyAvailable;
     
-    Util.Stat.memorize('last-energyAvailable', this.energyAvailable);
-    
-    //Precise population control
     if(cnt.havester < 2) {
         this.spawnHarvester();
         return;

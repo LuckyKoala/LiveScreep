@@ -3,7 +3,7 @@ var mod = {};
 module.exports = mod;
 
 mod.loop = function() {
-    //Do nothing
+    this.forgetAll(); //GC first
 }
 
 /**
@@ -26,5 +26,9 @@ mod.forgetCreep = function(creepName) {
 
 //Count
 mod.memorize = function(key, entry) {
-    _.set(Memory, ['stat', 'custom', key], entry);
+    _.set(Memory, ['stat', 'last', key], entry);
+}
+
+mod.forgetAll = function() {
+    delete Memory.stat.last;
 }

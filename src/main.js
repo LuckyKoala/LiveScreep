@@ -14,6 +14,7 @@ mod.loop = function () {
 
     Util.GC.loop();
     Util.Mark.loop();
+    Util.Stat.loop();
 
     var cnt = {
         total: 0,
