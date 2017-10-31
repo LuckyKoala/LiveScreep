@@ -3,7 +3,7 @@ module.exports = mod;
 
 mod.roleConfig = {
     inStack: [Action.Withdraw, Action.Pickup],
-    outStack: [Action.Feed, Action.Fuel],
+    outStack: [Action.Feed, Action.Fuel, Action.Put],
 };
 
 mod.loop = function(creep) {
