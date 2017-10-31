@@ -6,6 +6,9 @@ module.exports = mod;
 mod.loop = function(room, cnt, needExtraHarvester) {
     var spawns = _.filter(Game.spawns, function(spawn) { return spawn.room == room; });
     this.spawn = spawns[0];
+
+    if(!!this.spawn.spawning) return; //Busy
+
     this.energyAvailable = room.energyAvailable;
     this.room = room;
     
@@ -52,23 +55,23 @@ mod.loop = function(room, cnt, needExtraHarvester) {
 mod.spawnHarvester = function(minimum = false) {
     const essBody = [WORK, CARRY, MOVE];
     const extraBody = [WORK, WORK, MOVE];
-    const prefix = '[Ha]';
+    const prefix = '[Harvester]';
     const memory = {role: 'harvester'};
     this.spawn0(essBody, extraBody, minimum, prefix, memory);
 };
 
 mod.spawnHauler = function(minimum = false) {
-    const essBody = [CARRY, MOVE];
+    const essBody = [WORK, CARRY, MOVE]; //One work to maintain container
     const extraBody = [CARRY, CARRY, MOVE];
-    const prefix = '[Ha]';
+    const prefix = '[Hauler]';
     const memory = {role: 'hauler'};
     this.spawn0(essBody, extraBody, minimum, prefix, memory);
 };
 
 mod.spawnUpgrader = function(minimum = false) {
     const essBody = [WORK, CARRY, MOVE];
-    const extraBody = [WORK, WORK, CARRY, MOVE, MOVE];
-    const prefix = '[Up]';
+    const extraBody = [WORK, WORK, MOVE];
+    const prefix = '[Upgrader]';
     const memory = {role: 'upgrader'};
     this.spawn0(essBody, extraBody, minimum, prefix, memory);
 };
@@ -76,7 +79,7 @@ mod.spawnUpgrader = function(minimum = false) {
 mod.spawnBuilder = function(minimum = false) {
     const essBody = [WORK, CARRY, MOVE];
     const extraBody = [WORK, CARRY, MOVE];
-    const prefix = '[Bu]';
+    const prefix = '[Builder]';
     const memory = {role: 'builder'};
     this.spawn0(essBody, extraBody, minimum, prefix, memory);
 };
@@ -85,7 +88,7 @@ mod.spawnGuardian = function(minimum = false) {
     if(!Util.War.shouldSpawnGuardian(this.room)) return;
     const essBody = [ATTACK, MOVE];
     const extraBody = [ATTACK, TOUGH, MOVE];
-    const prefix = '[Gu]';
+    const prefix = '[Guardian]';
     const memory = {role: 'guardian'};
     this.spawn0(essBody, extraBody, minimum, prefix, memory);
 };
