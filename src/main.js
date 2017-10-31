@@ -6,6 +6,7 @@ var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 
 const CARRY_TO_ENERGY_POWER = 1; //hardcode
+const MAXIUM_ENERGY_GENERATE_PER_TICK = 2*SOURCE_ENERGY_CAPACITY/ENERGY_REGEN_TIME; //Currently 20
 
 var mod = {};
 module.exports = mod;
@@ -55,11 +56,14 @@ mod.loop = function () {
     Util.Stat.memorize('last-energyInPerTick', energyInPerTick);
     Util.Stat.memorize('last-energyOutPerTick', energyOutPerTick);
     Util.Stat.memorize('last-creeps-cnt', cnt);
+
+    const needExtraHarvester = energyInPerTick < energyOutPerTick 
+                       && energyInPerTick < MAXIUM_ENERGY_GENERATE_PER_TICK;
     
     //FIXME cnt is not pair with every room
     var entry = {};
     _.forEach(Game.rooms, function(room) {
-        Util.Spawner.loop(room, cnt);
+        Util.Spawner.loop(room, cnt, needExtraHarvester);
         Util.Tower.loop(room);
         entry[room.name] = room.energyAvailable;
     });

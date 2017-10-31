@@ -3,7 +3,7 @@
 var mod = {};
 module.exports = mod;
 
-mod.loop = function(room, cnt) {
+mod.loop = function(room, cnt, needExtraHarvester) {
     var spawns = _.filter(Game.spawns, function(spawn) { return spawn.room == room; });
     this.spawn = spawns[0];
     this.energyAvailable = room.energyAvailable;
@@ -31,6 +31,15 @@ mod.loop = function(room, cnt) {
         this.spawnUpgrader();
         return;
     } 
+
+    //Spawn extra harvester
+    //It can decrease the possiblity of source being not taken 
+    //  and the possiblity of source container decay to nothing
+    //  which may also lead to lacking of energy of tower.
+    if(cnt.harvester < 3 && needExtraHarvester) {
+        this.spawnHarvester();
+        return;
+    }
     
     var targets = room.find(FIND_CONSTRUCTION_SITES);
     if(targets.length && cnt.builder < 1) {
@@ -47,28 +56,28 @@ mod.spawnHarvester = function(minimum = false) {
     this.spawn0(essBody, extraBody, minimum, names, {role: 'harvester'});
 };
 
-mod.spawnHauler = function(minimum) {
+mod.spawnHauler = function(minimum = false) {
     var essBody = [CARRY, MOVE];
     var extraBody = [CARRY, CARRY, MOVE];
     var names = ['[Ha]Gold','[Ha]Iron'];
     this.spawn0(essBody, extraBody, minimum, names, {role: 'hauler'});
 };
 
-mod.spawnUpgrader = function(minimum) {
+mod.spawnUpgrader = function(minimum = false) {
     var essBody = [WORK, CARRY, MOVE];
     var extraBody = [WORK, WORK, CARRY, MOVE, MOVE];
     var names = ['[U]Dog','[U]Cat','[U]Meow','[U]Mummy','[U]Ass','[U]God']
     this.spawn0(essBody, extraBody, minimum, names, {role: 'upgrader'});
 };
 
-mod.spawnBuilder = function(minimum) {
+mod.spawnBuilder = function(minimum = false) {
     var essBody = [WORK, CARRY, MOVE];
     var extraBody = [WORK, CARRY, MOVE];
     var names = ['[B]Amd','[B]Lucky','[B]Gentleman'];
     this.spawn0(essBody, extraBody, minimum, names, {role: 'builder'});
 };
 
-mod.spawnGuardian = function(minimum) {
+mod.spawnGuardian = function(minimum = false) {
     if(!Util.War.shouldSpawnGuardian(this.room)) return;
     var essBody = [ATTACK, MOVE];
     var extraBody = [ATTACK, TOUGH, MOVE];
