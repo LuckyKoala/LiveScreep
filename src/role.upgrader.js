@@ -16,5 +16,5 @@ mod.loop = function(creep) {
         creep.say('⚡ upgrade');
     }
 
-    this.loop0(creep, creep.memory.upgrading);
+    this.loop0(creep, !!creep.memory.upgrading);
 };
