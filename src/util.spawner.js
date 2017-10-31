@@ -7,6 +7,7 @@ mod.loop = function(room, cnt) {
     var spawns = _.filter(Game.spawns, function(spawn) { return spawn.room == room; });
     this.spawn = spawns[0];
     this.energyAvailable = room.energyAvailable;
+    this.room = room;
     
     if(cnt.havester < 2) {
         this.spawnHarvester();
@@ -68,6 +69,7 @@ mod.spawnBuilder = function(minimum) {
 };
 
 mod.spawnGuardian = function(minimum) {
+    if(!Util.War.shouldSpawnGuardian()) return;
     var essBody = [ATTACK, MOVE];
     var extraBody = [ATTACK, TOUGH, MOVE];
     var names = ['[G]Maze','[B]Bug'];

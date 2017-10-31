@@ -3,15 +3,7 @@ module.exports = mod;
 
 mod.nextTarget = function() {
     var creep = this.creep;
-    const hostiles = creep.room.find(FIND_HOSTILE_CREEPS);
-    const hostileMap = _.map(hostiles, function(o) {
-        return {
-            threat: Util.War.getThreatValue(o.body),
-            range: creep.pos.getRangeTo(o),
-            id: o.id,
-        }
-    });
-    const sortHostiles = _.sortBy(hostileMap, ['threat', 'range', 'id']);
+    const sortHostiles = Util.War.getgetSortedHostiles(creep);
     if(sortHostiles.length) {
         return Game.getObjectById(_.last(sortHostiles).id);
     } else {

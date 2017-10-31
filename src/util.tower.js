@@ -10,6 +10,7 @@ mod.loop = function(room) {
                 structure.energy > 10;
         }
     });
+    this.towers = towers;
     _.forEach(towers, function(tower) {
         //Kill invader
         var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
