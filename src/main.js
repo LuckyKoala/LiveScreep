@@ -1,10 +1,6 @@
 var _global = require('global');
 var _extension = require('extension');
 
-var roleHarvester = require('role.harvester');
-var roleUpgrader = require('role.upgrader');
-var roleBuilder = require('role.builder');
-
 const CARRY_TO_ENERGY_POWER = 1; //hardcode
 const MAXIUM_ENERGY_GENERATE_PER_TICK = 2*SOURCE_ENERGY_CAPACITY/ENERGY_REGEN_TIME; //Currently 20
 
