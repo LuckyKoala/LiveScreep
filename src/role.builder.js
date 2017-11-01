@@ -1,10 +1,18 @@
 var mod = new RoleObj('Builder');
 module.exports = mod;
 
+mod.Setup = {
+    essBody: [WORK, CARRY, MOVE],
+    extraBody: [WORK, CARRY, MOVE],
+    prefix: '[Builder]',
+	memory: {role: 'builder'},
+};
+
 mod.roleConfig = {
     inStack: [Action.Withdraw, Action.Pickup],
     outStack: [Action.Build],
 };
+
 mod.loop = function(creep) {
 	if(creep.memory.building && creep.carry.energy == 0) {
 		creep.memory.building = false;

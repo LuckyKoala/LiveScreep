@@ -13,6 +13,7 @@ global.Action = {
     Drop: require('action.drop'),
 };
 global.Role = {
+    Worker: require('role.worker'),
     Harvester: require('role.harvester'),
     Upgrader: require('role.upgrader'),
     Builder: require('role.builder'),

@@ -1,6 +1,13 @@
 var mod = new RoleObj('Hauler');
 module.exports = mod;
 
+mod.Setup = {
+    essBody: [WORK, CARRY, MOVE],
+    extraBody: [CARRY, CARRY, MOVE],
+    prefix: '[Hauler]',
+    memory: {role: 'hauler'},
+};
+
 mod.roleConfig = {
     inStack: [Action.Withdraw, Action.Pickup],
     outStack: [Action.Feed, Action.Fuel, Action.Put],

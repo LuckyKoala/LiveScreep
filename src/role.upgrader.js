@@ -1,6 +1,13 @@
 var mod = new RoleObj('Upgrader');
 module.exports = mod;
 
+mod.Setup = {
+    essBody: [WORK, CARRY, MOVE],
+    extraBody: [WORK, WORK, MOVE],
+    prefix: '[Upgrader]',
+    memory: {role: 'upgrader'},
+};
+
 mod.roleConfig = {
     inStack: [Action.Withdraw, Action.Pickup],
     outStack: [Action.Upgrade],

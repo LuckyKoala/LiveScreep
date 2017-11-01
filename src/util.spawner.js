@@ -52,48 +52,43 @@ mod.loop = function(room, cnt, needExtraHarvester) {
     }
 };
 
-mod.spawnHarvester = function(minimum = false) {
-    const essBody = [WORK, CARRY, MOVE];
-    const extraBody = [WORK, WORK, MOVE];
-    const prefix = '[Harvester]';
-    const memory = {role: 'harvester'};
-    this.spawn0(essBody, extraBody, minimum, prefix, memory);
+mod.spawnWorker = function(minimum = false) {
+    this.spawnWithSetup(Role.Worker.Setup, minimum);
 };
 
+mod.spawnHarvester = function(minimum = false) {
+    this.spawnWithSetup(Role.Harvester.Setup, minimum);
+}
+
 mod.spawnHauler = function(minimum = false) {
-    const essBody = [WORK, CARRY, MOVE]; //One work to maintain container
-    const extraBody = [CARRY, CARRY, MOVE];
-    const prefix = '[Hauler]';
-    const memory = {role: 'hauler'};
-    this.spawn0(essBody, extraBody, minimum, prefix, memory);
+    this.spawnWithSetup(Role.Hauler.Setup, minimum);
 };
 
 mod.spawnUpgrader = function(minimum = false) {
-    const essBody = [WORK, CARRY, MOVE];
-    const extraBody = [WORK, WORK, MOVE];
-    const prefix = '[Upgrader]';
-    const memory = {role: 'upgrader'};
-    this.spawn0(essBody, extraBody, minimum, prefix, memory);
+    this.spawnWithSetup(Role.Upgrader.Setup, minimum);
 };
 
 mod.spawnBuilder = function(minimum = false) {
-    const essBody = [WORK, CARRY, MOVE];
-    const extraBody = [WORK, CARRY, MOVE];
-    const prefix = '[Builder]';
-    const memory = {role: 'builder'};
-    this.spawn0(essBody, extraBody, minimum, prefix, memory);
+    this.spawnWithSetup(Role.Builder.Setup, minimum);
 };
 
 mod.spawnGuardian = function(minimum = false) {
     if(!Util.War.shouldSpawnGuardian(this.room)) return;
-    const essBody = [ATTACK, MOVE];
-    const extraBody = [ATTACK, TOUGH, MOVE];
-    const prefix = '[Guardian]';
-    const memory = {role: 'guardian'};
-    this.spawn0(essBody, extraBody, minimum, prefix, memory);
+    this.spawnWithSetup(Role.Guardian.Setup, minimum);
 };
 
-mod.spawn0 = function(essBody, extraBody, minimum, prefix, memory) {
+/*
+let myFunc = function({x,y,z}) {
+    console.log(x,y,z);
+};
+
+myFunc({x:10,y:20,z:30});
+ */
+mod.spawnWithSetup = function({essBody, extraBody, prefix, memory}, minimum) {
+    this.spawn0(essBody, extraBody, prefix, memory, minimum);
+}
+
+mod.spawn0 = function(essBody, extraBody, prefix, memory, minimum) {
     //Calculate body and examine whether energyAvailable is enough
     const body = minimum ? essBody : this.getMaxiumBody(essBody, extraBody);
     const bodyCost = this.getBodyCost(body);
@@ -109,7 +104,9 @@ mod.spawn0 = function(essBody, extraBody, minimum, prefix, memory) {
 
 mod.getMaxiumBody = function(essBody, extraBody) {
     var essCost = this.getBodyCost(essBody);
-    var extraCost = this.getBodyCost(extraBody); 
+    var extraCost = this.getBodyCost(extraBody);
+    if(extraCost===0) return essBody;
+
     var extraAmount = _.floor((this.energyAvailable - essCost) / extraCost);
     var body = essBody;
     for(var i=0; i<extraAmount; i++) {

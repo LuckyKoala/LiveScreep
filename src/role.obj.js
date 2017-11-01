@@ -23,7 +23,7 @@ var mod = function(name) {
     //Default behaviour, can be override
     this.loop = function(creep) {
         //Check active carry part
-        var useOut = creep.getActiveBodyparts(CARRY) == 0 ? false : creep.carry.energy >= creep.carryCapacity;
+        var useOut = creep.getActiveBodyparts(CARRY) == 0 ? false : creep.carry.energy == creep.carryCapacity;
         this.loop0(creep, useOut);
     };
 };
