@@ -24,16 +24,10 @@ mod.nextTarget = function() {
     if(role == 'upgrader') {
         //Near controller container/storage
         targets =  nearControllerContainers;
-        //If there is no any available container/storage nearby, go find others!
-        if(targets.length == 0) {
-            return creep.pos.findClosestByRange(FIND_STRUCTURES, {
-                filter: findEnoughContainer
-            });
-        } else {
-            return targets[0];
-        }
-    } else {
-        //Other roles shouldn't withdraw energy from container/storage which is near controller
+        //Should not let upgrader to retrieve energy itself 
+        return targets.length == 0 ? false : targets[0];
+    } else if(role == 'hauler') {
+        //Hauler shouldn't withdraw energy from container/storage which is near controller
         return creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: function(o) { 
                 if(o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE) {
@@ -44,6 +38,10 @@ mod.nextTarget = function() {
                 }
                 return false;
             }
+        });
+    } else {
+        return creep.pos.findClosestByRange(FIND_STRUCTURES, {
+            filter: findEnoughContainer
         });
     }
 };

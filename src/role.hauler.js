@@ -2,7 +2,7 @@ var mod = new RoleObj('Hauler');
 module.exports = mod;
 
 mod.Setup = {
-    essBody: [WORK, CARRY, MOVE],
+    essBody: [WORK, CARRY, CARRY, CARRY, MOVE, MOVE],
     extraBody: [CARRY, CARRY, MOVE],
     prefix: '[Hauler]',
     memory: {role: 'hauler'},

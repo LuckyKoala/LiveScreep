@@ -5,12 +5,8 @@ module.exports = mod;
 const ConstructureMaintainThreshold = {
     container: 80000, //80K
 };
-const EnergyForDefend = 300;
-const RequireEnergyAmount = 500;
-
-mod.getRequireEnergyAmount = function() {
-    return RequireEnergyAmount;
-} 
+mod.EnergyForDefend = 300;
+mod.RequireEnergyAmount = 500;
 
 mod.loop = function(room) {
     //Check whether energy available is enough for next action
@@ -28,7 +24,7 @@ mod.loop = function(room) {
             tower.attack(closestHostile);
             return;
         }
-        if(tower.energy <= EnergyForDefend) return; //Save energy for defend 
+        if(tower.energy <= this.EnergyForDefend) return; //Save energy for defend 
         //Heal creep
         var closestInjuredCreep = tower.pos.findClosestByRange(FIND_MY_CREEPS, {
             filter: (creep) => creep.hits < creep.hitsMax

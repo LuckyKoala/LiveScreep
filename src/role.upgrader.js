@@ -2,7 +2,7 @@ var mod = new RoleObj('Upgrader');
 module.exports = mod;
 
 mod.Setup = {
-    essBody: [WORK, CARRY, MOVE],
+    essBody: [WORK, WORK, CARRY, MOVE],
     extraBody: [WORK, WORK, MOVE],
     prefix: '[Upgrader]',
     memory: {role: 'upgrader'},

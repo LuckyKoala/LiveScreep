@@ -5,7 +5,7 @@ mod.nextTarget = function() {
     return this.creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
         filter: (structure) => {
             return (structure.structureType == STRUCTURE_TOWER) &&
-                structure.energy < Util.Tower.getRequireEnergyAmount(); 
+                structure.energy < Util.Tower.RequireEnergyAmount; 
         }
     });
 };

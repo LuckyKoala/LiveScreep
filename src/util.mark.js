@@ -34,7 +34,7 @@ mod.getMarkTarget = function(creep) {
  * {
  *   available: {
  *     spots: 3, //Near available pos count
- *     parts: 6, //For 6 work max
+ *     parts: 5, //For 5 work max
  *   },
  *   status: {
  *     %creepName%: %creepMarkParts%,
@@ -46,14 +46,14 @@ mod.getMarkTarget = function(creep) {
  *   target: %id%,
  * }
  */
-const sourcePartsDefault = 6; //Hardcode
+const SourcePartsDefault = SOURCE_ENERGY_CAPACITY/ENERGY_REGEN_TIME/HARVEST_POWER; 
 
 mod.initSourceMark = function(source) {
     //FIXME only for normal room
     source.memory.mark = {
         available: {
             spots: source.accessibleFields, 
-            parts: sourcePartsDefault, 
+            parts: SourcePartsDefault, 
         },
         status: {},
     }
@@ -72,9 +72,10 @@ mod.findAndMarkSource = function(creep) {
         var source = sources[i];
         if(source && this.isSourceAvailable(creep, source)) {
             this.markSource(creep, source);
-            break;
+            return true;
         }
     }
+    return false;
 }
 
 mod.markSource = function(creep, source) {

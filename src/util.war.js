@@ -27,20 +27,18 @@ mod.getThreatValue = function(body) {
 };
 
 mod.getCurrentThreatValue = function(room) {
-    const outer = this;
+    const self = this;
     const hostiles = room.find(FIND_HOSTILE_CREEPS);
     
-    return _.sum(_.map(hostiles, function(o) {
-        return outer.getThreatValue(o.body)
-    })); //sumBy
+    return _.sum(_.map(hostiles, o => self.getThreatValue(o.body))); //sumBy
 }
 
 mod.getSortedHostiles = function(creep) {
     const hostiles = room.find(FIND_HOSTILE_CREEPS);
-    const outer = this;
+    const self = this;
     const hostileMap = _.map(hostiles, function(o) {
         return {
-            threat: outer.getThreatValue(o.body),
+            threat: self.getThreatValue(o.body),
             range: creep.pos.getRangeTo(o),
             id: o.id,
         }
@@ -53,10 +51,10 @@ mod.shouldSpawnGuardian = function(room) {
     var towers = room.find(FIND_MY_STRUCTURES, {
         filter: (structure) => {
             return (structure.structureType == STRUCTURE_TOWER) &&
-                structure.energy > 200;
+                structure.energy > Util.War.EnergyForDefend;
         }
     });
     var currentThreatValue = this.getCurrentThreatValue(room);
     //Spawn only if tower have no energy and threat is not 0
-    return towers.length < 0 && currentThreatValue > 0; 
+    return towers.length == 0 && currentThreatValue > 0; 
 }
