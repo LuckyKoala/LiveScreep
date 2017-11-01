@@ -30,5 +30,5 @@ mod.memorize = function(key, entry) {
 }
 
 mod.forgetAll = function() {
-    delete Memory.stat.last;
+    if(Memory.stat) delete Memory.stat.last;
 }

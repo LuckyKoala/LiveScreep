@@ -6,11 +6,11 @@ module.exports = mod;
 mod.loop = function(room, cnt, needExtraHarvester) {
     var spawns = _.filter(Game.spawns, function(spawn) { return spawn.room == room; });
     this.spawn = spawns[0];
-
-    if(!!this.spawn.spawning) return; //Busy
-
+    if(!!this.spawn.spawning) return; //Return if spawn is busy.
     this.energyAvailable = room.energyAvailable;
     this.room = room;
+
+    //=====Check state=====
     
     if(cnt.harvester < 2) {
         this.spawnHarvester();
