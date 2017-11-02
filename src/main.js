@@ -4,11 +4,11 @@ var _extension = require('extension');
 var mod = {};
 module.exports = mod;
 mod.loop = function () {
-    Util.Stat.memorize('last-cpu-used-for-parse', Game.cpu.getUsed());
     //Validate and clear data
     Util.GC.loop();
     Util.Mark.loop();
     Util.Stat.loop();
+    Util.Stat.memorize('last-cpu-used-for-parse-and-clear', Game.cpu.getUsed());
     //Run creeps
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
