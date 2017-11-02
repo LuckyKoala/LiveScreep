@@ -11,8 +11,9 @@ mod.Setup = {
         memory: {role: 'hauler'},
     },
     Normal: {
-        minEnergy: 350,
-        essBody: [WORK, CARRY, CARRY, CARRY, MOVE, MOVE],
+        minEnergy: 300,
+        //essBody: [WORK, CARRY, CARRY, CARRY, MOVE, MOVE],
+        essBody: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE],
         extraBody: [CARRY, CARRY, MOVE],
         prefix: '[Hauler]',
         memory: {role: 'hauler'},
