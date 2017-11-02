@@ -2,7 +2,7 @@ let mod = new ActionObj('Feed');
 module.exports = mod;
 
 mod.nextTarget = function() {
-    return Util.Mark.handleMark(creep, creep => {
+    return Util.Mark.handleMark(this.creep, creep => {
         return creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
             filter: (structure) => {
                 return (structure.structureType == STRUCTURE_TOWER) &&
