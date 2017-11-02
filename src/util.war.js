@@ -34,7 +34,7 @@ mod.getCurrentThreatValue = function(room) {
 }
 
 mod.getSortedHostiles = function(creep) {
-    const hostiles = room.find(FIND_HOSTILE_CREEPS);
+    const hostiles = creep.room.find(FIND_HOSTILE_CREEPS);
     const self = this;
     const hostileMap = _.map(hostiles, function(o) {
         return {
@@ -45,7 +45,7 @@ mod.getSortedHostiles = function(creep) {
     });
     return _.sortBy(hostileMap, ['threat', 'range', 'id']);
 }
-
+//TODO Calculate suitable body parts for spawner to spawn guardian
 mod.shouldSpawnGuardian = function(room) {
     //TODO Count tower
     var towers = room.find(FIND_MY_STRUCTURES, {

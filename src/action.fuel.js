@@ -2,18 +2,23 @@ let mod = new ActionObj('Feed');
 module.exports = mod;
 
 mod.nextTarget = function() {
-    return this.creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-        filter: (structure) => {
-            return (structure.structureType == STRUCTURE_TOWER) &&
-                structure.energy < Util.Tower.RequireEnergyAmount; 
-        }
-    });
+    return Util.Mark.handleMark(creep, creep => {
+        return creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+            filter: (structure) => {
+                return (structure.structureType == STRUCTURE_TOWER) &&
+                    structure.energy < Util.Tower.RequireEnergyAmount; 
+            }
+        });
+    }, this.actionName);
 };
 
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
-        if(creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        const result = creep.transfer(target, RESOURCE_ENERGY);
+        if(result == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+        } else if(result == OK) {
+            Util.Mark.unmarkTarget(creep, this.actionName);
         }
     });
 };

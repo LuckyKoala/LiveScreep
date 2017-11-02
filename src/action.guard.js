@@ -2,13 +2,11 @@ let mod = new ActionObj('Guard');
 module.exports = mod;
 
 mod.nextTarget = function() {
-    var creep = this.creep;
-    const sortHostiles = Util.War.getgetSortedHostiles(creep);
-    if(sortHostiles.length) {
-        return Game.getObjectById(_.last(sortHostiles).id);
-    } else {
-        return false;
-    }
+    return Util.Mark.handleMark(this.creep, creep => {
+        const sortHostiles = Util.War.getSortedHostiles(creep);
+        return sortHostiles.length ?
+        　　Game.getObjectById(_.last(sortHostiles).id) : false;
+    }, this.actionName);
 };
 
 mod.loop = function(creep) {
@@ -16,5 +14,6 @@ mod.loop = function(creep) {
         if(creep.attack(target) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
         }
+        //TODO maybe destory all the attack part and then change target?
     });
 };

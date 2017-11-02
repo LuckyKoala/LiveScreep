@@ -1,8 +1,7 @@
 let mod = new ActionObj('Withdraw');
 module.exports = mod;
 //Should mark
-mod.nextTarget = function() {
-    const creep = this.creep;
+const targetInitFunc = function(creep) {
     const role = creep.memory.role;
     const findSuitableContainer = function(o) { 
         if(o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE) {
@@ -35,10 +34,17 @@ mod.nextTarget = function() {
     }
 };
 
+mod.nextTarget = function() {
+    return Util.Mark.handleMark(this.creep, targetInitFunc, this.actionName);
+};
+
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
-        if(creep.withdraw(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        const result = creep.withdraw(target, RESOURCE_ENERGY);
+        if(result == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
+        } else if(result == OK) {
+            Util.Mark.unmarkTarget(creep, this.actionName);
         }
     });
 };
