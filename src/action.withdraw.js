@@ -1,6 +1,7 @@
 let mod = new ActionObj('Withdraw');
 module.exports = mod;
 //Haul energy from container
+//Should mark
 mod.nextTarget = function() {
     const creep = this.creep;
     const role = creep.memory.role;

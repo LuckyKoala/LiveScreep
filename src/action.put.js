@@ -1,6 +1,9 @@
 let mod = new ActionObj('Put');
 module.exports = mod;
 
+//TODO diff put target to two module
+//  one for store energy whose priority is low
+//  one for put energy to container which is using by upgrader whose priority is normal
 mod.nextTarget = function() {
     const creep = this.creep;
     const role = creep.memory.role;

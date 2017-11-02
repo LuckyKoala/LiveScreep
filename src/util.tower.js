@@ -6,7 +6,13 @@ const ConstructureMaintainThreshold = {
     container: 80000, //80K
 };
 mod.EnergyForDefend = 300;
-mod.RequireEnergyAmount = 500;
+const RequireEnergyToal = 500;
+
+//FIXME Go use oop or else 'this' can be wrong reference!
+mod.getCurrentEnergyRequiredForEachTower = function(room) {
+    if(this.towers.length == 0) return 0;
+    return RequireEnergyToal/this.towers.length;
+}
 
 mod.loop = function(room) {
     //Check whether energy available is enough for next action
