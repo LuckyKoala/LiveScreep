@@ -15,4 +15,5 @@ mod.loop = function() {
             console.log('Clearing non-existing structure memory: ', id);
         }
     }
+    //Consider do gc for Memory.rooms
 }

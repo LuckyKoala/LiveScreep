@@ -12,7 +12,7 @@ mod.nextTarget = function() {
         markSource = Util.Mark.getMarkSource(creep);
     }
 
-    return markSource || false;
+    return markSource;
 };
 
 mod.loop = function(creep) {

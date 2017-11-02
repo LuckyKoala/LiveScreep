@@ -3,12 +3,12 @@ module.exports = mod;
 
 //TODO diff put target to two module
 //  one for store energy whose priority is low
-//  one for put energy to container which is using by upgrader whose priority is normal
+//  one for put energy to controller container 
+//    which is using by upgrader whose priority is normal
 mod.nextTarget = function() {
     const creep = this.creep;
     const role = creep.memory.role;
-    var targets;
-    const findNotFullContainer = function(o) {
+    const findSuitableContainer = function(o) {
         if(o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE) {
             if(_.sum(o.store) < o.storeCapacity) {
                 return true;
@@ -16,37 +16,27 @@ mod.nextTarget = function() {
         }
         return false;
     };
-    const nearSourceContainers = creep.pos.findInRange(FIND_STRUCTURES, 2, {
-        filter: findNotFullContainer
-    });
-    const nearSourceContainerIds = _.map(nearSourceContainers, function(o) {
-        return o.id;
+    const suitableContainers = creep.room.find(FIND_STRUCTURES, {
+        filter: findSuitableContainer
     });
     
     if(role == 'harvester') {
-        //Near source container/storage
-        return nearSourceContainers[0];
+        var markSource = Util.Mark.getMarkSource(creep);
+        return markSource ? markSource.container : false;
     } else {
-        //Find near controller container/storage first
-        targets = creep.room.controller.pos.findInRange(FIND_STRUCTURES, 5, {
-            filter: findNotFullContainer
-        });
-        //Then find others
-        //Other roles shouldn't put energy to container/storage which is near source
-        if(targets.length == 0) {
-            return creep.pos.findClosestByRange(FIND_STRUCTURES, {
-                filter: function(o) {
-                    if(o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE) {
-                        if(_.sum(o.store) < o.storeCapacity) {
-                            return _.indexOf(nearSourceContainerIds, o.id) == -1; //Not near source
-                        }
-                    }
-                    return false;
-                }
-            });
-        } else {
-            return targets[0];
+        const sourceContainers = [];
+        for(var id in Memory.sources) {
+            const source = Game.getObjectById(id);
+            if(source && source.container) {
+                sourceContainers.push(source.container);
+            }
         }
+        var targets = suitableContainers;
+        if(sourceContainers.length) {
+            const sourceContainerIds = _.map(sourceContainers, o => o.id);
+            targets = _.filter(targets, o => _.indexOf(sourceContainerIds, o.id) == -1);
+        } 
+        return creep.pos.findClosestByRange(targets);
     } 
 };
 //Override
