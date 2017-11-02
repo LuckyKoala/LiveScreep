@@ -135,6 +135,7 @@ mod.spawnWithSetup = function(setupObj) {
     console.log('ResultCode['+result+'] for Spawning '+name+" whose cost is "+bodyCost);
 }
 
+const bodyMaxium = 50; //Creep Body Part Maxium Amount
 mod.getMaxiumBody = function(essBody, extraBody, maxExtraAmount) {
     var essCost = this.getBodyCost(essBody);
     var extraCost = this.getBodyCost(extraBody);
@@ -142,6 +143,9 @@ mod.getMaxiumBody = function(essBody, extraBody, maxExtraAmount) {
 
     var extraAmount = _.floor((this.energyAvailable - essCost) / extraCost);
     if(!!maxExtraAmount && extraAmount>maxExtraAmount) extraAmount = maxExtraAmount;
+    const remainAmount = _.floor((bodyMaxium-essBody.length) / extraBody.length);
+    if(extraAmount > remainAmount) extraAmount = remainAmount;
+
     var body = essBody;
     for(var i=0; i<extraAmount; i++) {
         body.push(extraBody);
