@@ -11,6 +11,8 @@ global.Action = {
     Guard: require('action.guard'),
     Pickup: require('action.pickup'),
     Drop: require('action.drop'),
+    Maintain: require('action.maintain'),
+    Repair: require('action.repair'),
 };
 global.Role = {
     Worker: require('role.worker'),

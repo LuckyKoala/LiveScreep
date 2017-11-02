@@ -1,6 +1,7 @@
 var mod = new RoleObj('Worker');
 module.exports = mod;
 
+//TODO low/normal
 mod.Setup = {
     essBody: [WORK, CARRY, MOVE],
     extraBody: [WORK, CARRY, MOVE],

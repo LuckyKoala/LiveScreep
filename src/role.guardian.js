@@ -2,10 +2,13 @@ var mod = new RoleObj('Guardian');
 module.exports = mod;
 
 mod.Setup = {
-    essBody: [ATTACK, MOVE],
-    extraBody: [ATTACK, TOUGH, MOVE],
-    prefix: '[Guardian]',
-    memory: {role: 'guardian'},
+    Normal: {
+        minEnergy: 130,
+        essBody: [ATTACK, MOVE],
+        extraBody: [ATTACK, TOUGH, MOVE],
+        prefix: '[Guardian]',
+        memory: {role: 'guardian'},
+    },
 };
 
 mod.roleConfig = {

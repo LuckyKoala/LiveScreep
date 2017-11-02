@@ -2,10 +2,21 @@ var mod = new RoleObj('Hauler');
 module.exports = mod;
 
 mod.Setup = {
-    essBody: [WORK, CARRY, CARRY, CARRY, MOVE, MOVE],
-    extraBody: [CARRY, CARRY, MOVE],
-    prefix: '[Hauler]',
-    memory: {role: 'hauler'},
+    Low: {
+        minEnergy: 150,
+        essBody: [CARRY, CARRY, MOVE],
+        extraBody: [CARRY, CARRY, MOVE],
+        maxExtraAmount: 2,
+        prefix: '[LowHauler]',
+        memory: {role: 'hauler'},
+    },
+    Normal: {
+        minEnergy: 350,
+        essBody: [WORK, CARRY, CARRY, CARRY, MOVE, MOVE],
+        extraBody: [CARRY, CARRY, MOVE],
+        prefix: '[Hauler]',
+        memory: {role: 'hauler'},
+    },
 };
 
 mod.roleConfig = {

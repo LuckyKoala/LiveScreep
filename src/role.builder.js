@@ -2,10 +2,13 @@ var mod = new RoleObj('Builder');
 module.exports = mod;
 
 mod.Setup = {
-    essBody: [WORK, CARRY, MOVE],
-    extraBody: [WORK, CARRY, MOVE],
-    prefix: '[Builder]',
-	memory: {role: 'builder'},
+    Normal: {
+		minEnergy: 300,
+		essBody: [WORK, CARRY, MOVE],
+		extraBody: [WORK, CARRY, MOVE],
+		prefix: '[Builder]',
+		memory: {role: 'builder'},
+	},
 };
 
 mod.roleConfig = {

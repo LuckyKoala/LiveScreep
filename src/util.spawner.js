@@ -65,8 +65,13 @@ mod.loop = function(room) {
                 cnt.guardian++;
             }
         }
-        //TODO Analysis data to decide max amount of each type ofcreeps instead of use hardcode 
+        //Log
+        Util.Stat.memorize('last-energyInPerTick', energyInPerTick);
+        Util.Stat.memorize('last-energyOutPerTick', energyOutPerTick);
+        //TODO Analysis data to decide max amount of each type of creeps instead of use hardcode 
         //  which is bad practise.
+        //TODO since we have limited max amount of each type of creeps, then we should also make
+        //  sure all existing creep is biggest or else we try spawn bigger creep to replace it.
         //First we need one Harvester and one Hauler at least, which make sure spawn have incoming energy
         if(cnt.harvester < 1) {
             this.spawnWithSetup(Role.Harvester.Setup);
@@ -109,7 +114,13 @@ let myFunc = function({x,y,z}) {
 
 myFunc({x:10,y:20,z:30});
  */
-mod.spawnWithSetup = function({essBody, extraBody, prefix, memory, maxExtraAmount}) {
+mod.spawnWithSetup = function(setupObj) {
+    var setup = setupObj.Normal;
+    //For low energy available
+    if(this.energyAvailable < setupObj.Normal.minEnergy && !!setupObj.Low) {
+        setup = setupObj.Low;
+    }
+    var {minEnergy, essBody, extraBody, prefix, memory, maxExtraAmount} = setup;
     //Calculate body and examine whether energyAvailable is enough
     const body = this.getMaxiumBody(essBody, extraBody, maxExtraAmount);
     const bodyCost = this.getBodyCost(body);
@@ -121,7 +132,7 @@ mod.spawnWithSetup = function({essBody, extraBody, prefix, memory, maxExtraAmoun
     const result = this.spawn.spawnCreep(body, name, {
         memory: memory,
     });
-    console.log('Code['+result+']Spawning '+name+" whose cost is "+bodyCost);
+    console.log('ResultCode['+result+'] for Spawning '+name+" whose cost is "+bodyCost);
 }
 
 mod.getMaxiumBody = function(essBody, extraBody, maxExtraAmount) {
