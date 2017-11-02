@@ -1,6 +1,9 @@
 let mod = new ActionObj('Put');
 module.exports = mod;
 
+//Warning: if you put more than one container near source,
+//  hauler will be in infinite loop of withdraw/transfer.
+
 //TODO diff put target to two module
 //  one for store energy whose priority is low
 //  one for put energy to controller container 
@@ -45,11 +48,11 @@ mod.nextTarget = function() {
 
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
-        //Maintain container first
+        //Maintain container first(Only for harvester which is stay still)
         //So result is creep will harvest -> repair util
         // container hits equal to hitsMax.
         
-        if(target.hits < target.hitsMax && creep.getActiveBodyparts(WORK) > 0) {
+        if(target.hits < target.hitsMax && creep.getActiveBodyparts(WORK) > 0 && creep.memory.role=='harvester') {
             creep.say('🚧 repair');
             if(creep.repair(target) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});

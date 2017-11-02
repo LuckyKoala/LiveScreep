@@ -73,7 +73,11 @@ Object.defineProperty(StructureController.prototype, 'container', {
                 }
             }
             const obj = Game.getObjectById(this.memory.containerId);
-            if(!obj) return false;
+            if(!obj) {
+                //Then we need to reset containerId since it is invalid.
+                this.memory.containerId = false;
+                return false;
+            }
             this._container = obj;
         }
         return this._container;
@@ -102,7 +106,11 @@ Object.defineProperty(Source.prototype, 'container', {
                 }
             }
             const obj = Game.getObjectById(this.memory.containerId);
-            if(!obj) return false;
+            if(!obj) {
+                //Then we need to reset containerId since it is invalid.
+                this.memory.containerId = false;
+                return false;
+            }
             this._container = obj;
         }
         return this._container;
