@@ -10,11 +10,8 @@ mod.loop = function(room) {
     const roomName = this.room.name;
     const roomCreeps = _.filter(Game.creeps, function(creep) { return creep.memory.homeRoom == roomName; });
     this.spawns = _.filter(Game.spawns, function(spawn) { return spawn.room.name == roomName; });
-    this.spawn = this.spawns[0]; //TODO each spawn can spawn creep individually
     this.energyAvailable = this.room.energyAvailable;
     this.rcl = this.room.controller.level;
-
-    if(!!this.spawn.spawning) return; //Return if spawn is busy.
 
     //TODO extract logic to setup.%role% module
     //=====Diff spawn strategy by current RCL=====
@@ -30,9 +27,13 @@ mod.loop = function(room) {
                 console.log('[Error] Find non-worker in low RCL room, name is '+name);
             }
         }
-        if(energyInPerTick < MAXIUM_ENERGY_GENERATE_PER_TICK * WORKER_FACTOR) {
-            this.spawnWithSetup(Role.Worker.Setup);
+        //Try all the spawn
+        var remain = this.spawns.length;
+        while(remain-- && energyInPerTick < MAXIUM_ENERGY_GENERATE_PER_TICK * WORKER_FACTOR) {
+            const newCreep = this.spawnWithSetup(Role.Worker.Setup);
+            if(newCreep) energyInPerTick += newCreep.getActiveBodyparts(WORK) * HARVEST_POWER;
         }
+
     } else {
         //All role is required
         var cnt = {
@@ -68,52 +69,50 @@ mod.loop = function(room) {
         //Log
         Util.Stat.memorize('last-energyInPerTick', energyInPerTick);
         Util.Stat.memorize('last-energyOutPerTick', energyOutPerTick);
-        //TODO Analysis data to decide max amount of each type of creeps instead of use hardcode 
-        //  which is bad practise.
-        //TODO since we have limited max amount of each type of creeps, then we should also make
-        //  sure all existing creep is biggest or else we try spawn bigger creep to replace it.
-        //First we need one Harvester and one Hauler at least, which make sure spawn have incoming energy
-        if(cnt.harvester < 1) {
-            this.spawnWithSetup(Role.Harvester.Setup);
-            return;
-        } 
-        if(cnt.hauler < 1) {
-            this.spawnWithSetup(Role.Hauler.Setup);
-            return;
+        //Try all the spawn
+        var remain = this.spawns.length;
+        while(remain--) {
+            //TODO Analysis data to decide max amount of each type of creeps instead of use hardcode
+            //  which is bad practise.
+            //TODO since we have limited max amount of each type of creeps, then we should also make
+            //  sure all existing creep is biggest or else we try spawn bigger creep to replace it.
+            //First we need one Harvester and one Hauler at least, which make sure spawn have incoming energy
+            if(cnt.harvester < 1) {
+                if(this.spawnWithSetup(Role.Harvester.Setup)) cnt.harvester++;
+                continue;
+            } 
+            if(cnt.hauler < 1) {
+                if(this.spawnWithSetup(Role.Hauler.Setup)) cnt.hauler++;
+                continue;
+            }
+            //Then spawn guardian if required
+            //TODO honour threat value
+            const hostiles = room.find(FIND_HOSTILE_CREEPS);
+            if(hostiles.length && Util.War.shouldSpawnGuardian(this.room) && cnt.guardian < 1) {
+                if(this.spawnWithSetup(Role.Guardian.Setup)) cnt.guardian++;
+                continue;
+            }
+            //Now we need enough harvester, currently 2 is enough for normal room
+            if(cnt.harvester < 2) {
+                if(this.spawnWithSetup(Role.Harvester.Setup)) cnt.harvester++;
+                continue;
+            }
+            //Then spawn upgrader
+            if(cnt.upgrader < 1) {
+                if(this.spawnWithSetup(Role.Upgrader.Setup, this.rcl == 8)) cnt.upgrader++;
+                continue;
+            }
+            //Then spawn builder if required
+            const targets = room.find(FIND_CONSTRUCTION_SITES);
+            if(targets.length && cnt.builder < 1) {
+                if(this.spawnWithSetup(Role.Builder.Setup)) cnt.builder++;
+                continue;
+            }
         }
-        //Then spawn guardian if required
-        //TODO honour threat value
-        const hostiles = room.find(FIND_HOSTILE_CREEPS);
-        if(hostiles.length && Util.War.shouldSpawnGuardian(this.room) && cnt.guardian < 1) {
-            this.spawnWithSetup(Role.Guardian.Setup);
-            return;
-        }
-        //Now we need enough harvester, currently 2 is enough for normal room
-        if(cnt.harvester < 2) {
-            this.spawnWithSetup(Role.Harvester.Setup);
-            return;
-        }
-        //Then spawn upgrader
-        if(cnt.upgrader < 1) {
-            this.spawnWithSetup(Role.Upgrader.Setup, this.rcl == 8);
-            return;
-        }
-        //Then spawn builder if required
-        const targets = room.find(FIND_CONSTRUCTION_SITES);
-        if(targets.length && cnt.builder < 1) {
-            this.spawnWithSetup(Role.Builder.Setup);
-            return;
-        }
+
     }
 };
 
-/*
-let myFunc = function({x,y,z}) {
-    console.log(x,y,z);
-};
-
-myFunc({x:10,y:20,z:30});
- */
 mod.spawnWithSetup = function(setupObj, useHighLevel=false) {
     var setup = useHighLevel ? setupObj.High : setupObj.Normal;
     //For low energy available
@@ -129,10 +128,14 @@ mod.spawnWithSetup = function(setupObj, useHighLevel=false) {
     //Calculate name
     const name = prefix+Game.time;
     memory['homeRoom'] = this.room.name;
-    const result = this.spawn.spawnCreep(body, name, {
+    //Get spawn
+    const spawn = this.spawns.shift();
+    const result = spawn.spawnCreep(body, name, {
         memory: memory,
     });
     console.log('ResultCode['+result+'] for Spawning '+name+" whose cost is "+bodyCost);
+    if(result == OK) return Game.creeps[name];
+    else return false;
 }
 
 const bodyMaxium = 50; //Creep Body Part Maxium Amount
