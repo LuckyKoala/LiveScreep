@@ -6,7 +6,7 @@ mod.Setup = {
         minEnergy: 200,
         essBody: [WORK, CARRY, MOVE],
         extraBody: [],
-        prefix: '[Upgrader]',
+        prefix: '[LowUpgrader]',
         memory: {role: 'upgrader'},
     },
     Normal: {
@@ -21,7 +21,7 @@ mod.Setup = {
         essBody: [WORK, CARRY, MOVE],
         extraBody: [WORK, WORK, MOVE],
         maxExtraAmount: 7, //Up to 15 work parts due to limitation of RCL8
-        prefix: '[Upgrader]',
+        prefix: '[HighUpgrader]',
         memory: {role: 'upgrader'},
     },
 };
