@@ -16,6 +16,14 @@ mod.Setup = {
         prefix: '[Upgrader]',
         memory: {role: 'upgrader'},
     },
+    High: {
+        minEnergy: 300,
+        essBody: [WORK, CARRY, MOVE],
+        extraBody: [WORK, WORK, MOVE],
+        maxExtraAmount: 7, //Up to 15 work parts due to limitation of RCL8
+        prefix: '[Upgrader]',
+        memory: {role: 'upgrader'},
+    },
 };
 
 mod.roleConfig = {

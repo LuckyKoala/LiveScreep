@@ -95,7 +95,7 @@ mod.loop = function(room) {
         }
         //Then spawn upgrader
         if(cnt.upgrader < 1) {
-            this.spawnWithSetup(Role.Upgrader.Setup);
+            this.spawnWithSetup(Role.Upgrader.Setup, this.rcl == 8);
             return;
         }
         //Then spawn builder if required
@@ -114,8 +114,8 @@ let myFunc = function({x,y,z}) {
 
 myFunc({x:10,y:20,z:30});
  */
-mod.spawnWithSetup = function(setupObj) {
-    var setup = setupObj.Normal;
+mod.spawnWithSetup = function(setupObj, useHighLevel=false) {
+    var setup = useHighLevel ? setupObj.High : setupObj.Normal;
     //For low energy available
     if(this.energyAvailable < setupObj.Normal.minEnergy && !!setupObj.Low) {
         setup = setupObj.Low;
