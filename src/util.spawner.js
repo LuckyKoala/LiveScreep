@@ -103,8 +103,14 @@ mod.loop = function(room) {
                 continue;
             }
             //Then spawn builder if required
-            const targets = room.find(FIND_CONSTRUCTION_SITES);
-            if(targets.length && cnt.builder < 1) {
+            const needBuildStructures = room.find(FIND_CONSTRUCTION_SITES);
+            const needRepairStructures = room.find(FIND_STRUCTURES, {
+                filter: function(o) {
+                    return o.hits < o.hitsMax;
+                }
+            });
+            const needBuilder = (needBuildStructures.length + needRepairStructures.length) > 0;
+            if(needBuilder && cnt.builder < 1) {
                 if(this.spawnWithSetup(Role.Builder.Setup)) cnt.builder++;
                 continue;
             }

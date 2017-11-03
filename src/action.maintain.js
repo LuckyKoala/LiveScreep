@@ -17,6 +17,7 @@ mod.nextTarget = function() {
 
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
+        //console.log('Loop maintain action whose target is '+JSON.stringify(target));
         if(_.isUndefined(target.progress)) {
             const result = creep.repair(target);
             if(result == ERR_NOT_IN_RANGE) {
