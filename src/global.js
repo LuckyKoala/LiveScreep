@@ -36,3 +36,4 @@ global.Util = {
     Stat: require('util.stat'),
 }
 global.State= {};
+global.Thousand = 1000; //For readability of number literals in code
