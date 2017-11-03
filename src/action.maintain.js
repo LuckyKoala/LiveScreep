@@ -4,11 +4,9 @@ module.exports = mod;
 //Build rampart maintain it to threshold
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, creep => {
-        var target = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {
-            filter: { structureType: STRUCTURE_RAMPART }
-        });
+        var target = creep.pos.findClosestByRange(Util.War.getRampartSitesCanBuild(creep.room, creep.carry.energy));
         if(!target) {
-            return creep.pos.findClosestByRange(Util.War.getRampartsForMaintain(creep.room, creep.carry.energy));
+            return creep.pos.findClosestByRange(Util.War.getRampartsForMaintain(creep.room));
         } else {
             return target;
         }

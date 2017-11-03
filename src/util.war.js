@@ -3,10 +3,13 @@ var mod = {};
 module.exports = mod;
 
 const RampartMaintainThreshold = {
-    Low: 60000, //60K
-    Normal: 120000, //120K
+    //this value shouldn't be too high since it is used by getRampartSitesCanBuild(),
+    //  if it is too high, then rampart site can only be built by bigger builder which
+    //  have many limitation.
+    Low: 30*Thousand,
+    Normal: 300*Thousand,
 };
-const WallMaintainThreshold = 300000; //300K
+const WallMaintainThreshold = 300*Thousand; 
 const ThreatValue = {
     attack: 4,
     ranged_attack: 3,
@@ -18,12 +21,20 @@ mod.loop = function(room) {
     //Do nothing
 }
 
-mod.getRampartsForMaintain = function(room, energyAvailable) {
+mod.getRampartSitesCanBuild = function(room, energyAvailable) {
+    return room.find(FIND_CONSTRUCTION_SITES, {
+        filter: function(o) {
+            //Only build rampart if this builder can maintain it to low bound
+            return o.structureType==STRUCTURE_RAMPART 
+              && energyAvailable >= RampartMaintainThreshold.Low/REPAIR_POWER;  //Currently 60K/100=600Energy
+        }
+    });
+}
+
+mod.getRampartsForMaintain = function(room) {
     return room.find(FIND_MY_STRUCTURES, {
         filter: function(o) {
-            //And creep should have enough energy to maintain it to low bound
-            return o.structureType==STRUCTURE_RAMPART && o.hits<RampartMaintainThreshold.Low
-              && energyAvailable >= o.hits/REPAIR_POWER; 
+            return o.structureType==STRUCTURE_RAMPART && o.hits<RampartMaintainThreshold.Low;
         }
     });
 }
