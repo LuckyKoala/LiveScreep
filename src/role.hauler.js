@@ -12,8 +12,7 @@ mod.Setup = {
     },
     Normal: {
         minEnergy: 300,
-        //essBody: [WORK, CARRY, CARRY, CARRY, MOVE, MOVE],
-        essBody: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE],
+        essBody: [WORK, CARRY, CARRY, CARRY, MOVE, MOVE],
         extraBody: [CARRY, CARRY, MOVE],
         maxExtraAmount: 3, //10Carry => 500Capacity is enough
         prefix: '[Hauler]',
@@ -27,6 +26,17 @@ mod.roleConfig = {
 };
 
 mod.loop = function(creep) {
+    if(creep.getActiveBodyparts(WORK)>0) {
+        //Fix road
+        const structureOnTheGrounds = creep.pos.lookFor(LOOK_STRUCTURES);
+        const roadsNeedRepair = _.filter(structureOnTheGrounds, o => {
+            o.structureType==STRUCTURE_ROAD && o.hits<o.hitsMax
+        });
+        if(roadsNeedRepair.length) {
+            creep.repair(roadsNeedRepair[0]);
+        }
+    }
+    
     if(creep.memory.hauling && creep.carry.energy == 0) {
         creep.memory.hauling = false;
         creep.say('🔄 charge');

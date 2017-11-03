@@ -40,6 +40,8 @@ mod.loop = function(room) {
                         return structure.hits < ConstructureMaintainThreshold[STRUCTURE_CONTAINER];
                     } else if(structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_RAMPART) {
                         return false;
+                    } else if(structure.structureType == STRUCTURE_ROAD) {
+                        return false; //Let hauler do the work
                     }
                     return true;
                 }
