@@ -143,7 +143,7 @@ mod.spawnWithSetup = function(setupObj, useHighLevel=false) {
     const result = spawn.spawnCreep(body, name, {
         memory: memory,
     });
-    console.log('ResultCode['+result+'] for Spawning '+name+" whose cost is "+bodyCost);
+    console.log(`Code[${result}] Spawning ${name}, cost ${bodyCost}, body ${JSON.stringify(body)}`);
     if(result == OK) return Game.creeps[name];
     else return false;
 }
