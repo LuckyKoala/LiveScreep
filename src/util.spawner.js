@@ -124,6 +124,10 @@ mod.loop = function(room) {
 };
 
 mod.spawnWithSetup = function(setupObj, useHighLevel=false) {
+    //Get spawn
+    const spawn = this.spawns.shift();
+    if(spawn.spawning) return;
+
     var setup = useHighLevel ? setupObj.High : setupObj.Normal;
     //For low energy available
     if(this.energyAvailable < setupObj.Normal.minEnergy && !!setupObj.Low) {
@@ -138,8 +142,6 @@ mod.spawnWithSetup = function(setupObj, useHighLevel=false) {
     //Calculate name
     const name = prefix+Game.time;
     memory['homeRoom'] = this.room.name;
-    //Get spawn
-    const spawn = this.spawns.shift();
     const result = spawn.spawnCreep(body, name, {
         memory: memory,
     });
