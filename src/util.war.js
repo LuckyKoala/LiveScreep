@@ -2,15 +2,45 @@
 var mod = {};
 module.exports = mod;
 
+const RampartMaintainThreshold = {
+    Low: 100000, //100K
+    Normal: 300000, //300K
+};
+const WallMaintainThreshold = WALL_HITS_MAX;
 const ThreatValue = {
     attack: 4,
     ranged_attack: 3,
     heal: 2,
     tough: 1,
-}
+};
 
 mod.loop = function(room) {
     //Do nothing
+}
+
+mod.getRampartsForMaintain = function(room) {
+    return room.find(FIND_MY_STRUCTURES, {
+        filter: function(o) {
+            return o.structureType==STRUCTURE_RAMPART && o.hits<RampartMaintainThreshold.Low;
+        }
+    });
+}
+
+mod.canReleaseRampart = function(hits) {
+    return hits>=RampartMaintainThreshold.Normal;
+}
+
+//Attention: Wall is not OwnedStructure
+mod.getWallsForMaintain = function(room) {
+    return room.find(FIND_STRUCTURES, {
+        filter: function(o) {
+            return o.structureType==STRUCTURE_WALL && o.hits<WallMaintainThreshold;
+        }
+    });
+}
+
+mod.canReleaseWall = function(hits) {
+    return hits>=WallMaintainThreshold;
 }
 
 //TODO honour boost part
