@@ -13,6 +13,8 @@ mod.nextTarget = function() {
 };
 
 mod.loop = function(creep) {
+    //If storage exist then filler will do feed action instead of hauler
+    if(creep.room.storage && creep.memory.role=="hauler") return false;
     return this.loop0(creep, (creep, target) => {
         const result = creep.transfer(target, RESOURCE_ENERGY);
         if(result == ERR_NOT_IN_RANGE) {

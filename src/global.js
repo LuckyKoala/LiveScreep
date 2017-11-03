@@ -37,5 +37,6 @@ global.Util = {
     Smalltask: require('util.smalltask'),
     Stat: require('util.stat'),
     Construction: require('util.construction'),
+    Link: require('util.link'),
 }
 global.State= {};

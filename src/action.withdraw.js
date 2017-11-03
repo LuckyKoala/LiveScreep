@@ -30,7 +30,12 @@ const targetInitFunc = function(creep) {
         } 
         return creep.pos.findClosestByRange(targets);
     } else if(role == 'filler') {
-        return creep.room.storage;
+        const spawnLink = creep.room.spawnLink;
+        if(spawnLink && spawnLink.energy>0) {
+            return spawnLink;
+        } else {
+            return creep.room.storage;
+        }
     } else {
         return creep.pos.findClosestByRange(suitableContainers);
     }

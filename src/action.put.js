@@ -23,8 +23,14 @@ const targetInitFunc = function(creep) {
     });
     
     if(role == 'harvester') {
-        var markSource = Util.Mark.getMarkSource(creep);
-        return markSource ? markSource.container : false;
+        const sourceLink = creep.room.sourceLink;
+        if(sourceLink && creep.pos.getRangeTo(sourceLink)<=2 
+           && sourceLink.energy<sourceLink.energyCapacity) {
+            return sourceLink;
+        } else {
+            const markSource = Util.Mark.getMarkSource(creep);
+            return markSource ? markSource.container : false;
+        }
     } else {
         const sourceContainers = [];
         for(var id in Memory.sources) {

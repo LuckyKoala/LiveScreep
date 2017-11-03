@@ -47,6 +47,7 @@ mod.loop = function(room) {
             upgrader: 0,
             builder: 0,
             guardian: 0,
+            filler: 0,
         }
         var energyInPerTick = 0;
         var energyOutPerTick = 0;
@@ -68,6 +69,8 @@ mod.loop = function(room) {
                 energyOutPerTick += creep.getActiveBodyparts(WORK) * BUILD_POWER;
             } else if(role == "guardian") {
                 cnt.guardian++;
+            } else if(role == "filler") {
+                cnt.filler++;
             }
         }
         //Log
@@ -87,6 +90,11 @@ mod.loop = function(room) {
             } 
             if(cnt.hauler < 1) {
                 if(this.spawnWithSetup(Role.Hauler.Setup)) cnt.hauler++;
+                continue;
+            }
+            //Then spawn filler if required
+            if(room.storage && cnt.filler < 1) {
+                if(this.spawnWithSetup(Role.Filler.Setup)) cnt.filler++;
                 continue;
             }
             //Then spawn guardian if required

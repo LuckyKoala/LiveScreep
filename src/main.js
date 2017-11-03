@@ -24,6 +24,7 @@ mod.loop = function () {
     //Run rooms
     var entry = {};
     _.forEach(Game.rooms, function(room) {
+        room.saveLinks();
         Util.Construction.loop(room);
         Util.Spawner.loop(room);
         Util.Tower.loop(room);
