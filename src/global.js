@@ -1,3 +1,5 @@
+global.Thousand = 1000; //For readability of number literals in code
+
 global.RoleObj = require('role.obj');
 global.ActionObj = require('action.obj');
 global.Action = {
@@ -36,4 +38,3 @@ global.Util = {
     Stat: require('util.stat'),
 }
 global.State= {};
-global.Thousand = 1000; //For readability of number literals in code
