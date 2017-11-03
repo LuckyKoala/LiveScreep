@@ -5,11 +5,15 @@ const CARRY_TO_ENERGY_POWER = 1; //hardcode
 const MAXIUM_ENERGY_GENERATE_PER_TICK = 2*SOURCE_ENERGY_CAPACITY/ENERGY_REGEN_TIME; //Currently 20
 const WORKER_FACTOR = 1.2; //Cause worker will not stay still, the movement will cosume time.
 
+mod.getSpawnsInRoom = function(roomName) {
+    return _.filter(Game.spawns, function(spawn) { return spawn.room.name == roomName; });
+}
+
 mod.loop = function(room) {
     this.room = room;
     const roomName = this.room.name;
     const roomCreeps = _.filter(Game.creeps, function(creep) { return creep.memory.homeRoom == roomName; });
-    this.spawns = _.filter(Game.spawns, function(spawn) { return spawn.room.name == roomName; });
+    this.spawns = this.getSpawnsInRoom(roomName);
     this.energyAvailable = this.room.energyAvailable;
     this.rcl = this.room.controller.level;
 
