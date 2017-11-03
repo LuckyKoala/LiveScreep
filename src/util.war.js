@@ -6,7 +6,7 @@ const RampartMaintainThreshold = {
     Low: 100000, //100K
     Normal: 300000, //300K
 };
-const WallMaintainThreshold = WALL_HITS_MAX;
+const WallMaintainThreshold = 300000;
 const ThreatValue = {
     attack: 4,
     ranged_attack: 3,
