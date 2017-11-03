@@ -3,10 +3,10 @@ var mod = {};
 module.exports = mod;
 
 const RampartMaintainThreshold = {
-    Low: 100000, //100K
-    Normal: 300000, //300K
+    Low: 60000, //60K
+    Normal: 120000, //120K
 };
-const WallMaintainThreshold = 300000;
+const WallMaintainThreshold = 300000; //300K
 const ThreatValue = {
     attack: 4,
     ranged_attack: 3,
@@ -18,10 +18,12 @@ mod.loop = function(room) {
     //Do nothing
 }
 
-mod.getRampartsForMaintain = function(room) {
+mod.getRampartsForMaintain = function(room, energyAvailable) {
     return room.find(FIND_MY_STRUCTURES, {
         filter: function(o) {
-            return o.structureType==STRUCTURE_RAMPART && o.hits<RampartMaintainThreshold.Low;
+            //And creep should have enough energy to maintain it to low bound
+            return o.structureType==STRUCTURE_RAMPART && o.hits<RampartMaintainThreshold.Low
+              && energyAvailable >= o.hits/REPAIR_POWER; 
         }
     });
 }

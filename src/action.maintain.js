@@ -8,7 +8,7 @@ mod.nextTarget = function() {
             filter: { structureType: STRUCTURE_RAMPART }
         });
         if(!target) {
-            return creep.pos.findClosestByRange(Util.War.getRampartsForMaintain(creep.room));
+            return creep.pos.findClosestByRange(Util.War.getRampartsForMaintain(creep.room, creep.carry.energy));
         } else {
             return target;
         }
