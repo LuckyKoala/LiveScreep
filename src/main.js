@@ -24,6 +24,7 @@ mod.loop = function () {
     //Run rooms
     var entry = {};
     _.forEach(Game.rooms, function(room) {
+        Util.Construction.loop(room);
         Util.Spawner.loop(room);
         Util.Tower.loop(room);
         entry[room.name] = room.energyAvailable;

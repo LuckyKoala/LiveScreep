@@ -2,6 +2,20 @@
 var mod = {};
 module.exports = mod;
 
+mod.loop = function(room) {
+    //Init memory
+    if(_.isUndefined(Memory.construction)) Memory.construction = {};
+    if(!_.isObject(Memory.construction)) Memory.construction = {};
+    const entry = Memory.construction[room.name] || {};
+    if(!entry['roadInit']) {
+        //Build road
+        this.initRoad(room);
+        entry['roadInit'] = true;
+    }
+    //Store entry in memory
+    Memory.construction[room.name] = entry;
+}
+
 //Build road
 mod.initRoad = function(room) {
     const self = this;
