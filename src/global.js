@@ -13,6 +13,7 @@ global.Action = {
     Drop: require('action.drop'),
     Maintain: require('action.maintain'),
     Repair: require('action.repair'),
+    Recycle: require('action.recycle'),
 };
 global.Role = {
     Worker: require('role.worker'),
@@ -22,6 +23,7 @@ global.Role = {
     Hauler: require('role.hauler'),
     Guardian: require('role.guardian'),
     Ant: require('role.ant'),
+    Recycler: require('role.recycler'),
     Filler: require('role.filler'),
 };
 global.Util = {
