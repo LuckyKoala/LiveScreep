@@ -22,6 +22,7 @@ global.Role = {
     Hauler: require('role.hauler'),
     Guardian: require('role.guardian'),
     Ant: require('role.ant'),
+    Filler: require('role.filler'),
 };
 global.Util = {
     Spawner: require('util.spawner'),

@@ -29,6 +29,8 @@ const targetInitFunc = function(creep) {
             targets = _.filter(targets, o => o.id != controllerContainerId);
         } 
         return creep.pos.findClosestByRange(targets);
+    } else if(role == 'filler') {
+        return creep.room.storage;
     } else {
         return creep.pos.findClosestByRange(suitableContainers);
     }
