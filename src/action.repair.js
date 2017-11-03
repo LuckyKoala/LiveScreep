@@ -1,14 +1,15 @@
 let mod = new ActionObj('Repair');
 module.exports = mod;
 
-//Build rampart maintain it to threshold
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, creep => {
         //First repair structure except rampart(which will be handled in maintain action)
         //  and wall(whose priority is low)
-        const target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+        const target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
             filter: function(o) {
-                return o.structureType!=STRUCTURE_WALL && o.structureType!=STRUCTURE_RAMPART;
+                //return o.structureType!=STRUCTURE_WALL && o.structureType!=STRUCTURE_RAMPART
+                // && o.structureType!=STRUCTURE_CONTAINER;
+                return o.structureType!=STRUCTURE_RAMPART && o.hits<o.hitsMax;
             }
         });
         if(!target) {
@@ -22,6 +23,7 @@ mod.nextTarget = function() {
 
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
+        //console.log('Loop repair action whose target is '+JSON.stringify(target));
         const result = creep.repair(target);
         if(result == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
