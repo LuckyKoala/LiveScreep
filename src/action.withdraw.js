@@ -37,9 +37,11 @@ const targetInitFunc = function(creep) {
             if(sourceLink && sourceLink.energy==sourceLink.energyCapacity) {
                 //SourceLink is ready to transfer energy, so filler should move all the remain energy
                 //  in SpawnLink as soon as it can.
+                creep.memory.skipBefore = 0;
                 return spawnLink;
             } else {
                 if(spawnLink.energy > (creep.carryCapacity-creep.carry.energy)) {
+                    creep.memory.skipBefore = 0;
                     return spawnLink;
                 } else {
                     if(_.isUndefined(creep.memory.skipBefore)) creep.memory.skipBefore=0;
@@ -53,10 +55,10 @@ const targetInitFunc = function(creep) {
                         return spawnLink;
                     } else {
                         creep.memory.skipBefore++;
+                        return false;
                     }
                 }
             }
-            return spawnLink.energy>(creep.carryCapacity-creep.carry.energy) ? spawnLink : false;
         } else {
             return creep.room.storage;
         }

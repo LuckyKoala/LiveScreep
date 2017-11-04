@@ -3,10 +3,9 @@ module.exports = mod;
 
 mod.setupConfig = {
     Normal: {
-		minEnergy: 200,
-		essBody: [WORK, CARRY, MOVE],
-		extraBody: [WORK, WORK, MOVE],
-		maxExtraAmount: 1,
+		minEnergy: 400,
+		essBody: [WORK, WORK, CARRY, CARRY, MOVE, MOVE],
+		extraBody: [],
 		prefix: '[Builder]',
 		memory: {role: 'builder'},
 	},
