@@ -70,6 +70,7 @@ mod.loop = function(room) {
             const creep = roomCreeps[name];
             const role = creep.memory.role;
             cnt[role]++;
+            cnt.total++;
         }
         //Try all the spawn
         var spawn = this.spawns.shift();
@@ -78,6 +79,7 @@ mod.loop = function(room) {
             const callback = function({setupObj}) {
                 const roleName = lowerFirst(setupObj.setupName);
                 cnt[roleName]++;
+                cnt.total++;
             };
             for(var index in SpawnQueue) {
                 trySpawn(SpawnQueue[index], callback);
