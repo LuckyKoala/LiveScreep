@@ -49,6 +49,7 @@ const targetInitFunc = function(creep) {
                     if(skipBefore && spawnLink.energy>0) {
                         //We have skip spawnLink at least one times, so we will target it as long
                         //  as it has any energy
+                        creep.memory.skipBefore = 0;
                         return spawnLink;
                     } else {
                         creep.memory.skipBefore++;
