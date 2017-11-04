@@ -5,8 +5,8 @@ mod.Setup = {
     Normal: {
 		minEnergy: 200,
 		essBody: [WORK, CARRY, MOVE],
-		extraBody: [], //20 total energy, 10 for upgrade, 5 for spawn, 5 remain, 5/BUILD_POWER = 1 => 1xWORK
-		//extraBody: [WORK, CARRY, MOVE],
+		extraBody: [WORK, WORK, MOVE],
+		maxExtraAmount: 1,
 		prefix: '[Builder]',
 		memory: {role: 'builder'},
 	},

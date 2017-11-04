@@ -13,6 +13,7 @@ mod.Setup = {
         minEnergy: 300,
         essBody: [WORK, WORK, CARRY, MOVE],
         extraBody: [WORK, WORK, MOVE],
+        maxExtraAmount: 4, //10work is enough, only increase it if the storage have more energy
         prefix: '[Upgrader]',
         memory: {role: 'upgrader'},
     },

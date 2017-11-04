@@ -6,6 +6,7 @@ mod.Setup = {
         minEnergy: 130,
         essBody: [ATTACK, MOVE],
         extraBody: [ATTACK, TOUGH, MOVE],
+        maxExtraAmount: 2,
         prefix: '[Guardian]',
         memory: {role: 'guardian'},
     },
