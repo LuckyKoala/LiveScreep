@@ -28,7 +28,7 @@ mod.loop = function(room) {
         if(!spawningStatus && setupObj.shouldSpawn(room, cnt)) {
             spawningStatus = self.spawnWithSetup(spawn, setupObj);
             if(spawningStatus) {
-                successCallBack({spawningStatus, setupObj}); //Pass data to callback function
+                successCallBack(spawningStatus); //Pass data to callback function
             }
         }
     };
@@ -51,7 +51,7 @@ mod.loop = function(room) {
         while(spawn) {
             if(energyInPerTick >= MAXIUM_ENERGY_GENERATE_PER_TICK * WORKER_FACTOR) break;
             var spawningStatus = false;
-            const callback = function({spawningStatus}) {
+            const callback = function(spawningStatus) {
                 energyInPerTick += spawningStatus.getActiveBodyparts(WORK) * HARVEST_POWER;
             };
             for(var index in SpawnQueueForLowRCL) {
@@ -76,8 +76,8 @@ mod.loop = function(room) {
         var spawn = this.spawns.shift();
         while(spawn) {
             var spawningStatus = false;
-            const callback = function({setupObj}) {
-                const roleName = lowerFirst(setupObj.setupName);
+            const callback = function(spawningStatus) {
+                const roleName = spawningStatus.memory.role;
                 cnt[roleName]++;
                 cnt.total++;
             };
