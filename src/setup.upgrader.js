@@ -10,10 +10,9 @@ mod.setupConfig = {
         memory: {role: 'upgrader'},
     },
     Normal: {
-        minEnergy: 300,
-        essBody: [WORK, WORK, CARRY, MOVE],
-        extraBody: [WORK, WORK, MOVE],
-        maxExtraAmount: 4, //10work is enough, only increase it if the storage have more energy
+        minEnergy: 700,
+        essBody: [WORK, WORK, WORK, MOVE, WORK, WORK, WORK, MOVE], //6work
+        extraBody: [], //Control by amount of creeps not body limitation
         prefix: '[Upgrader]',
         memory: {role: 'upgrader'},
     },
@@ -31,7 +30,11 @@ mod.shouldSpawn = function(room, cnt) {
     this.rcl = room.controller.level;
 
     const existCount = cnt[lowerFirst(this.setupName)];
-    return _.isUndefined(existCount) || existCount < 1;
+    var limit = 2;
+    if(room.storage && room.storage.store.energy>60*Thousand && room.energyAvailable>=this.setupConfig.Normal.minEnergy) {
+        limit++;
+    }
+    return _.isUndefined(existCount) || existCount < limit;
 };
 
 mod.shouldUseHighLevel = function() {
