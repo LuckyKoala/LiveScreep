@@ -14,7 +14,7 @@ mod.Setup = {
 
 mod.roleConfig = {
     inStack: [Action.Withdraw, Action.Pickup],
-    outStack: [Action.Build, Action.Repair, Action.Maintain],
+    outStack: [Action.Build, Action.Maintain, Action.Repair],
 };
 
 mod.loop = function(creep) {
