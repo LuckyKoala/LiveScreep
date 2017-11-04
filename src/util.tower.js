@@ -5,7 +5,7 @@ module.exports = mod;
 const ConstructureMaintainThreshold = {
     container: 80000, //80K
 };
-mod.EnergyForDefend = 200;
+mod.EnergyForDefend = 600;
 
 mod.loop = function(room) {
     //Check whether energy available is enough for next action
