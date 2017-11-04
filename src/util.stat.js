@@ -32,3 +32,12 @@ mod.memorize = function(key, entry) {
 mod.forgetAll = function() {
     if(Memory.stat) delete Memory.stat.last;
 }
+
+//Permanant
+mod.find = function(key, defaultValue) {
+    return _.get(Memory, ['stat', 'total', key], defaultValue);
+}
+
+mod.memorizePermanant = function(key, entry) {
+    _.set(Memory, ['stat', 'total', key], entry);
+}
