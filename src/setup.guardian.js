@@ -16,6 +16,6 @@ mod.setupConfig = {
 mod.shouldSpawn = function(room, cnt) {
     const hostiles = room.find(FIND_HOSTILE_CREEPS);
     const existCount = cnt[lowerFirst(this.setupName)];
-    return hostiles.length && Util.War.shouldSpawnGuardian(room) 
+    return hostiles.length && Util.Defense.shouldSpawnGuardian(room) 
         && (_.isUndefined(existCount) || existCount < 1);
 };

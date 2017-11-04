@@ -5,9 +5,9 @@ module.exports = mod;
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, creep => {
         //Maintain first
-        var target = creep.pos.findClosestByRange(Util.War.getRampartsForMaintain(creep.room));
+        var target = creep.pos.findClosestByRange(Util.Defense.getRampartsForMaintain(creep.room));
         if(!target) {
-            return creep.pos.findClosestByRange(Util.War.getRampartSitesCanBuild(creep.room, creep.carry.energy));
+            return creep.pos.findClosestByRange(Util.Defense.getRampartSitesCanBuild(creep.room, creep.carry.energy));
         } else {
             return target;
         }
@@ -21,7 +21,7 @@ mod.loop = function(creep) {
             const result = creep.repair(target);
             if(result == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
-            } else if(result == OK && Util.War.canReleaseRampart(target.hits)) {
+            } else if(result == OK && Util.Defense.canReleaseRampart(target.hits)) {
                 Util.Mark.unmarkTarget(creep, this.actionName);
             }
         } else {

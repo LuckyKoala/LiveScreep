@@ -3,7 +3,7 @@ module.exports = mod;
 
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, creep => {
-        const sortHostiles = Util.War.getSortedHostiles(creep);
+        const sortHostiles = Util.Defense.getSortedHostiles(creep);
         return sortHostiles.length ?
         　　Game.getObjectById(_.last(sortHostiles).id) : false;
     }, this.actionName);

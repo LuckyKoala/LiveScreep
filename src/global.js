@@ -45,7 +45,7 @@ global.Role = {
 global.Util = {
     Spawner: require('util.spawner'),
     Tower: require('util.tower'),
-    War: require('util.war'),
+    Defense: require('util.defense'),
     Mark: require('util.mark'),
     GC: require('util.gc'),
     Smalltask: require('util.smalltask'),

@@ -22,7 +22,7 @@ mod.nextTarget = function() {
             if(target) return target;
             else {
                 //Now we can find low hits wall
-                return creep.pos.findClosestByRange(Util.War.getWallsForMaintain(creep.room));
+                return creep.pos.findClosestByRange(Util.Defense.getWallsForMaintain(creep.room));
             }
         } else {
             return target;
@@ -37,7 +37,7 @@ mod.loop = function(creep) {
         if(result == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
         } else if(result == OK) {
-            if(target.structureType==STRUCTURE_WALL && Util.War.canReleaseWall(target.hits)) {
+            if(target.structureType==STRUCTURE_WALL && Util.Defense.canReleaseWall(target.hits)) {
                 Util.Mark.unmarkTarget(creep, this.actionName);
             } else if(target.hits==target.hitsMax) {
                 Util.Mark.unmarkTarget(creep, this.actionName);

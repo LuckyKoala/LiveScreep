@@ -95,7 +95,7 @@ mod.shouldSpawnGuardian = function(room) {
     var towers = room.find(FIND_MY_STRUCTURES, {
         filter: (structure) => {
             return (structure.structureType == STRUCTURE_TOWER) &&
-                structure.energy > Util.War.EnergyForDefend;
+                structure.energy > Util.Tower.EnergyForDefend;
         }
     });
     var currentThreatValue = this.getCurrentThreatValue(room);
