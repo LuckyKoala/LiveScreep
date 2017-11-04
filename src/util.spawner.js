@@ -22,10 +22,17 @@ mod.loop = function(room) {
     const roomName = this.room.name;
     const roomCreeps = _.filter(Game.creeps, function(creep) { return creep.memory.homeRoom == roomName; });
     this.spawns = this.getSpawnsInRoom(roomName);
-    this.energyAvailable = this.room.energyAvailable;
     this.rcl = this.room.controller.level;
 
-    //TODO extract logic to setup.%role% module
+    const trySpawn = function(setupObj, successCallBack) {
+        if(!spawningStatus && setupObj.shouldSpawn(room, cnt)) {
+            spawningStatus = self.spawnWithSetup(spawn, setupObj);
+            if(spawningStatus) {
+                successCallBack({spawningStatus, setupObj}); //Pass data to callback function
+            }
+        }
+    };
+
     //=====Diff spawn strategy by current RCL=====
     if(this.rcl < 3) {
         //Worker is enough for harvest and upgrade
@@ -44,75 +51,40 @@ mod.loop = function(room) {
         while(spawn) {
             if(energyInPerTick >= MAXIUM_ENERGY_GENERATE_PER_TICK * WORKER_FACTOR) break;
             var spawningStatus = false;
-            const trySpawn = function(setupObj) {
-                if(!spawningStatus && setupObj.shouldSpawn(room, cnt)) {
-                    spawningStatus = self.spawnWithSetup(spawn, setupObj);
-                    if(spawningStatus) {
-                        energyInPerTick += spawningStatus.getActiveBodyparts(WORK) * HARVEST_POWER;
-                    }
-                }
+            const callback = function({spawningStatus}) {
+                energyInPerTick += spawningStatus.getActiveBodyparts(WORK) * HARVEST_POWER;
             };
             for(var index in SpawnQueueForLowRCL) {
-                trySpawn(SpawnQueueForLowRCL[index]);
+                trySpawn(SpawnQueueForLowRCL[index], callback);
             }
             spawn = this.spawns.shift();
         }
 
     } else {
-        //All role is required
         var cnt = {
             total: 0,
-            harvester: 0,
-            hauler: 0,
-            upgrader: 0,
-            builder: 0,
-            guardian: 0,
-            filler: 0,
         }
-        var energyInPerTick = 0;
-        var energyOutPerTick = 0;
+        //All role is required
+        var incCnt = function(name) {
+            if(_.isUndefined(cnt[name])) cnt[name]=0;
+            else cnt[name]++;
+        }
         for(var name in roomCreeps) {
             const creep = roomCreeps[name];
             const role = creep.memory.role;
-            //Calculate energyIn/Out per tick
-            if(role == "harvester") {
-                cnt.harvester++;
-                energyInPerTick += creep.getActiveBodyparts(WORK) * HARVEST_POWER;
-            } else if(role == "hauler") {
-                cnt.hauler++;
-                energyOutPerTick += creep.getActiveBodyparts(CARRY) * CARRY_TO_ENERGY_POWER;
-            } else if(role == "upgrader") {
-                cnt.upgrader++;
-                energyOutPerTick += creep.getActiveBodyparts(WORK) * UPGRADE_CONTROLLER_POWER;
-            } else if(role == "builder") {
-                cnt.builder++;
-                energyOutPerTick += creep.getActiveBodyparts(WORK) * BUILD_POWER;
-            } else if(role == "guardian") {
-                cnt.guardian++;
-            } else if(role == "filler") {
-                cnt.filler++;
-            }
+            incCnt(role);
         }
-        //Log
-        Util.Stat.memorize('last-energyInPerTick', energyInPerTick);
-        Util.Stat.memorize('last-energyOutPerTick', energyOutPerTick);
         //Try all the spawn
         var spawn = this.spawns.shift();
         while(spawn) {
             var spawningStatus = false;
-            const trySpawn = function(setupObj) {
-                if(!spawningStatus && setupObj.shouldSpawn(room, cnt)) {
-                    spawningStatus = self.spawnWithSetup(spawn, setupObj);
-                    if(spawningStatus) {
-                        const roleName = lowerFirst(setupObj.setupName);
-                        //console.log(setupObj.setupName, roleName, cnt[roleName]);
-                        if(_.isUndefined(cnt[roleName])) cnt[roleName]=0;
-                        else cnt[roleName]++;
-                    }
-                }
+            const callback = function({setupObj}) {
+                const roleName = lowerFirst(setupObj.setupName);
+                incCnt(roleName);
+                console.log(`roleName: ${roleName}, cnt: ${cnt[roleName]}`);
             };
             for(var index in SpawnQueue) {
-                trySpawn(SpawnQueue[index]);
+                trySpawn(SpawnQueue[index], callback);
             }
             spawn = this.spawns.shift();
         }
@@ -122,9 +94,10 @@ mod.loop = function(room) {
 mod.spawnWithSetup = function(spawn, {setupConfig, shouldUseHighLevel}) {
     if(spawn.spawning) return;
 
+    const energyAvailable = spawn.room.energyAvailable;
     var setup = shouldUseHighLevel() ? setupConfig.High : setupConfig.Normal;
     //For low energy available
-    if(this.energyAvailable < setupConfig.Normal.minEnergy && !!setupConfig.Low) {
+    if(energyAvailable < setupConfig.Normal.minEnergy && !!setupConfig.Low) {
         setup = setupConfig.Low;
     }
     var {minEnergy, essBody, extraBody, prefix, memory, maxExtraAmount} = setup;
@@ -132,7 +105,7 @@ mod.spawnWithSetup = function(spawn, {setupConfig, shouldUseHighLevel}) {
     const body = this.getMaxiumBody(essBody, extraBody, maxExtraAmount);
     const bodyCost = this.getBodyCost(body);
     //Check energyAvailable is enough for this spawn action
-    if(this.energyAvailable < bodyCost) return;
+    if(energyAvailable < bodyCost) return;
     //Calculate name
     const name = prefix+spawn.name+'->'+Game.time;
     memory['homeRoom'] = this.room.name;
