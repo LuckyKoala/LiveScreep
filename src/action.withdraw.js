@@ -32,7 +32,8 @@ const targetInitFunc = function(creep) {
     } else if(role == 'filler') {
         const spawnLink = creep.room.spawnLink;
         if(spawnLink) {
-            return spawnLink;
+            //Only target spawnLink when it has enough energy or else abandon this target, try next action
+            return spawnLink.energy>(creep.carryCapacity-creep.carry.energy) ? spawnLink : false;
         } else {
             return creep.room.storage;
         }

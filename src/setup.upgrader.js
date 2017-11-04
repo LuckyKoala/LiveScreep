@@ -10,8 +10,8 @@ mod.setupConfig = {
         memory: {role: 'upgrader'},
     },
     Normal: {
-        minEnergy: 700,
-        essBody: [WORK, WORK, WORK, MOVE, WORK, WORK, WORK, MOVE], //6work
+        minEnergy: 750,
+        essBody: [WORK, WORK, WORK, MOVE, WORK, WORK, WORK, MOVE, CARRY], //6work
         extraBody: [], //Control by amount of creeps not body limitation
         prefix: '[Upgrader]',
         memory: {role: 'upgrader'},
