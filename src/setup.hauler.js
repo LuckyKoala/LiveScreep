@@ -11,7 +11,7 @@ mod.setupConfig = {
         memory: {role: 'hauler'},
     },
     Normal: {
-        minEnergy: 400,
+        minEnergy: 300,
         essBody: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE],
         extraBody: [CARRY, CARRY, MOVE],
         maxExtraAmount: 3, //10Carry => 500Capacity is enough
