@@ -3,7 +3,7 @@ var mod = new RoleObj('Filler');
 module.exports = mod;
 
 mod.roleConfig = {
-    inStack: [Action.Withdraw],
+    inStack: [Action.Withdraw, Action.Pickup],
     outStack: [Action.Feed],
 };
 
