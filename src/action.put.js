@@ -67,7 +67,7 @@ mod.loop = function(creep) {
             const result = creep.transfer(target, RESOURCE_ENERGY);
             if(result == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
-            } else if(result == OK) {
+            } else if(result == OK || result == ERR_FULL) {
                 Util.Mark.unmarkTarget(creep, this.actionName);
             }
         }
