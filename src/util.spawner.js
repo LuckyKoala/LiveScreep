@@ -102,7 +102,7 @@ mod.spawnWithSetup = function(spawn, {setupConfig, shouldUseHighLevel}) {
     }
     var {minEnergy, essBody, extraBody, prefix, memory, maxExtraAmount} = setup;
     //Calculate body and examine whether energyAvailable is enough
-    const body = this.getMaxiumBody(essBody, extraBody, maxExtraAmount);
+    const body = this.getMaxiumBody(essBody, extraBody, maxExtraAmount, energyAvailable);
     const bodyCost = this.getBodyCost(body);
     //Check energyAvailable is enough for this spawn action
     if(energyAvailable < bodyCost) return;
@@ -118,12 +118,12 @@ mod.spawnWithSetup = function(spawn, {setupConfig, shouldUseHighLevel}) {
 }
 
 const bodyMaxium = 50; //Creep Body Part Maxium Amount
-mod.getMaxiumBody = function(essBody, extraBody, maxExtraAmount) {
+mod.getMaxiumBody = function(essBody, extraBody, maxExtraAmount, energyAvailable) {
     var essCost = this.getBodyCost(essBody);
     var extraCost = this.getBodyCost(extraBody);
     if(extraCost===0) return essBody;
 
-    var extraAmount = _.floor((this.energyAvailable - essCost) / extraCost);
+    var extraAmount = _.floor((energyAvailable - essCost) / extraCost);
     if(!!maxExtraAmount && extraAmount>maxExtraAmount) extraAmount = maxExtraAmount;
     const remainAmount = _.floor((bodyMaxium-essBody.length) / extraBody.length);
     if(extraAmount > remainAmount) extraAmount = remainAmount;
