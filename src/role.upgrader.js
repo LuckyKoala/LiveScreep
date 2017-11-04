@@ -1,32 +1,6 @@
 var mod = new RoleObj('Upgrader');
 module.exports = mod;
 
-mod.Setup = {
-    Low: {
-        minEnergy: 200,
-        essBody: [WORK, CARRY, MOVE],
-        extraBody: [],
-        prefix: '[LowUpgrader]',
-        memory: {role: 'upgrader'},
-    },
-    Normal: {
-        minEnergy: 300,
-        essBody: [WORK, WORK, CARRY, MOVE],
-        extraBody: [WORK, WORK, MOVE],
-        maxExtraAmount: 4, //10work is enough, only increase it if the storage have more energy
-        prefix: '[Upgrader]',
-        memory: {role: 'upgrader'},
-    },
-    High: {
-        minEnergy: 300,
-        essBody: [WORK, CARRY, MOVE],
-        extraBody: [WORK, WORK, MOVE],
-        maxExtraAmount: 7, //Up to 15 work parts due to limitation of RCL8
-        prefix: '[HighUpgrader]',
-        memory: {role: 'upgrader'},
-    },
-};
-
 mod.roleConfig = {
     inStack: [Action.Withdraw, Action.Pickup],
     outStack: [Action.Upgrade],

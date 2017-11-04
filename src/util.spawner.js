@@ -5,11 +5,19 @@ const CARRY_TO_ENERGY_POWER = 1; //hardcode
 const MAXIUM_ENERGY_GENERATE_PER_TICK = 2*SOURCE_ENERGY_CAPACITY/ENERGY_REGEN_TIME; //Currently 20
 const WORKER_FACTOR = 1.2; //Cause worker will not stay still, the movement will cosume time.
 
+const SpawnQueueHigh = [Setup.Guardian];
+const SpawnQueueNormal = [Setup.Harvester, Setup.Hauler, Setup.Filler];
+const SpawnQueueLow = [Setup.Upgrader, Setup.Builder];
+const SpawnQueue = _.union(SpawnQueueHigh, SpawnQueueNormal, SpawnQueueLow);
+
+const SpawnQueueForLowRCL = [Setup.Worker];
+
 mod.getSpawnsInRoom = function(roomName) {
     return _.filter(Game.spawns, function(spawn) { return spawn.room.name == roomName; });
 }
 
 mod.loop = function(room) {
+    const self = this;
     this.room = room;
     const roomName = this.room.name;
     const roomCreeps = _.filter(Game.creeps, function(creep) { return creep.memory.homeRoom == roomName; });
@@ -32,10 +40,22 @@ mod.loop = function(room) {
             }
         }
         //Try all the spawn
-        var remain = this.spawns.length;
-        while(remain-- && energyInPerTick < MAXIUM_ENERGY_GENERATE_PER_TICK * WORKER_FACTOR) {
-            const newCreep = this.spawnWithSetup(Role.Worker.Setup);
-            if(newCreep) energyInPerTick += newCreep.getActiveBodyparts(WORK) * HARVEST_POWER;
+        var spawn = this.spawns.shift();
+        while(spawn) {
+            if(energyInPerTick >= MAXIUM_ENERGY_GENERATE_PER_TICK * WORKER_FACTOR) break;
+            var spawningStatus = false;
+            const trySpawn = function(setupObj) {
+                if(!spawningStatus && setupObj.shouldSpawn(room, cnt)) {
+                    spawningStatus = self.spawnWithSetup(spawn, setupObj);
+                    if(spawningStatus) {
+                        energyInPerTick += spawningStatus.getActiveBodyparts(WORK) * HARVEST_POWER;
+                    }
+                }
+            };
+            for(var index in SpawnQueueForLowRCL) {
+                trySpawn(SpawnQueueForLowRCL[index]);
+            }
+            spawn = this.spawns.shift();
         }
 
     } else {
@@ -77,69 +97,35 @@ mod.loop = function(room) {
         Util.Stat.memorize('last-energyInPerTick', energyInPerTick);
         Util.Stat.memorize('last-energyOutPerTick', energyOutPerTick);
         //Try all the spawn
-        var remain = this.spawns.length;
-        while(remain--) {
-            //TODO Analysis data to decide max amount of each type of creeps instead of use hardcode
-            //  which is bad practise.
-            //TODO since we have limited max amount of each type of creeps, then we should also make
-            //  sure all existing creep is biggest or else we try spawn bigger creep to replace it.
-            //First we need one Harvester and one Hauler at least, which make sure spawn have incoming energy
-            if(cnt.harvester < 1) {
-                if(this.spawnWithSetup(Role.Harvester.Setup)) cnt.harvester++;
-                continue;
-            } 
-            if(cnt.hauler < 1) {
-                if(this.spawnWithSetup(Role.Hauler.Setup)) cnt.hauler++;
-                continue;
-            }
-            //Then spawn filler if required
-            if(room.storage && cnt.filler < 1) {
-                if(this.spawnWithSetup(Role.Filler.Setup)) cnt.filler++;
-                continue;
-            }
-            //Then spawn guardian if required
-            //TODO honour threat value
-            const hostiles = room.find(FIND_HOSTILE_CREEPS);
-            if(hostiles.length && Util.War.shouldSpawnGuardian(this.room) && cnt.guardian < 1) {
-                if(this.spawnWithSetup(Role.Guardian.Setup)) cnt.guardian++;
-                continue;
-            }
-            //Now we need enough harvester, currently 2 is enough for normal room
-            if(cnt.harvester < 2) {
-                if(this.spawnWithSetup(Role.Harvester.Setup)) cnt.harvester++;
-                continue;
-            }
-            //Then spawn upgrader
-            if(cnt.upgrader < 1) {
-                if(this.spawnWithSetup(Role.Upgrader.Setup, this.rcl == 8)) cnt.upgrader++;
-                continue;
-            }
-            //Then spawn builder if required
-            const needBuildStructures = room.find(FIND_CONSTRUCTION_SITES);
-            const needRepairStructures = room.find(FIND_STRUCTURES, {
-                filter: function(o) {
-                    return o.hits < o.hitsMax;
+        var spawn = this.spawns.shift();
+        while(spawn) {
+            var spawningStatus = false;
+            const trySpawn = function(setupObj) {
+                if(!spawningStatus && setupObj.shouldSpawn(room, cnt)) {
+                    spawningStatus = self.spawnWithSetup(spawn, setupObj);
+                    if(spawningStatus) {
+                        const roleName = lowerFirst(setupObj.setupName);
+                        //console.log(setupObj.setupName, roleName, cnt[roleName]);
+                        if(_.isUndefined(cnt[roleName])) cnt[roleName]=0;
+                        else cnt[roleName]++;
+                    }
                 }
-            });
-            const needBuilder = (needBuildStructures.length + needRepairStructures.length) > 0;
-            if(needBuilder && cnt.builder < 1) {
-                if(this.spawnWithSetup(Role.Builder.Setup)) cnt.builder++;
-                continue;
+            };
+            for(var index in SpawnQueue) {
+                trySpawn(SpawnQueue[index]);
             }
+            spawn = this.spawns.shift();
         }
-
     }
 };
 
-mod.spawnWithSetup = function(setupObj, useHighLevel=false) {
-    //Get spawn
-    const spawn = this.spawns.shift();
+mod.spawnWithSetup = function(spawn, {setupConfig, shouldUseHighLevel}) {
     if(spawn.spawning) return;
 
-    var setup = useHighLevel ? setupObj.High : setupObj.Normal;
+    var setup = shouldUseHighLevel() ? setupConfig.High : setupConfig.Normal;
     //For low energy available
-    if(this.energyAvailable < setupObj.Normal.minEnergy && !!setupObj.Low) {
-        setup = setupObj.Low;
+    if(this.energyAvailable < setupConfig.Normal.minEnergy && !!setupConfig.Low) {
+        setup = setupConfig.Low;
     }
     var {minEnergy, essBody, extraBody, prefix, memory, maxExtraAmount} = setup;
     //Calculate body and examine whether energyAvailable is enough
@@ -148,7 +134,7 @@ mod.spawnWithSetup = function(setupObj, useHighLevel=false) {
     //Check energyAvailable is enough for this spawn action
     if(this.energyAvailable < bodyCost) return;
     //Calculate name
-    const name = prefix+Game.time;
+    const name = prefix+spawn.name+'->'+Game.time;
     memory['homeRoom'] = this.room.name;
     const result = spawn.spawnCreep(body, name, {
         memory: memory,

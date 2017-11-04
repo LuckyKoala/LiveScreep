@@ -1,7 +1,11 @@
 global.Thousand = 1000; //For readability of number literals in code
+global.lowerFirst = function(string) {
+    return string && (string.charAt(0).toLowerCase() + string.slice(1));
+};
 
 global.RoleObj = require('role.obj');
 global.ActionObj = require('action.obj');
+global.SetupObj = require('setup.obj');
 global.Action = {
     Harvest: require('action.harvest'),
     Feed: require('action.feed'),
@@ -16,6 +20,16 @@ global.Action = {
     Maintain: require('action.maintain'),
     Repair: require('action.repair'),
     Recycle: require('action.recycle'),
+};
+global.Setup = {
+    Worker: require('setup.worker'),
+    Harvester: require('setup.harvester'),
+    Upgrader: require('setup.upgrader'),
+    Builder: require('setup.builder'),
+    Hauler: require('setup.hauler'),
+    Guardian: require('setup.guardian'),
+    Ant: require('setup.ant'),
+    Filler: require('setup.filler'),
 };
 global.Role = {
     Worker: require('role.worker'),

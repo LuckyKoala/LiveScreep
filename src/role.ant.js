@@ -1,16 +1,6 @@
 var mod = new RoleObj('Ant');
 module.exports = mod;
 
-mod.Setup = {
-    Normal: {
-		minEnergy: 100,
-		essBody: [CARRY, MOVE],
-		extraBody: [],
-		prefix: '[Ant]',
-		memory: {role: 'ant'},
-	},
-};
-
 mod.roleConfig = {
     inStack: [Action.Pickup],
     outStack: [Action.Put],

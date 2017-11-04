@@ -1,25 +1,6 @@
 var mod = new RoleObj('Hauler');
 module.exports = mod;
 
-mod.Setup = {
-    Low: {
-        minEnergy: 150,
-        essBody: [CARRY, CARRY, MOVE],
-        extraBody: [CARRY, CARRY, MOVE],
-        maxExtraAmount: 2,
-        prefix: '[LowHauler]',
-        memory: {role: 'hauler'},
-    },
-    Normal: {
-        minEnergy: 400,
-        essBody: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE],
-        extraBody: [CARRY, CARRY, MOVE],
-        maxExtraAmount: 3, //10Carry => 500Capacity is enough
-        prefix: '[Hauler]',
-        memory: {role: 'hauler'},
-    },
-};
-
 mod.roleConfig = {
     inStack: [Action.Withdraw, Action.Pickup],
     outStack: [Action.Feed, Action.Fuel, Action.Put],

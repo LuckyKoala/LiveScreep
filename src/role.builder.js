@@ -1,17 +1,6 @@
 var mod = new RoleObj('Builder');
 module.exports = mod;
 
-mod.Setup = {
-    Normal: {
-		minEnergy: 200,
-		essBody: [WORK, CARRY, MOVE],
-		extraBody: [WORK, WORK, MOVE],
-		maxExtraAmount: 1,
-		prefix: '[Builder]',
-		memory: {role: 'builder'},
-	},
-};
-
 mod.roleConfig = {
     inStack: [Action.Withdraw, Action.Pickup],
     outStack: [Action.Build, Action.Maintain, Action.Repair],
