@@ -31,8 +31,30 @@ const targetInitFunc = function(creep) {
         return creep.pos.findClosestByRange(targets);
     } else if(role == 'filler') {
         const spawnLink = creep.room.spawnLink;
+        const sourceLink = creep.room.sourceLink;
         if(spawnLink) {
             //Only target spawnLink when it has enough energy or else abandon this target, try next action
+            if(sourceLink && sourceLink.energy==sourceLink.energyCapacity) {
+                //SourceLink is ready to transfer energy, so filler should move all the remain energy
+                //  in SpawnLink as soon as it can.
+                return spawnLink;
+            } else {
+                if(spawnLink.energy > (creep.carryCapacity-creep.carry.energy)) {
+                    return spawnLink;
+                } else {
+                    if(_.isUndefined(creep.memory.skipBefore)) creep.memory.skipBefore=0;
+                    //If SourceLink is not ready and SpawnLink don't have enough energy, try next action once
+                    //Memorize it skip spawnLink
+                    const skipBefore = creep.memory.skipBefore;
+                    if(skipBefore && spawnLink.energy>0) {
+                        //We have skip spawnLink at least one times, so we will target it as long
+                        //  as it has any energy
+                        return spawnLink;
+                    } else {
+                        creep.memory.skipBefore++;
+                    }
+                }
+            }
             return spawnLink.energy>(creep.carryCapacity-creep.carry.energy) ? spawnLink : false;
         } else {
             return creep.room.storage;
