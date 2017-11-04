@@ -64,15 +64,12 @@ mod.loop = function(room) {
         var cnt = {
             total: 0,
         }
+        _.forEach(Role, o => cnt[lowerFirst(o.roleName)] = 0); //Init cnt
         //All role is required
-        var incCnt = function(name) {
-            if(_.isUndefined(cnt[name])) cnt[name]=0;
-            else cnt[name]++;
-        }
         for(var name in roomCreeps) {
             const creep = roomCreeps[name];
             const role = creep.memory.role;
-            incCnt(role);
+            cnt[role]++;
         }
         //Try all the spawn
         var spawn = this.spawns.shift();
@@ -80,8 +77,7 @@ mod.loop = function(room) {
             var spawningStatus = false;
             const callback = function({setupObj}) {
                 const roleName = lowerFirst(setupObj.setupName);
-                incCnt(roleName);
-                console.log(`roleName: ${roleName}, cnt: ${cnt[roleName]}`);
+                cnt[roleName]++;
             };
             for(var index in SpawnQueue) {
                 trySpawn(SpawnQueue[index], callback);
@@ -89,6 +85,8 @@ mod.loop = function(room) {
             spawn = this.spawns.shift();
         }
     }
+
+    Util.Stat.memorize('last-creeps-cnt', cnt);
 };
 
 mod.spawnWithSetup = function(spawn, {setupConfig, shouldUseHighLevel}) {
