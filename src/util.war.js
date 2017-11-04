@@ -6,8 +6,9 @@ const RampartMaintainThreshold = {
     //this value shouldn't be too high since it is used by getRampartSitesCanBuild(),
     //  if it is too high, then rampart site can only be built by bigger builder which
     //  have many limitation.
+    Lowest: 10*Thousand,
     Low: 30*Thousand,
-    Normal: 300*Thousand,
+    Normal: 150*Thousand,
 };
 const WallMaintainThreshold = 300*Thousand; 
 const ThreatValue = {
@@ -26,7 +27,7 @@ mod.getRampartSitesCanBuild = function(room, energyAvailable) {
         filter: function(o) {
             //Only build rampart if this builder can maintain it to low bound
             return o.structureType==STRUCTURE_RAMPART 
-              && energyAvailable >= RampartMaintainThreshold.Low/REPAIR_POWER;  //Currently 60K/100=600Energy
+              && energyAvailable >= RampartMaintainThreshold.Lowest/REPAIR_POWER;  //Currently 10K/100=100Energy
         }
     });
 }
