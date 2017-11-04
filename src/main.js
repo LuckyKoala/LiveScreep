@@ -32,5 +32,11 @@ mod.loop = function () {
         entry[room.name] = room.energyAvailable;
     });
     Util.Stat.memorize('last-energyAvailable', entry);
-    Util.Stat.memorize('last-cpu-used-total', Game.cpu.getUsed());
+    
+    const previousCpuUsedTotal = Util.Stat.find('previousCpuUsedTotal', 0);
+    const previousCpuUsedCountTimes = Util.Stat.find('previousCpuUsedCountTimes', 0);
+    const currentCpuUsed = Game.cpu.getUsed();
+    Util.Stat.memorizePermanant('previousCpuUsedTotal', previousCpuUsedTotal+currentCpuUsed);
+    Util.Stat.memorizePermanant('previousCpuUsedCountTimes', previousCpuUsedCountTimes+1);
+    Util.Stat.memorizePermanant('previousCpuUsedAverage', (previousCpuUsedTotal+currentCpuUsed)/(previousCpuUsedCountTimes+1));
 }
