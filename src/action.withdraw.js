@@ -31,7 +31,7 @@ const targetInitFunc = function(creep) {
         return creep.pos.findClosestByRange(targets);
     } else if(role == 'filler') {
         const spawnLink = creep.room.spawnLink;
-        if(spawnLink && spawnLink.energy>0) {
+        if(spawnLink) {
             return spawnLink;
         } else {
             return creep.room.storage;
