@@ -2,7 +2,7 @@ var mod = new RoleObj('Builder');
 module.exports = mod;
 
 mod.roleConfig = {
-    inStack: [Action.Withdraw, Action.Pickup],
+    inStack: [Action.Dismantle, Action.Withdraw, Action.Pickup],
     outStack: [Action.Build, Action.Maintain, Action.Repair],
 };
 
