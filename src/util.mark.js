@@ -11,6 +11,7 @@ mod.loop = function() {
 
 /**
  * Common Target Mark System
+ * Only work with object which has id property
  * -- Creep --
  * Memory Path: .memory.targetMark
  * = %id%
