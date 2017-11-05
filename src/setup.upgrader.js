@@ -1,6 +1,8 @@
 var mod = new SetupObj('Upgrader');
 module.exports = mod;
 
+const StorageBoundForAddUpgrader = Config.StorageBoundForAddUpgrader || 60*Thousand;
+
 mod.setupConfig = {
     Low: {
         minEnergy: 200,
@@ -31,7 +33,8 @@ mod.shouldSpawn = function(room, cnt) {
 
     const existCount = cnt[lowerFirst(this.setupName)];
     var limit = 2;
-    if(room.storage && room.storage.store.energy>60*Thousand && room.energyAvailable>=this.setupConfig.Normal.minEnergy) {
+    
+    if(room.storage && room.storage.store.energy>StorageBoundForAddUpgrader && room.energyAvailable>=this.setupConfig.Normal.minEnergy) {
         limit++;
     }
     return _.isUndefined(existCount) || existCount < limit;

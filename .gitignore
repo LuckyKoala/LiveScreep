@@ -1,3 +1,4 @@
 TODO.txt
 .screeps.json
 node_modules/*
+config.override.js

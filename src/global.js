@@ -3,6 +3,22 @@ global.lowerFirst = function(string) {
     return string && (string.charAt(0).toLowerCase() + string.slice(1));
 };
 
+global.tryRequire = (path, silent = false) => {
+    let mod;
+    try{
+        mod = require(path);
+    } catch(e) {
+        if( e.message && e.message.indexOf('Unknown module') > -1 ){
+            if(!silent) console.log(`Module "${path}" not found!`);
+        } else if(mod == null) {
+            console.log(`Error loading module "${path}"!<br/>${e.stack || e.toString()}`);
+        }
+        mod = null;
+    }
+    return mod;
+};
+
+global.Config = tryRequire('config.override', true) || {};
 global.RoleObj = require('role.obj');
 global.ActionObj = require('action.obj');
 global.SetupObj = require('setup.obj');
