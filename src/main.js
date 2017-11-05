@@ -4,11 +4,13 @@ var _extension = require('extension');
 var mod = {};
 module.exports = mod;
 mod.loop = function () {
+    Memory.start; //Init memory
+    const cpuUsedForParse = Game.cpu.getUsed();
     //Validate and clear data
     Util.GC.loop();
     Util.Mark.loop();
     Util.Stat.loop();
-    Util.Stat.memorize('last-cpu-used-for-parse-and-clear', Game.cpu.getUsed());
+    Util.Stat.memorize('last-cpu-used-for-parse-and-clear', cpuUsedForParse);
     //Run creeps
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
@@ -36,7 +38,14 @@ mod.loop = function () {
     const previousCpuUsedTotal = Util.Stat.find('previousCpuUsedTotal', 0);
     const previousCpuUsedCountTimes = Util.Stat.find('previousCpuUsedCountTimes', 0);
     const currentCpuUsed = Game.cpu.getUsed();
-    Util.Stat.memorizePermanant('previousCpuUsedTotal', previousCpuUsedTotal+currentCpuUsed);
-    Util.Stat.memorizePermanant('previousCpuUsedCountTimes', previousCpuUsedCountTimes+1);
-    Util.Stat.memorizePermanant('previousCpuUsedAverage', (previousCpuUsedTotal+currentCpuUsed)/(previousCpuUsedCountTimes+1));
+    if(previousCpuUsedCountTimes >= 36000) {
+        //~1 day, clear it
+        Util.Stat.memorizePermanant('previousCpuUsedTotal', currentCpuUsed);
+        Util.Stat.memorizePermanant('previousCpuUsedCountTimes', 1);
+        Util.Stat.memorizePermanant('previousCpuUsedAverage', currentCpuUsed);
+    } else {
+        Util.Stat.memorizePermanant('previousCpuUsedTotal', previousCpuUsedTotal+currentCpuUsed);
+        Util.Stat.memorizePermanant('previousCpuUsedCountTimes', previousCpuUsedCountTimes+1);
+        Util.Stat.memorizePermanant('previousCpuUsedAverage', (previousCpuUsedTotal+currentCpuUsed)/(previousCpuUsedCountTimes+1));
+    }
 }
