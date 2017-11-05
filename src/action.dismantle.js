@@ -6,7 +6,7 @@ const DismantleFlag = {
     secondaryColor: COLOR_RED,
 }
 mod.nextTarget = function() {
-    return creep.pos.findClosestByRange(FIND_FLAGS, {
+    return this.creep.pos.findClosestByRange(FIND_FLAGS, {
         filter: function(o) {
             return o.color==DismantleFlag.color && o.secondaryColor==DismantleFlag.secondaryColor;
         }
