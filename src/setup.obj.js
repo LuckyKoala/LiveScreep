@@ -1,3 +1,8 @@
+/**
+ * the minEnergy+bodyCost(extraBody*maxExtraAmount) in setup.Low
+ *   must be low than the minEnergy in setup.Normal
+ */
+
 var mod = function(name) {
     this.setupName = name;
     this.setupConfig = {
