@@ -18,11 +18,10 @@ mod.getSpawnsInRoom = function(roomName) {
 
 mod.loop = function(room) {
     const self = this;
-    this.room = room;
-    const roomName = this.room.name;
+    const roomName = room.name;
     const roomCreeps = _.filter(Game.creeps, function(creep) { return creep.memory.homeRoom == roomName; });
-    this.spawns = this.getSpawnsInRoom(roomName);
-    this.rcl = this.room.controller.level;
+    var spawns = this.getSpawnsInRoom(roomName);
+    const rcl = room.controller.level;
 
     const trySpawn = function(setupObj, successCallBack) {
         if(!spawningStatus && setupObj.shouldSpawn(room, cnt)) {
@@ -34,7 +33,7 @@ mod.loop = function(room) {
     };
 
     //=====Diff spawn strategy by current RCL=====
-    if(this.rcl < 3) {
+    if(rcl < 3) {
         //Worker is enough for harvest and upgrade
         var energyInPerTick = 0;
         for(var name in roomCreeps) {
@@ -47,7 +46,7 @@ mod.loop = function(room) {
             }
         }
         //Try all the spawn
-        var spawn = this.spawns.shift();
+        var spawn = spawns.shift();
         while(spawn) {
             if(energyInPerTick >= MAXIUM_ENERGY_GENERATE_PER_TICK * WORKER_FACTOR) break;
             var spawningStatus = false;
@@ -57,7 +56,7 @@ mod.loop = function(room) {
             for(var index in SpawnQueueForLowRCL) {
                 trySpawn(SpawnQueueForLowRCL[index], callback);
             }
-            spawn = this.spawns.shift();
+            spawn = spawns.shift();
         }
 
     } else {
@@ -73,7 +72,7 @@ mod.loop = function(room) {
             cnt.total++;
         }
         //Try all the spawn
-        var spawn = this.spawns.shift();
+        var spawn = spawns.shift();
         while(spawn) {
             var spawningStatus = false;
             const callback = function(spawningStatus) {
@@ -84,7 +83,7 @@ mod.loop = function(room) {
             for(var index in SpawnQueue) {
                 trySpawn(SpawnQueue[index], callback);
             }
-            spawn = this.spawns.shift();
+            spawn = spawns.shift();
         }
     }
 
@@ -108,7 +107,7 @@ mod.spawnWithSetup = function(spawn, {setupConfig, shouldUseHighLevel}) {
     if(energyAvailable < bodyCost) return;
     //Calculate name
     const name = prefix+spawn.name+'->'+Game.time;
-    memory['homeRoom'] = this.room.name;
+    memory['homeRoom'] = spawn.room.name;
     const result = spawn.spawnCreep(body, name, {
         memory: memory,
     });
