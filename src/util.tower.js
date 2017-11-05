@@ -18,11 +18,14 @@ mod.loop = function(room) {
     this.towers = towers;
     _.forEach(towers, function(tower) {
         //Kill invader
-        var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if(closestHostile) {
-            tower.attack(closestHostile);
+        var sortHostiles = Util.Defense.sortHostilesByPos(room, tower.pos);
+        const hostile = sortHostiles.length ?
+        　　Game.getObjectById(_.last(sortHostiles).id) : false;
+        if(hostile) {
+            tower.attack(hostile);
             return;
         }
+
         if(tower.energy <= this.EnergyForDefend) return; //Save energy for defend 
         //Heal creep
         var closestInjuredCreep = tower.pos.findClosestByRange(FIND_MY_CREEPS, {
@@ -41,7 +44,7 @@ mod.loop = function(room) {
                     } else if(structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_RAMPART) {
                         return false;
                     } else if(structure.structureType == STRUCTURE_ROAD) {
-                        return false; //Let hauler do the work
+                        return false; 
                     }
                     return true;
                 }

@@ -12,10 +12,11 @@ const RampartMaintainThreshold = {
 };
 const WallMaintainThreshold = 300*Thousand; 
 const ThreatValue = {
-    attack: 4,
-    ranged_attack: 3,
-    heal: 2,
     tough: 1,
+    ranged_attack: 2,
+    attack: 3,
+    work: 4,
+    heal: 5,
 };
 
 mod.loop = function(room) {
@@ -57,8 +58,40 @@ mod.canReleaseWall = function(hits) {
     return hits>=WallMaintainThreshold;
 }
 
+mod.getBodypartsCnt = function(creep) {
+    var data = {};
+    _.forEach(BODYPART_COST, (value, key) => {
+        data[key] = creep.getActiveBodyparts(key);
+    })
+    return data;
+}
+
+mod.sortHostilesByRoom = function(room) {
+    const self = this;
+    const hostiles = room.find(FIND_HOSTILE_CREEPS);
+    const hostileMap = _.map(hostiles, o => {
+        const cnt = self.getBodypartsCnt(o);
+        return {
+            threat: self.sumThreatValueByCnt(cnt),
+            id: o.id,
+        }
+    });
+    return _.sortBy(hostileMap, ['threat', 'id']);
+}
+
+mod.sumThreatValueByCnt = function(bodypartsCnt) {
+    var sum = 0;
+    _.forEach(bodypartsCnt, (cnt, type) => {
+        var threatValue = ThreatValue[type];
+        if(!_.isUndefined(threatValue)) {
+            sum+=threatValue*cnt;
+        }
+    });
+    return sum;
+}
+
 //TODO honour boost part
-mod.getThreatValue = function(body) {
+mod.sumThreatValueByBody = function(body) {
     var value = 0;
     for(var i=0; i<body.length; i++) {
         var part = body[i];
@@ -74,16 +107,17 @@ mod.getCurrentThreatValue = function(room) {
     const self = this;
     const hostiles = room.find(FIND_HOSTILE_CREEPS);
     
-    return _.sum(_.map(hostiles, o => self.getThreatValue(o.body))); //sumBy
+    return _.sum(_.map(hostiles, o => self.sumThreatValueByBody(o.body))); //sumBy
 }
 
-mod.getSortedHostiles = function(creep) {
-    const hostiles = creep.room.find(FIND_HOSTILE_CREEPS);
+mod.sortHostilesByPos = function(room, pos) {
     const self = this;
-    const hostileMap = _.map(hostiles, function(o) {
+    const hostiles = room.find(FIND_HOSTILE_CREEPS);
+    const hostileMap = _.map(hostiles, o => {
+        const cnt = self.getBodypartsCnt(o);
         return {
-            threat: self.getThreatValue(o.body),
-            range: creep.pos.getRangeTo(o),
+            threat: self.sumThreatValueByCnt(cnt),
+            range: pos.getRangeTo(o),
             id: o.id,
         }
     });
