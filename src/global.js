@@ -36,6 +36,7 @@ global.Action = {
     Maintain: require('action.maintain'),
     Repair: require('action.repair'),
     Recycle: require('action.recycle'),
+    Dismantle: require('action.dismantle'),
 };
 global.Setup = {
     Worker: require('setup.worker'),
