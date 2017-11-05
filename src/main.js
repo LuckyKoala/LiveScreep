@@ -1,16 +1,18 @@
 var _global = require('global');
 var _extension = require('extension');
+const profiler = require('screeps-profiler');
 
-var mod = {};
-module.exports = mod;
-mod.loop = function () {
-    Memory.start; //Init memory
-    const cpuUsedForParse = Game.cpu.getUsed();
+// This line monkey patches the global prototypes.
+//profiler.enable();
+module.exports.loop = function() {
+  profiler.wrap(loop0);
+}
+
+const loop0 = function () {
     //Validate and clear data
     Util.GC.loop();
     Util.Mark.loop();
     Util.Stat.loop();
-    Util.Stat.memorize('last-cpu-used-for-parse-and-clear', cpuUsedForParse);
     //Run creeps
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
@@ -34,7 +36,7 @@ mod.loop = function () {
         entry[room.name] = room.energyAvailable;
     });
     Util.Stat.memorize('last-energyAvailable', entry);
-    
+    /* 
     const previousCpuUsedTotal = Util.Stat.find('previousCpuUsedTotal', 0);
     const previousCpuUsedCountTimes = Util.Stat.find('previousCpuUsedCountTimes', 0);
     const currentCpuUsed = Game.cpu.getUsed();
@@ -48,4 +50,5 @@ mod.loop = function () {
         Util.Stat.memorizePermanant('previousCpuUsedCountTimes', previousCpuUsedCountTimes+1);
         Util.Stat.memorizePermanant('previousCpuUsedAverage', (previousCpuUsedTotal+currentCpuUsed)/(previousCpuUsedCountTimes+1));
     }
+    */
 }
