@@ -54,7 +54,7 @@ global.Action = {
     Repair: require('action.repair'),
     Recycle: require('action.recycle'),
     Dismantle: require('action.dismantle'),
-    Travel: require('action.travel.js'),
+    Travel: require('action.travel'),
 };
 global.Setup = {
     Worker: require('setup.worker'),
