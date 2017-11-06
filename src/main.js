@@ -36,19 +36,4 @@ const loop0 = function () {
         entry[room.name] = room.energyAvailable;
     });
     Util.Stat.memorize('last-energyAvailable', entry);
-    /* 
-    const previousCpuUsedTotal = Util.Stat.find('previousCpuUsedTotal', 0);
-    const previousCpuUsedCountTimes = Util.Stat.find('previousCpuUsedCountTimes', 0);
-    const currentCpuUsed = Game.cpu.getUsed();
-    if(previousCpuUsedCountTimes >= 36000) {
-        //~1 day, clear it
-        Util.Stat.memorizePermanant('previousCpuUsedTotal', currentCpuUsed);
-        Util.Stat.memorizePermanant('previousCpuUsedCountTimes', 1);
-        Util.Stat.memorizePermanant('previousCpuUsedAverage', currentCpuUsed);
-    } else {
-        Util.Stat.memorizePermanant('previousCpuUsedTotal', previousCpuUsedTotal+currentCpuUsed);
-        Util.Stat.memorizePermanant('previousCpuUsedCountTimes', previousCpuUsedCountTimes+1);
-        Util.Stat.memorizePermanant('previousCpuUsedAverage', (previousCpuUsedTotal+currentCpuUsed)/(previousCpuUsedCountTimes+1));
-    }
-    */
 }
