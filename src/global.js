@@ -26,18 +26,19 @@ global.FlagUtil = {
     dismantle: {
         color: COLOR_RED,
         secondaryColor: COLOR_RED,
-        examine: function(flag) {
-            return flag.color==this.color && flag.secondaryColor==this.secondaryColor;
-        },
     },
     guard: {
         color: COLOR_BLUE,
         secondaryColor: COLOR_BLUE,
-        examine: function(flag) {
-            return flag.color==this.color && flag.secondaryColor==this.secondaryColor;
-        },
     },
 }
+function makeExamineFunction(constant) {
+    return o => o.color==constant.color && o.secondaryColor==constant.secondaryColor;
+};
+function addExamineToFlagUtil() {
+    _.forEach(FlagUtil, o => o.examine = makeExamineFunction(o));
+}
+addExamineToFlagUtil();
 
 global.Action = {
     Harvest: require('action.harvest'),
