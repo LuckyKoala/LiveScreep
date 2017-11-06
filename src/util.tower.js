@@ -6,11 +6,6 @@ const ConstructureMaintainThreshold = {
     container: 80000, //80K
 };
 mod.EnergyForDefend = 600;
-//TODO pair with action.dismantle.DismantleFlag
-const DismantleFlag = {
-    color: COLOR_RED,
-    secondaryColor: COLOR_RED,
-}
 
 mod.loop = function(room) {
     //Check whether energy available is enough for next action
@@ -45,9 +40,7 @@ mod.loop = function(room) {
             filter: (structure) => {
                 const flags = structure.pos.lookFor(LOOK_FLAGS);
                 if(flags) {
-                    const dismantleFlagFound = _.filter(flags, o => {
-                        return o.color==DismantleFlag.color && o.secondaryColor==DismantleFlag.secondaryColor;
-                    }).length;
+                    const dismantleFlagFound = _.filter(flags, o => FlagUtil.dismantle.examine(o)).length;
                    if(dismantleFlagFound) return false;
                 }
                 if(structure.hits < structure.hitsMax) {

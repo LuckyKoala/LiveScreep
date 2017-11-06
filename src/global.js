@@ -22,6 +22,16 @@ global.Config = tryRequire('config.override', true) || {};
 global.RoleObj = require('role.obj');
 global.ActionObj = require('action.obj');
 global.SetupObj = require('setup.obj');
+global.FlagUtil = {
+    dismantle: {
+        color: COLOR_RED,
+        secondaryColor: COLOR_RED,
+        examine: function(flag) {
+            return flag.color==this.color && flag.secondaryColor==this.secondaryColor;
+        },
+    },
+}
+
 global.Action = {
     Harvest: require('action.harvest'),
     Feed: require('action.feed'),

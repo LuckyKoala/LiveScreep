@@ -1,15 +1,9 @@
 let mod = new ActionObj('Dismantle');
 module.exports = mod;
 
-const DismantleFlag = {
-    color: COLOR_RED,
-    secondaryColor: COLOR_RED,
-}
 mod.nextTarget = function() {
     return this.creep.pos.findClosestByRange(FIND_FLAGS, {
-        filter: function(o) {
-            return o.color==DismantleFlag.color && o.secondaryColor==DismantleFlag.secondaryColor;
-        }
+        filter: o => FlagUtil.dismantle.examine(o)
     });
 };
 
