@@ -17,9 +17,7 @@ const targetInitFunc = function(creep) {
     });
     const controllerContainer = creep.room.controller.container;
 
-    if(role == 'upgrader') {
-        return controllerContainer;
-    } else if(role == 'hauler') {
+    if(role == 'hauler') {
         //Hauler shouldn't withdraw energy from container/storage which is used by upgrader
         // which will make hauler trapped in withdraw-transfer loop due to action.put is also
         // used by hauler.
