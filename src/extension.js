@@ -173,6 +173,7 @@ Object.defineProperties(Room.prototype, {
     },
 });
 Room.prototype.saveLinks = function() {
+    if(this.sourceLink && this.spawnLink) return; //Only do search when links is not valid.
     const links = this.find(FIND_MY_STRUCTURES, {
         filter: { structureType: STRUCTURE_LINK }
     });
