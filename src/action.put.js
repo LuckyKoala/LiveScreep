@@ -3,11 +3,6 @@ module.exports = mod;
 
 //Warning: if you put more than one container near source,
 //  hauler will be in infinite loop of withdraw/transfer.
-
-//TODO diff put target to two module
-//  one for store energy whose priority is low
-//  one for put energy to controller container 
-//    which is using by upgrader whose priority is normal
 const targetInitFunc = function(creep) {
     const role = creep.memory.role;
     const findSuitableContainer = function(o) {
@@ -40,6 +35,8 @@ const targetInitFunc = function(creep) {
             }
         }
         var targets = suitableContainers;
+        //Other roles shouldn't put energy to source container
+        //  which will occupy space for energy from source.
         if(sourceContainers.length) {
             const sourceContainerIds = _.map(sourceContainers, o => o.id);
             targets = _.filter(targets, o => _.indexOf(sourceContainerIds, o.id) == -1);
