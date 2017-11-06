@@ -30,6 +30,13 @@ global.FlagUtil = {
             return flag.color==this.color && flag.secondaryColor==this.secondaryColor;
         },
     },
+    guard: {
+        color: COLOR_BLUE,
+        secondaryColor: COLOR_BLUE,
+        examine: function(flag) {
+            return flag.color==this.color && flag.secondaryColor==this.secondaryColor;
+        },
+    },
 }
 
 global.Action = {
@@ -47,6 +54,7 @@ global.Action = {
     Repair: require('action.repair'),
     Recycle: require('action.recycle'),
     Dismantle: require('action.dismantle'),
+    Travel: require('action.travel.js'),
 };
 global.Setup = {
     Worker: require('setup.worker'),
