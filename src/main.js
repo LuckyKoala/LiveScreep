@@ -1,5 +1,6 @@
 var _global = require('global');
 var _extension = require('extension');
+const RoomManager = require('manager.room');
 const profiler = require('screeps-profiler');
 
 // This line monkey patches the global prototypes.
@@ -14,6 +15,13 @@ const loop0 = function () {
     Util.GC.loop();
     Util.Mark.loop();
     Util.Stat.loop();
+    //Run rooms
+    var entry = {};
+    _.forEach(Game.rooms, function(room) {
+        RoomManager.loop(room);
+        entry[room.name] = room.energyAvailable;
+    });
+    Util.Stat.memorize('last-energyAvailable', entry);
     //Run creeps
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
@@ -26,15 +34,4 @@ const loop0 = function () {
             console.log('[Error] Undefined role module is in memory of creep -> '+name);
         }
     }
-    //Run rooms
-    var entry = {};
-    _.forEach(Game.rooms, function(room) {
-        room.saveLinks();
-        Util.Construction.loop(room);
-        Util.Spawner.loop(room);
-        Util.Tower.loop(room);
-        Util.Link.loop(room);
-        entry[room.name] = room.energyAvailable;
-    });
-    Util.Stat.memorize('last-energyAvailable', entry);
 }
