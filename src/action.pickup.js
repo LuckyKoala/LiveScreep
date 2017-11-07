@@ -2,9 +2,9 @@ let mod = new ActionObj('Pickup');
 module.exports = mod;
 
 mod.nextTarget = function() {
-    //TODO Honour range and amount
     return Util.Mark.handleMark(this.creep, creep => {
-        return creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, o => o.amount>200);
+        const remainCapacity = creep.carryCapacity - _.sum(creep.carry);
+        return creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, o => o.amount >= remainCapacity);
     }, this.actionName);
 };
 
