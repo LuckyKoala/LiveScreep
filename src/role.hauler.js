@@ -2,7 +2,7 @@ var mod = new RoleObj('Hauler');
 module.exports = mod;
 
 mod.roleConfig = {
-    inStack: [Action.Withdraw, Action.Pickup],
+    inStack: [Action.Pickup, Action.Withdraw],
     outStack: [Action.Feed, Action.Fuel, Action.Put],
 };
 

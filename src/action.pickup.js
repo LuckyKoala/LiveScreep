@@ -4,11 +4,7 @@ module.exports = mod;
 mod.nextTarget = function() {
     //TODO Honour range and amount
     return Util.Mark.handleMark(this.creep, creep => {
-        if(creep.role = 'filler') {
-            return creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, o => o.amount>200);
-        } else {
-            return creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
-        }
+        return creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, o => o.amount>200);
     }, this.actionName);
 };
 
