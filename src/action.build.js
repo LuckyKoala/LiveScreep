@@ -19,7 +19,10 @@ mod.loop = function(creep) {
         if(result == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
         } else if(result == OK) {
-            Util.Mark.unmarkTarget(creep, this.actionName);
+            //Only unmark if the structure will be finished in next tick,
+            //  so creep will not search for other sites while it has unfinished target
+            const finish = (target.progressTotal - target.progress - creep.getActiveBodyparts(WORK)*BUILD_POWER) == 0;
+            if(finish) Util.Mark.unmarkTarget(creep, this.actionName);
         }
     });
 };
