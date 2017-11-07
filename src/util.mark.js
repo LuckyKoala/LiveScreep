@@ -142,8 +142,10 @@ mod.validateSourceMark = function(source) {
     var status = source.memory.mark.status;
     var updated = false; //Any update needed?
     for(var name in status) {
-        if(!Game.creeps[name]) {
-            //release
+        const creep = Game.creeps[name];
+        if(_.isUndefined(creep) || creep.memory.role == 'recycler') {
+            //Release mark if creep is dead or creep is recycler 
+            //  which means it won't work anymore
             available.spots++;
             available.parts += status[name];
             delete status[name];
