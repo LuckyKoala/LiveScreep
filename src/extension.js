@@ -171,6 +171,29 @@ Object.defineProperties(Room.prototype, {
         enumerable: false,
         configurable: true
     },
+    'controllerLink': {
+        get: function() {
+            if (!this._controllerLink) {
+                if (this.memory.controllerLinkId) {
+                    const obj = Game.getObjectById(this.memory.controllerLinkId);
+                    if(!obj) {
+                        this.memory.controllerLinkId = false;
+                        return false;
+                    }
+                    this._controllerLink = obj;
+                } else {
+                    return false;
+                }
+            }
+            return this._controllerLink;
+        },
+        set: function(controllerLink) {
+            this.memory.controllerLinkId = controllerLink.id;
+            this._controllerLink = controllerLink;
+        },
+        enumerable: false,
+        configurable: true
+    },
     'spawns': {
         get: function() {
             if (!this._spawns) {
@@ -194,19 +217,23 @@ Object.defineProperties(Room.prototype, {
     },
 });
 Room.prototype.saveLinks = function() {
-    if(this.sourceLink && this.spawnLink) return; //Only do search when links is not valid.
+    if(this.sourceLink && this.spawnLink && this.controllerLink) return; //Only do search when links is not valid.
+    const self = this;
     const links = this.find(FIND_MY_STRUCTURES, {
         filter: { structureType: STRUCTURE_LINK }
     });
+    const controller = this.controller;
     const sources = this.find(FIND_SOURCES);
     const spawnsAndExtensions = this.find(FIND_MY_STRUCTURES, {
         filter: o => o.structureType==STRUCTURE_SPAWN || o.structureType==STRUCTURE_EXTENSION
     });
     _.forEach(links, link => {
-        if(link.pos.findInRange(sources, 2).length) {
-            this.sourceLink = link;
+        if(link.pos.inRangeTo(controller, 3)) {
+            self.controllerLink = link;
+        } else if(link.pos.findInRange(sources, 2).length) {
+            self.sourceLink = link;
         } else if(link.pos.findInRange(spawnsAndExtensions, 3).length) {
-            this.spawnLink = link;
+            self.spawnLink = link;
         }
     });
 };
