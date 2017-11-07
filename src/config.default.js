@@ -9,5 +9,6 @@ var mod = {
         Low: 60*Thousand,
         Normal: 150*Thousand,
     },
+    EnergyForDefend: 600,
 };
 module.exports = mod;

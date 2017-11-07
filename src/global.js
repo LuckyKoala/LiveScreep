@@ -80,7 +80,6 @@ global.Role = {
     Filler: require('role.filler'),
 };
 global.Util = {
-    Tower: require('util.tower'),
     Defense: require('util.defense'),
     Mark: require('util.mark'),
     GC: require('util.gc'),
