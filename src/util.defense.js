@@ -2,14 +2,7 @@
 var mod = {};
 module.exports = mod;
 
-const RampartMaintainThreshold = Config.RampartMaintainThreshold || {
-    //this value shouldn't be too high since it is used by getRampartSitesCanBuild(),
-    //  if it is too high, then rampart site can only be built by bigger builder which
-    //  have many limitation.
-    Lowest: 10*Thousand,
-    Low: 60*Thousand,
-    Normal: 150*Thousand,
-};
+const RampartMaintainThreshold = Config.RampartMaintainThreshold;
 const WallMaintainThreshold = 300*Thousand; 
 const ThreatValue = {
     tough: 1,

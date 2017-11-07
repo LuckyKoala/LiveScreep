@@ -1,7 +1,7 @@
 var mod = new SetupObj('Upgrader');
 module.exports = mod;
 
-const StorageBoundForAddUpgrader = Config.StorageBoundForAddUpgrader || 60*Thousand;
+const StorageBoundForAddUpgrader = Config.StorageBoundForAddUpgrader;
 
 mod.setupConfig = {
     Low: {

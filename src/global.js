@@ -18,7 +18,7 @@ global.tryRequire = (path, silent = false) => {
     return mod;
 };
 
-global.Config = tryRequire('config.override', true) || {};
+global.Config = tryRequire('config.override', true) || require('config.default');
 global.RoleObj = require('role.obj');
 global.ActionObj = require('action.obj');
 global.SetupObj = require('setup.obj');
