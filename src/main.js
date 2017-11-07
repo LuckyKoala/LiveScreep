@@ -3,7 +3,8 @@ var _extension = require('extension');
 const profiler = require('screeps-profiler');
 
 // This line monkey patches the global prototypes.
-//profiler.enable();
+const EnableProfiler = Config.EnableProfiler || false;
+if(EnableProfiler) profiler.enable();
 module.exports.loop = function() {
   profiler.wrap(loop0);
 }
