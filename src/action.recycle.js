@@ -3,7 +3,7 @@ module.exports = mod;
 
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, creep => {
-        return creep.pos.findClosestByRange(Util.Spawner.getSpawnsInRoom(creep.room.name));
+        return creep.pos.findClosestByRange(creep.room.spawns);
     }, this.actionName);
 };
 

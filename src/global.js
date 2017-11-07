@@ -80,14 +80,11 @@ global.Role = {
     Filler: require('role.filler'),
 };
 global.Util = {
-    Spawner: require('util.spawner'),
     Tower: require('util.tower'),
     Defense: require('util.defense'),
     Mark: require('util.mark'),
     GC: require('util.gc'),
     Smalltask: require('util.smalltask'),
     Stat: require('util.stat'),
-    Construction: require('util.construction'),
-    Link: require('util.link'),
 }
 global.State= {};

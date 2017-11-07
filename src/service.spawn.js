@@ -12,15 +12,11 @@ const SpawnQueue = _.union(SpawnQueueHigh, SpawnQueueNormal, SpawnQueueLow);
 
 const SpawnQueueForLowRCL = [Setup.Worker];
 
-mod.getSpawnsInRoom = function(roomName) {
-    return _.filter(Game.spawns, function(spawn) { return spawn.room.name == roomName; });
-}
-
 mod.loop = function(room) {
     const self = this;
     const roomName = room.name;
     const roomCreeps = _.filter(Game.creeps, function(creep) { return creep.memory.homeRoom == roomName; });
-    var spawns = this.getSpawnsInRoom(roomName);
+    var spawns = room.spawns;
     const rcl = room.controller.level;
 
     const trySpawn = function(setupObj, successCallBack) {

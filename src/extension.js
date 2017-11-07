@@ -171,6 +171,27 @@ Object.defineProperties(Room.prototype, {
         enumerable: false,
         configurable: true
     },
+    'spawns': {
+        get: function() {
+            if (!this._spawns) {
+                const spawnIds = this.memory.spawnIds; 
+                if (spawnIds) {
+                    var spawns = _.map(spawnIds, id => Game.getObjectById(id));
+                    //TODO Validate spawns
+                    this._spawns = spawns;
+                } else {
+                    return false;
+                }
+            }
+            return this._spawns;
+        },
+        set: function(spawns) {
+            this.memory.spawnIds = _.map(spawns, spawn => spawn.id); 
+            this._spawns = spawns;
+        },
+        enumerable: false,
+        configurable: true
+    },
 });
 Room.prototype.saveLinks = function() {
     if(this.sourceLink && this.spawnLink) return; //Only do search when links is not valid.
@@ -188,5 +209,9 @@ Room.prototype.saveLinks = function() {
             this.spawnLink = link;
         }
     });
+};
+Room.prototype.saveSpawns = function() {
+    const roomName = this.name;
+    this.spawns = _.filter(Game.spawns, spawn => spawn.room.name===roomName);
 };
 

@@ -22,7 +22,7 @@ mod.initRoad = function(room) {
     //Spawn to Source
     //Spawn to Controller
     const sources = room.find(FIND_SOURCES);
-    const spawns = Util.Spawner.getSpawnsInRoom(room.name);
+    const spawns = room.spawns;
     _.forEach(spawns, spawn => {
         _.forEach(sources, source => self.buildRoad(room, spawn.pos, source.pos));
         self.buildRoad(room, spawn.pos, room.controller.pos);

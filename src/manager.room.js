@@ -1,10 +1,16 @@
+const LinkService = require('service.link');
+const ConstructionService = require('service.construction');
+const SpawnService = require('service.spawn');
+
 var mod = {};
 module.exports = mod;
 
 mod.loop = function(room) {
     room.saveLinks();
-    Util.Construction.loop(room);
-    Util.Spawner.loop(room);
+    room.saveSpawns();
+
+    ConstructionService.loop(room);
+    SpawnService.loop(room);
     Util.Tower.loop(room);
-    Util.Link.loop(room);
+    LinkService.loop(room);
 }
