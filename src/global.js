@@ -44,6 +44,7 @@ global.Action = {
     Harvest: require('action.harvest'),
     Feed: require('action.feed'),
     Upgrade: require('action.upgrade'),
+    ComplexUpgrade: require('action.complex.upgrade'),
     Build: require('action.build'),
     Withdraw: require('action.withdraw'),
     Put: require('action.put'),

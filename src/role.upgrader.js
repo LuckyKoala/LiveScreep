@@ -3,7 +3,7 @@ module.exports = mod;
 
 mod.roleConfig = {
     inStack: [],
-    outStack: [Action.Upgrade],
+    outStack: [Action.ComplexUpgrade],
 };
 
 mod.loop = function(creep) {
