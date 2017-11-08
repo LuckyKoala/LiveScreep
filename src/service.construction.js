@@ -7,7 +7,7 @@ mod.loop = function(room) {
     if(_.isUndefined(Memory.construction)) Memory.construction = {};
     if(!_.isObject(Memory.construction)) Memory.construction = {};
     const entry = Memory.construction[room.name] || {};
-    if(!entry['roadInit']) {
+    if(!entry['roadInit'] && room.controller.level>=3) {
         //Build road
         this.initRoad(room);
         entry['roadInit'] = true;
