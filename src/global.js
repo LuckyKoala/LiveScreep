@@ -70,6 +70,7 @@ global.Setup = {
     Guardian: require('setup.guardian'),
     Ant: require('setup.ant'),
     Filler: require('setup.filler'),
+    Task: require('setup.task'),
 };
 global.Role = {
     Worker: require('role.worker'),

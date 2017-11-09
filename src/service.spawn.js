@@ -7,7 +7,7 @@ const WORKER_FACTOR = 1.2; //Cause worker will not stay still, the movement will
 
 const SpawnQueueHigh = [Setup.Guardian];
 const SpawnQueueNormal = [Setup.Harvester, Setup.Hauler, Setup.Filler];
-const SpawnQueueLow = [Setup.Upgrader, Setup.Builder];
+const SpawnQueueLow = [Setup.Upgrader, Setup.Builder, Setup.Task];
 const SpawnQueue = _.union(SpawnQueueHigh, SpawnQueueNormal, SpawnQueueLow);
 
 const SpawnQueueForLowRCL = [Setup.Worker];
