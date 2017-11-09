@@ -118,14 +118,13 @@ mod.sortHostilesByPos = function(room, pos) {
 }
 //TODO Calculate suitable body parts for spawner to spawn guardian
 mod.shouldSpawnGuardian = function(room) {
-    //TODO Count tower
     var towers = room.find(FIND_MY_STRUCTURES, {
         filter: (structure) => {
             return (structure.structureType == STRUCTURE_TOWER) &&
                 structure.energy > Config.EnergyForDefend;
         }
     });
-    var currentThreatValue = this.getCurrentThreatValue(room);
-    //Spawn only if tower have no energy and threat is not 0
-    return towers.length == 0 && currentThreatValue > 0; 
+    //var currentThreatValue = this.getCurrentThreatValue(room);
+    //If there is no tower, just spawn one
+    if(towers.length==0) return true;
 }
