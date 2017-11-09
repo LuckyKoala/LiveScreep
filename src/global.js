@@ -60,6 +60,7 @@ global.Action = {
     Recycle: require('action.recycle'),
     Dismantle: require('action.dismantle'),
     Travel: require('action.travel'),
+    Invade: require('action.invade'),
 };
 global.Setup = {
     Worker: require('setup.worker'),
