@@ -5,8 +5,8 @@ const StorageBoundForAddUpgrader = Config.StorageBoundForAddUpgrader;
 
 mod.setupConfig = {
     Low: {
-        minEnergy: 200,
-        essBody: [WORK, CARRY, MOVE],
+        minEnergy: 300,
+        essBody: [WORK, WORK, CARRY, MOVE],
         extraBody: [],
         prefix: '[LowUpgrader]',
         memory: {role: 'upgrader'},
@@ -32,7 +32,7 @@ mod.shouldSpawn = function(room, cnt) {
     this.rcl = room.controller.level;
 
     const existCount = cnt[lowerFirst(this.setupName)];
-    var limit = 2;
+    var limit = room.energyCapacityAvailable < 750 ? 6 : 2; //12 work or 12 work
     
     if(room.storage && room.storage.store.energy>StorageBoundForAddUpgrader && room.energyAvailable>=this.setupConfig.Normal.minEnergy) {
         limit++;
