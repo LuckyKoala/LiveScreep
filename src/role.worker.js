@@ -3,7 +3,7 @@ module.exports = mod;
 
 mod.roleConfig = {
     inStack: [Action.Harvest],
-    outStack: [Action.Upgrade],
+    outStack: [Action.Feed, Action.Upgrade],
 };
 
 mod.loop = function(creep) {
