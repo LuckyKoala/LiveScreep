@@ -13,7 +13,7 @@ mod.roleConfigWhenNoStorage = {
 
 mod.loop = function(creep) {
     if(!creep.room.storage) {
-        this.roleConfig = this.roleConfigWhenNoControllerContainer;
+        this.roleConfig = this.roleConfigWhenNoStorage;
     }
     
     if(creep.memory.hauling && creep.carry.energy == 0) {
