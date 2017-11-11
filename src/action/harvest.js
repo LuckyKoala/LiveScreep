@@ -3,13 +3,13 @@ module.exports = mod;
 
 mod.nextTarget = function() {
     const creep = this.creep;
-    var markSource = Util.Mark.getMarkSource(creep);
+    var markSource = Util.SourceMark.getMarkSource(creep);
 
     if(!markSource) {
         //Not found
         console.log("Finding unmark source => "+creep.name);
         Util.Mark.findAndMarkSource(creep);
-        markSource = Util.Mark.getMarkSource(creep);
+        markSource = Util.SourceMark.getMarkSource(creep);
     }
 
     return markSource;

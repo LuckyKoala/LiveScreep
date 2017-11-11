@@ -87,6 +87,7 @@ global.Role = {
 global.Util = {
     Defense: require('util_defense'),
     Mark: require('util_mark'),
+    SourceMark: require('util_sourcemark'),
     GC: require('util_gc'),
     Smalltask: require('util_smalltask'),
     Stat: require('util_stat'),

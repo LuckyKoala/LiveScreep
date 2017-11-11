@@ -23,7 +23,7 @@ const targetInitFunc = function(creep) {
            && sourceLink.energy<sourceLink.energyCapacity) {
             return sourceLink;
         } else {
-            const markSource = Util.Mark.getMarkSource(creep);
+            const markSource = Util.SourceMark.getMarkSource(creep);
             return markSource ? markSource.container : false;
         }
     } else {
