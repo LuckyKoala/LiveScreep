@@ -1,13 +1,42 @@
 //SourceMark logic goes there
-var mod = {};
-module.exports = mod;
-
-mod.loop = function() {
-    for(var id in Memory.sources) {
-        var source = Game.getObjectById(id);
-        if(source) this.validateSourceMark(source);
-    }
-}
+module.exports = {
+    loop: function() {
+        for(var id in Memory.sources) {
+            var source = Game.getObjectById(id);
+            if(source) validateSourceMark(source);
+        }
+    },
+    findAndMarkSource: function(creep) {
+        var sources = creep.room.find(FIND_SOURCES);
+        for(var i=0; i<sources.length; i++) {
+            var source = sources[i];
+            if(source && isSourceAvailable(creep, source)) {
+                markSource(creep, source);
+                return true;
+            }
+        }
+        return false;
+    },
+    getMarkSource: function(creep) {
+        var id = _.get(creep, 'memory.sourceMark.target', false);
+        if(id) {
+            return Game.getObjectById(id);
+            /*
+            const source = Game.getObjectById(id);
+            if(source) ensureSourceMarkInitialize(source);
+            if(_.isUndefined(source.memory.mark.status[creep.name])) {
+                clearSourceMark(creep);
+                return false;
+            } else {
+                return true;
+            }
+            */
+        }
+        else {
+            return false;
+        }
+    },
+};
 
 /**
  * Source Mark System
@@ -30,7 +59,7 @@ mod.loop = function() {
  */
 const SourcePartsDefault = SOURCE_ENERGY_CAPACITY/ENERGY_REGEN_TIME/HARVEST_POWER; 
 
-mod.initSourceMark = function(source) {
+function initSourceMark(source) {
     //FIXME only for normal room
     source.memory.mark = {
         available: {
@@ -41,27 +70,15 @@ mod.initSourceMark = function(source) {
     }
 }
 
-mod.isSourceAvailable = function(creep, source) {
-    this.ensureSourceMarkInitialize(source);
+function isSourceAvailable(creep, source) {
+    ensureSourceMarkInitialize(source);
     const needParts = creep.getActiveBodyparts(WORK);
     const available = source.memory.mark.available;
     return available.spots>=1 && available.parts>=needParts;
 }
 
-mod.findAndMarkSource = function(creep) {
-    var sources = creep.room.find(FIND_SOURCES);
-    for(var i=0; i<sources.length; i++) {
-        var source = sources[i];
-        if(source && this.isSourceAvailable(creep, source)) {
-            this.markSource(creep, source);
-            return true;
-        }
-    }
-    return false;
-}
-
-mod.markSource = function(creep, source) {
-    this.ensureSourceMarkInitialize(source);
+function markSource(creep, source) {
+    ensureSourceMarkInitialize(source);
     //Now mark it
     //Update creep mark
     creep.memory.sourceMark = {
@@ -80,27 +97,24 @@ mod.markSource = function(creep, source) {
     console.log("Mark source [" + source.id + "] by "+creep.name);
 }
 
-mod.getMarkSource = function(creep) {
-    var id = _.get(creep, 'memory.sourceMark.target', false);
-    if(id) {
-        return Game.getObjectById(id);
-    }
-    else {
-        return false;
+function clearSourceMark(creep) {
+    if(!_.isUndefined(creep)) {
+        delete creep.memory.sourceMark;
     }
 }
 
-mod.validateSourceMark = function(source) {
-    this.ensureSourceMarkInitialize(source);
+function validateSourceMark(source) {
+    ensureSourceMarkInitialize(source);
     //Get status
     var available = source.memory.mark.available;
     var status = source.memory.mark.status;
-    var updated = false; //Any update needed?
+    var updated = false;
     for(var name in status) {
         const creep = Game.creeps[name];
         if(_.isUndefined(creep) || creep.memory.role == 'recycler') {
             //Release mark if creep is dead or creep is recycler 
             //  which means it won't work anymore
+            clearSourceMark(creep);
             available.spots++;
             available.parts += status[name];
             delete status[name];
@@ -113,7 +127,7 @@ mod.validateSourceMark = function(source) {
     }
 }
 
-mod.ensureSourceMarkInitialize = function(source) {
+function ensureSourceMarkInitialize(source) {
     //Has source been initialized?
     if(_.isUndefined(source.memory.mark)) {
         this.initSourceMark(source);
