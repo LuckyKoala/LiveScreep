@@ -19,7 +19,7 @@ mod.loop = function(room) {
     var spawns = room.spawns;
     const rcl = room.controller.level;
 
-    const trySpawn = function(setupObj, successCallBack) {
+    const trySpawn = function(setupObj, cnt, successCallBack) {
         if(!spawningStatus && setupObj.shouldSpawn(room, cnt)) {
             spawningStatus = self.spawnWithSetup(spawn, setupObj);
             if(spawningStatus) {
@@ -42,15 +42,16 @@ mod.loop = function(room) {
             }
         }
         //Try all the spawn
+        var cnt = MAXIUM_ENERGY_GENERATE_PER_TICK * WORKER_FACTOR - energyInPerTick;
         var spawn = spawns.shift();
         while(spawn) {
             if(energyInPerTick >= MAXIUM_ENERGY_GENERATE_PER_TICK * WORKER_FACTOR) break;
             var spawningStatus = false;
             const callback = function(spawningStatus) {
-                energyInPerTick += spawningStatus.getActiveBodyparts(WORK) * HARVEST_POWER;
+                cnt -= spawningStatus.getActiveBodyparts(WORK) * HARVEST_POWER;
             };
             for(var index in SpawnQueueForLowRCL) {
-                trySpawn(SpawnQueueForLowRCL[index], callback);
+                trySpawn(SpawnQueueForLowRCL[index], cnt, callback);
             }
             spawn = spawns.shift();
         }
@@ -77,7 +78,7 @@ mod.loop = function(room) {
                 cnt.total++;
             };
             for(var index in SpawnQueue) {
-                trySpawn(SpawnQueue[index], callback);
+                trySpawn(SpawnQueue[index], cnt, callback);
             }
             spawn = spawns.shift();
         }
