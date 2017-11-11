@@ -13,7 +13,7 @@ module.exports.loop = function() {
 const loop0 = function () {
     //Validate and clear data
     Util.GC.loop();
-    Util.Mark.loop();
+    Util.SourceMark.loop();
     Util.Stat.loop();
     //Run rooms
     var entry = {};
