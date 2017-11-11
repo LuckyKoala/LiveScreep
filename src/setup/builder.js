@@ -28,5 +28,5 @@ mod.shouldSpawn = function(room, cnt) {
         }
     });
     const needBuilder = (needBuildStructures.length + needRepairStructures.length) > 0;
-    return needBuilder && (_.isUndefined(existCount) || existCount < 1);
+    return needBuilder && (_.isUndefined(existCount) || existCount < cntLimit);
 };
