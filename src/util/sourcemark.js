@@ -130,6 +130,6 @@ function validateSourceMark(source) {
 function ensureSourceMarkInitialize(source) {
     //Has source been initialized?
     if(_.isUndefined(source.memory.mark)) {
-        this.initSourceMark(source);
+        initSourceMark(source);
     }
 }
