@@ -1,10 +1,25 @@
 //Mark logic goes there
-var mod = {};
-module.exports = mod;
-
-mod.loop = function() {
-    //Do nothing
-}
+module.exports = {
+    unmarkTarget: function(creep, actionSource) {
+        ensureTargeMarktInitialize(creep);
+        if(_.isUndefined(actionSource)) return;
+        creep.memory.targetMark[actionSource] = false;
+    },
+    handleMark: function(creep, targetInitFunc, actionSource) {
+        var targetId = getMarkTarget(creep, actionSource);
+        var target;
+    
+        if(!targetId) {
+            target = targetInitFunc(creep);
+            if(!target) return false;
+            targetId = target.id;
+            markTarget(creep, targetId, actionSource);
+        }
+        target = Game.getObjectById(targetId);
+        if(!target) this.unmarkTarget(creep, actionSource);
+        return target;
+    },
+};
 
 /**
  * Common Target Mark System
@@ -13,40 +28,19 @@ mod.loop = function() {
  * Memory Path: .memory.targetMark
  * = %id%
  */
-mod.ensureTargeMarktInitialize = function(creep) {
+function ensureTargeMarktInitialize(creep) {
     if(_.isUndefined(creep.memory.targetMark)) creep.memory.targetMark = {};
     if(!_.isObject(creep.memory.targetMark)) creep.memory.targetMark = {};
 }
 
-mod.markTarget = function(creep, targetId, actionSource) {
-    this.ensureTargeMarktInitialize(creep);
+function markTarget(creep, targetId, actionSource) {
+    ensureTargeMarktInitialize(creep);
     if(_.isUndefined(actionSource)) return;
     creep.memory.targetMark[actionSource] = targetId;
 }
 
-mod.unmarkTarget = function(creep, actionSource) {
-    this.ensureTargeMarktInitialize(creep);
-    if(_.isUndefined(actionSource)) return;
-    creep.memory.targetMark[actionSource] = false;
-}
-
-mod.getMarkTarget = function(creep, actionSource) {
-    this.ensureTargeMarktInitialize(creep);
+function getMarkTarget(creep, actionSource) {
+    ensureTargeMarktInitialize(creep);
     if(_.isUndefined(actionSource)) return;
     return creep.memory.targetMark[actionSource] || false;
-}
-
-mod.handleMark = function(creep, targetInitFunc, actionSource) {
-    var targetId = this.getMarkTarget(creep, actionSource);
-    var target;
-
-    if(!targetId) {
-        target = targetInitFunc(creep);
-        if(!target) return false;
-        targetId = target.id;
-        this.markTarget(creep, targetId, actionSource);
-    }
-    target = Game.getObjectById(targetId);
-    if(!target) this.unmarkTarget(creep, actionSource);
-    return target;
 }
