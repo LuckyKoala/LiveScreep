@@ -11,5 +11,5 @@ mod.setupConfig = {
 };
 
 mod.shouldSpawn = function(room, cnt) {
-    return true;
+    return cnt > 0;
 };
