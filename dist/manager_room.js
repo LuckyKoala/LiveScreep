@@ -1,7 +1,7 @@
-const LinkService = require('service.link');
-const ConstructionService = require('service.construction');
-const SpawnService = require('service.spawn');
-const TowerService = require('service.tower');
+const LinkService = require('service_link');
+const ConstructionService = require('service_construction');
+const SpawnService = require('service_spawn');
+const TowerService = require('service_tower');
 
 var mod = {};
 module.exports = mod;
