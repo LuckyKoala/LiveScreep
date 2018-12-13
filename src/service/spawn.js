@@ -18,8 +18,8 @@ mod.loop = function(room) {
     //First, we must reach to level 3 ASAP
     if(rcl < 3) {
         //Simple strategy
-        // Only spawn upgraders
-        queue = [Setup.Upgrader];
+        // Only spawn workers, which only drill source and upgrade controller
+        queue = [Setup.Worker];
     } else {
         //Complex strategy
         //TODO do some optimize here!
@@ -73,7 +73,9 @@ mod.spawnWithSetup = function(spawn, {setupConfig, shouldUseHighLevel}) {
     if(spawn.spawning) return;
 
     const energyAvailable = spawn.room.energyAvailable;
-    var setup = shouldUseHighLevel() ? setupConfig.High : setupConfig.Normal;
+    var setup;
+    if(shouldUseHighLevel === undefined) setup = setupConfig.Normal;
+    else setup = shouldUseHighLevel(spawn.room) ? setupConfig.High : setupConfig.Normal;
     //For low energy available
     if(energyAvailable < setupConfig.Normal.minEnergy && !!setupConfig.Low) {
         setup = setupConfig.Low;
@@ -93,7 +95,7 @@ mod.spawnWithSetup = function(spawn, {setupConfig, shouldUseHighLevel}) {
     console.log(`Code[${result}] Spawning ${name}, cost ${bodyCost}, body ${JSON.stringify(body)}`);
     if(result == OK) return Game.creeps[name];
     else return false;
-}
+};
 
 const bodyMaxium = 50; //Creep Body Part Maxium Amount
 mod.getMaxiumBody = function(essBody, extraBody, maxExtraAmount, energyAvailable) {

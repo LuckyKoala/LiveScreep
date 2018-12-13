@@ -11,5 +11,5 @@ mod.setupConfig = {
 };
 
 mod.shouldSpawn = function(room, cnt) {
-    return cnt > 0;
+    return cnt["worker"] < 5;
 };

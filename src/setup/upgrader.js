@@ -29,8 +29,6 @@ mod.setupConfig = {
 };
 
 mod.shouldSpawn = function(room, cnt) {
-    this.rcl = room.controller.level;
-
     const existCount = cnt[lowerFirst(this.setupName)];
     var limit = room.energyCapacityAvailable < 750 ? 6 : 2; //12 work or 12 work
     
@@ -44,6 +42,6 @@ mod.shouldSpawn = function(room, cnt) {
     return _.isUndefined(existCount) || existCount < limit;
 };
 
-mod.shouldUseHighLevel = function() {
-    return this.rcl == 8;
-}
+mod.shouldUseHighLevel = function(room) {
+    return room.controller.level == 8;
+};

@@ -36,7 +36,7 @@ const loop0 = function () {
     }
 };
 
-clearCreepAndStructure = function() {
+var clearCreepAndStructure = function() {
     for(var name in Memory.creeps) {
         if(!Game.creeps[name]) {
             delete Memory.creeps[name];
