@@ -12,6 +12,19 @@ mod.loop = function(room) {
     const roomCreeps = _.filter(Game.creeps, function(creep) { return creep.memory.homeRoom == roomName; });
     var spawns = room.spawns;
     const rcl = room.controller.level;
+    let queue;
+
+    //=== What's our main target now ? ===
+    //First, we must reach to level 3 ASAP
+    if(rcl < 3) {
+        //Simple strategy
+        // Only spawn upgraders
+        queue = [Setup.Upgrader];
+    } else {
+        //Complex strategy
+        //TODO do some optimize here!
+        queue = SpawnQueue;
+    }
 
     const trySpawn = function(setupObj, cnt, successCallBack) {
         if(setupObj.shouldSpawn(room, cnt)) {
@@ -27,7 +40,7 @@ mod.loop = function(room) {
 
     var cnt = {
         total: 0,
-    }
+    };
     _.forEach(Role, o => cnt[lowerFirst(o.roleName)] = 0); //Init cnt
     //All role is required
     for(var name in roomCreeps) {
@@ -45,8 +58,8 @@ mod.loop = function(room) {
             cnt[roleName]++;
             cnt.total++;
         };
-        for(var index in SpawnQueue) {
-            if(trySpawn(SpawnQueue[index], cnt, callback)) {
+        for(var index in queue) {
+            if(trySpawn(queue[index], cnt, callback)) {
                 break;
             }
         }
