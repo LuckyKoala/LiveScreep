@@ -21,7 +21,7 @@ module.exports = function(grunt) {
                 ptr: ptr
             },
             dist: {
-                src: ['src/*.js']
+                src: ['dist/*.js']
             }
         },
         rsync: {
@@ -41,7 +41,7 @@ module.exports = function(grunt) {
         clean: {
             'dist': ['dist']
         },
-  
+
         // Copy all source files into the dist folder, flattening the folder structure by converting path delimiters to underscores
         copy: {
             // Pushes the game code to the dist folder so it can be modified before being send to the screeps server.
