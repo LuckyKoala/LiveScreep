@@ -12,7 +12,7 @@ module.exports.loop = function() {
 
 const loop0 = function () {
     //Validate and clear data
-    Util.GC.loop();
+    clearCreepAndStructure();
     Util.SourceMark.loop();
     Util.Stat.loop();
     //Run rooms
@@ -34,4 +34,20 @@ const loop0 = function () {
             console.log('[Error] Undefined role module is in memory of creep -> '+name);
         }
     }
+};
+
+clearCreepAndStructure = function() {
+    for(var name in Memory.creeps) {
+        if(!Game.creeps[name]) {
+            delete Memory.creeps[name];
+            console.log('Clearing non-existing creep memory: ', name);
+        }
+    }
+    for(var id in Memory.structures) {
+        if(!Game.getObjectById(id)) {
+            delete Memory.structures[id];
+            console.log('Clearing non-existing structure memory: ', id);
+        }
+    }
+    //Consider do gc for Memory.rooms
 };
