@@ -1,0 +1,27 @@
+{
+  "name": "livescreep",
+  "version": "1.0.0",
+  "description": "Just a repo for playing Screeps",
+  "main": "Gruntfile.js",
+  "dependencies": {
+    "grunt": "^1.0.3",
+    "grunt-contrib-clean": "^2.0.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-rsync": "^3.0.0",
+    "grunt-screeps": "^1.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LuckyKoala/LiveScreep.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LuckyKoala/LiveScreep/issues"
+  },
+  "homepage": "https://github.com/LuckyKoala/LiveScreep#readme"
+}
