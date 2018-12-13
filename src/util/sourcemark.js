@@ -57,17 +57,17 @@ module.exports = {
  *   target: %id%,
  * }
  */
-const SourcePartsDefault = SOURCE_ENERGY_CAPACITY/ENERGY_REGEN_TIME/HARVEST_POWER; 
+const SourcePartsDefault = SOURCE_ENERGY_CAPACITY/ENERGY_REGEN_TIME/HARVEST_POWER;
 
 function initSourceMark(source) {
     //FIXME only for normal room
     source.memory.mark = {
         available: {
-            spots: source.accessibleFields, 
-            parts: SourcePartsDefault, 
+            spots: source.accessibleFields,
+            parts: SourcePartsDefault,
         },
         status: {},
-    }
+    };
 }
 
 function isSourceAvailable(creep, source) {

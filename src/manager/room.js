@@ -14,4 +14,4 @@ mod.loop = function(room) {
     SpawnService.loop(room);
     TowerService.loop(room);
     LinkService.loop(room);
-}
+};

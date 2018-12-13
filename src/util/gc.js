@@ -16,4 +16,4 @@ mod.loop = function() {
         }
     }
     //Consider do gc for Memory.rooms
-}
+};

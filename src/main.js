@@ -8,7 +8,7 @@ const EnableProfiler = Config.EnableProfiler;
 if(EnableProfiler) profiler.enable();
 module.exports.loop = function() {
   profiler.wrap(loop0);
-}
+};
 
 const loop0 = function () {
     //Validate and clear data
@@ -34,4 +34,4 @@ const loop0 = function () {
             console.log('[Error] Undefined role module is in memory of creep -> '+name);
         }
     }
-}
+};

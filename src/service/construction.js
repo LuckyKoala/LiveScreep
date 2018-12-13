@@ -14,7 +14,7 @@ mod.loop = function(room) {
     }
     //Store entry in memory
     Memory.construction[room.name] = entry;
-}
+};
 
 //Build road
 mod.initRoad = function(room) {
@@ -26,12 +26,12 @@ mod.initRoad = function(room) {
     _.forEach(spawns, spawn => {
         _.forEach(sources, source => self.buildRoad(room, spawn.pos, source.pos));
         self.buildRoad(room, spawn.pos, room.controller.pos);
-    })
+    });
     //Spawn to Exit
     //const exitDir = creep.room.findExitTo(anotherCreep.room);
     //const exit = creep.pos.findClosestByRange(exitDir);
     //creep.moveTo(exit);
-}
+};
 
 mod.showRoadPath = function(room, from, to) {
     const path = room.findPath(from, to);
@@ -43,10 +43,10 @@ mod.showRoadPath = function(room, from, to) {
         strokeWidth: .15,
         opacity: .1
     });
-}
+};
 mod.buildRoad = function(room, from, to) {
     const path = room.findPath(from, to);
     _.forEach(path, o => room.createConstructionSite(o.x, o.y, STRUCTURE_ROAD));
-}
+};
 
 //Layout extension

@@ -4,7 +4,7 @@ module.exports = mod;
 
 mod.loop = function() {
     this.forgetAll(); //GC first
-}
+};
 
 /**
  * Memory Path: Memory.stat.creep.[creepName]
@@ -18,26 +18,26 @@ mod.memorizeCreep = function(creep) {
         role: creep.memory.role,
     };
     _.set(Memory, ['stat', 'creep', creep.name], entry);
-}
+};
 
 mod.forgetCreep = function(creepName) {
     delete Memory.stat.creep[creepName];
-}
+};
 
 //Count
 mod.memorize = function(key, entry) {
     _.set(Memory, ['stat', 'last', key], entry);
-}
+};
 
 mod.forgetAll = function() {
     if(Memory.stat) delete Memory.stat.last;
-}
+};
 
 //Permanant
 mod.find = function(key, defaultValue) {
     return _.get(Memory, ['stat', 'total', key], defaultValue);
-}
+};
 
 mod.memorizePermanant = function(key, entry) {
     _.set(Memory, ['stat', 'total', key], entry);
-}
+};
