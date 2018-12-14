@@ -10,15 +10,17 @@ mod.loop = function(room) {
     if(!_.isObject(Memory.construction)) Memory.construction = {};
     const entry = Memory.construction[room.name] || {};
     const sources = room.find(FIND_SOURCES);
+    //== Container ==
+    //Order here matters since only one construction site at same pile is allowed
+    //We need to init container before road.
+    if(!entry['containerInit']) {
+        this.initContainer(room, sources);
+        entry['containerInit'] = true;
+    }
     //== Road ==
     if(!entry['roadInit']) {
         this.initRoad(room, sources);
         entry['roadInit'] = true;
-    }
-    //== Container ==
-    if(!entry['containerInit']) {
-        this.initContainer(room, sources);
-        entry['containerInit'] = true;
     }
     //== Extension ==
     //== Tower ==
