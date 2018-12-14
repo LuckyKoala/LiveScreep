@@ -48,8 +48,8 @@ mod.initContainer = function(room, sources) {
         const y = source.pos.y;
         const x = source.pos.x;
         let swamps = [];
-        for(let xi=x-1; xi<=x+1; x++) {
-            for(let yi=y-1; yi<=y+1; y++) {
+        for(let xi=x-1; xi<=x+1; xi++) {
+            for(let yi=y-1; yi<=y+1; yi++) {
                 //traverse fields nearby
                 if(xi===x && yi===y) continue;
                 if(0 === terrain.get(xi, yi)) {
@@ -57,7 +57,7 @@ mod.initContainer = function(room, sources) {
                     room.createConstructionSite(xi, yi, STRUCTURE_CONTAINER);
                     return;
                 }
-                if(TERRAIN_MASK_SWAMP === terrian.get(xi, yi)) {
+                if(TERRAIN_MASK_SWAMP === terrain.get(xi, yi)) {
                     //Store pos and continue finding
                     swamps.push({x: xi, y: yi});
                 }

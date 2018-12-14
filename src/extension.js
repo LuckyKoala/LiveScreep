@@ -54,8 +54,8 @@ Object.defineProperties(Source.prototype, {
                 const y = this.pos.y;
                 const x = this.pos.x;
                 var wallCnt = 0;
-                for(let xi=x-1; xi<=x+1; x++) {
-                    for(let yi=y-1; yi<=y+1; y++) {
+                for(let xi=x-1; xi<=x+1; xi++) {
+                    for(let yi=y-1; yi<=y+1; yi++) {
                         //traverse fields nearby
                         if(xi===x && yi===y) continue;
                         if(TERRAIN_MASK_WALL === terrain.get(xi, yi)) {
