@@ -8,6 +8,8 @@ mod.nextTarget = function() {
     　　Game.getObjectById(_.last(sortHostiles).id) : false;
 };
 
+mod.word = '🛡 guard';
+
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});

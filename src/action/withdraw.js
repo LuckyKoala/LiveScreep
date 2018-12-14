@@ -76,6 +76,8 @@ mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, targetInitFunc, this.actionName);
 };
 
+mod.word = '⬅︎ withdraw';
+
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         const result = creep.withdraw(target, RESOURCE_ENERGY);

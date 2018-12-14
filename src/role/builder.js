@@ -9,11 +9,9 @@ mod.roleConfig = {
 mod.loop = function(creep) {
 	if(creep.memory.building && creep.carry.energy == 0) {
 		creep.memory.building = false;
-		creep.say('🔄 harvest');
 	}
 	if(!creep.memory.building && creep.carry.energy == creep.carryCapacity) {
 		creep.memory.building = true;
-		creep.say('🚧 build');
 	}
 
 	this.loop0(creep, creep.memory.building);

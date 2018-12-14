@@ -15,6 +15,8 @@ mod.nextTarget = function() {
     return markSource;
 };
 
+mod.word = '⛏ harvest';
+
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         const source = target;

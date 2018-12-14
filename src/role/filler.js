@@ -10,11 +10,9 @@ mod.roleConfig = {
 mod.loop = function(creep) {
     if(creep.memory.filling && creep.carry.energy == 0) {
         creep.memory.filling = false;
-        creep.say('🔄 charge');
     }
     if(!creep.memory.filling && creep.carry.energy == creep.carryCapacity) {
         creep.memory.filling = true;
-        creep.say('⚡ haul');
     }
 
     this.loop0(creep, creep.memory.filling);

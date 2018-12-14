@@ -5,6 +5,8 @@ mod.nextTarget = function() {
     return this.creep.room.controller;
 };
 
+mod.word = '⚙️ upgrade';
+
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         const result = creep.upgradeController(target);

@@ -47,7 +47,9 @@ const targetInitFunc = function(creep) {
 
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, targetInitFunc, this.actionName);
-}
+};
+
+mod.word = '➡︎ put';
 
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {

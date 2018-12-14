@@ -13,6 +13,8 @@ mod.nextTarget = function() {
     return false; 
 };
 
+mod.word = '🕵︎ travel';
+
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});

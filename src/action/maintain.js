@@ -14,6 +14,8 @@ mod.nextTarget = function() {
     }, this.actionName);
 };
 
+mod.word = '🚧 maintain';
+
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         //console.log('Loop maintain action whose target is '+JSON.stringify(target));

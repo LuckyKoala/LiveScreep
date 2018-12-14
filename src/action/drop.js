@@ -5,6 +5,8 @@ mod.nextTarget = function() {
     return true;
 };
 
+mod.word = '⬇︎ drop';
+
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         creep.drop(RESOURCE_ENERGY);

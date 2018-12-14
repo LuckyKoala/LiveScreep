@@ -7,6 +7,8 @@ mod.nextTarget = function() {
     });
 };
 
+mod.word = '🚧 dismantle';
+
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         const structures = target.pos.lookFor(LOOK_STRUCTURES);

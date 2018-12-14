@@ -3,9 +3,11 @@ var mod = function(name) {
     this.nextTarget = function() {
         return false;
     };
+    this.word = 'Nil';
     //Util function
     //False means this action can't process
     this.loop0 = function(creep, actionFunc) {
+        creep.say(this.word);
         this.creep = creep;
         var target = this.nextTarget();
         if(target) {

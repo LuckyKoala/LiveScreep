@@ -12,6 +12,8 @@ mod.nextTarget = function() {
     }, this.actionName);
 };
 
+mod.word = '🚧 build';
+
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         //console.log('Loop build action whose target is '+JSON.stringify(target));

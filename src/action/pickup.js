@@ -9,6 +9,8 @@ mod.nextTarget = function() {
     }, this.actionName);
 };
 
+mod.word = '⬆︎ pickup';
+
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         const result = creep.pickup(target);

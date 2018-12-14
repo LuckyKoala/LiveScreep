@@ -7,6 +7,8 @@ mod.nextTarget = function() {
     }, this.actionName);
 };
 
+mod.word = '♻︎ recycle';
+
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         if(target.recycleCreep(creep) == ERR_NOT_IN_RANGE) {

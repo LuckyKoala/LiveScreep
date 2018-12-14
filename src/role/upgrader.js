@@ -18,11 +18,9 @@ mod.loop = function(creep) {
         this.roleConfig = this.roleConfigWhenNoControllerContainer;
         if(creep.memory.upgrading && creep.carry.energy == 0) {
             creep.memory.upgrading = false;
-            creep.say('🔄 charge');
         }
         if(!creep.memory.upgrading && creep.carry.energy == creep.carryCapacity) {
             creep.memory.upgrading = true;
-            creep.say('⚡ upgrade');
         }
         this.loop0(creep, !!creep.memory.upgrading);
     }

@@ -11,6 +11,8 @@ mod.nextTarget = function() {
     }, this.actionName);
 };
 
+mod.word = '⚔ invade';
+
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         if(creep.attack(target) == ERR_NOT_IN_RANGE) {
