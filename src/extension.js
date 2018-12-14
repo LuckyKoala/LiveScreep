@@ -50,9 +50,20 @@ Object.defineProperties(Source.prototype, {
             if ( this.memory && !_.isUndefined(this.memory.accessibleFields) ) {
                 return this.memory.accessibleFields;
             } else {
-                var fields = this.room.lookForAtArea(LOOK_TERRAIN, this.pos.y-1, this.pos.x-1, this.pos.y+1, this.pos.x+1, true);
-                let walls = _.countBy( fields , "terrain" ).wall;
-                var accessibleFields = walls === undefined ? 9 : 9-walls;
+                const terrain = new Room.Terrain(this.room.name);
+                const y = this.pos.y;
+                const x = this.pos.x;
+                var wallCnt = 0;
+                for(let xi=x-1; xi<=x+1; x++) {
+                    for(let yi=y-1; yi<=y+1; y++) {
+                        //traverse fields nearby
+                        if(xi===x && yi===y) continue;
+                        if(TERRAIN_MASK_WALL === terrain.get(xi, yi)) {
+                            wallCnt++;
+                        }
+                    }
+                }
+                var accessibleFields = 8-wallCnt;
                 return (this.memory) ? this.memory.accessibleFields = accessibleFields : accessibleFields;
             }
         }
@@ -64,7 +75,7 @@ Object.defineProperties(Source.prototype, {
                     const targets = this.pos.findInRange(FIND_STRUCTURES, 1, {
                         filter: o => o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE
                     });
-                    const closestTarget = this.pos.findClosestByRange(targets);
+                    const closestTarget = targets[0]; //Same distance, so pick first one
                     if(closestTarget) {
                         this.memory.containerId = closestTarget.id;
                     } else {

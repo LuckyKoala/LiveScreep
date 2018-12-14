@@ -2,37 +2,72 @@
 var mod = {};
 module.exports = mod;
 
+//NOTE be careful to use findPath, it costs CPU
 //TODO place tower site
-//TODO place container site
 mod.loop = function(room) {
     //Init memory
     if(_.isUndefined(Memory.construction)) Memory.construction = {};
     if(!_.isObject(Memory.construction)) Memory.construction = {};
     const entry = Memory.construction[room.name] || {};
+    const sources = room.find(FIND_SOURCES);
+    //== Road ==
     if(!entry['roadInit']) {
-        //Build road
-        this.initRoad(room);
+        this.initRoad(room, sources);
         entry['roadInit'] = true;
     }
+    //== Container ==
+    if(!entry['containerInit']) {
+        this.initContainer(room, sources);
+        entry['containerInit'] = true;
+    }
+    //== Extension ==
+    //== Tower ==
     //Store entry in memory
     Memory.construction[room.name] = entry;
 };
 
-//Build road
-mod.initRoad = function(room) {
+mod.initRoad = function(room, sources) {
     const self = this;
-    //Spawn to Source
-    //Spawn to Controller
-    const sources = room.find(FIND_SOURCES);
     const spawns = room.spawns;
     _.forEach(spawns, spawn => {
+        //Spawn to Source
         _.forEach(sources, source => self.buildRoad(room, spawn.pos, source.pos));
+        //Spawn to Controller
         self.buildRoad(room, spawn.pos, room.controller.pos);
     });
     //Spawn to Exit
     //const exitDir = creep.room.findExitTo(anotherCreep.room);
     //const exit = creep.pos.findClosestByRange(exitDir);
     //creep.moveTo(exit);
+};
+
+mod.initContainer = function(room, sources) {
+    const terrain = new Room.Terrain(room.name);
+
+    _.forEach(sources, source => {
+        const y = source.pos.y;
+        const x = source.pos.x;
+        let swamps = [];
+        for(let xi=x-1; xi<=x+1; x++) {
+            for(let yi=y-1; yi<=y+1; y++) {
+                //traverse fields nearby
+                if(xi===x && yi===y) continue;
+                if(0 === terrain.get(xi, yi)) {
+                    //Plain Terrain is Best!
+                    room.createConstructionSite(xi, yi, STRUCTURE_CONTAINER);
+                    return;
+                }
+                if(TERRAIN_MASK_SWAMP === terrian.get(xi, yi)) {
+                    //Store pos and continue finding
+                    swamps.push({x: xi, y: yi});
+                }
+            }
+        }
+        if(swamps.length >= 1) {
+            //So we must choose from swamps since there is no plain terrain as alternative
+            room.createConstructionSite(swamps[0].x, swamps[0].y, STRUCTURE_CONTAINER);
+        }
+    });
 };
 
 mod.showRoadPath = function(room, from, to) {
