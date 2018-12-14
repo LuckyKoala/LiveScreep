@@ -2,6 +2,8 @@
 var mod = {};
 module.exports = mod;
 
+//TODO place tower site
+//TODO place container site
 mod.loop = function(room) {
     //Init memory
     if(_.isUndefined(Memory.construction)) Memory.construction = {};
@@ -46,6 +48,9 @@ mod.showRoadPath = function(room, from, to) {
 };
 mod.buildRoad = function(room, from, to) {
     const path = room.findPath(from, to);
+    //Only build road between from and to, so we remove these two pos from path
+    path.pop();
+    path.shift();
     _.forEach(path, o => room.createConstructionSite(o.x, o.y, STRUCTURE_ROAD));
 };
 
