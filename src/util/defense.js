@@ -12,8 +12,18 @@ const ThreatValue = {
     heal: 5,
 };
 
+mod.threatValue = {};
+
 mod.loop = function(room) {
-    //Do nothing
+    if(room.controller && room.controller.my) {
+        this.threatValue[room.name] = this.getCurrentThreatValue(room);
+        if(this.threatValue[room.name] >= 5) {
+            //We can not handle it without tower
+            const time = Game.time;
+            if(OK === room.controller.activateSafeMode()) Game.notify(`[${time}]Threat coming,activated safe mode!!!`);
+            else Game.notify(`[${time}]Threat coming,can not activate safe mode!!!`);
+        }
+    }
 };
 
 mod.getRampartSitesCanBuild = function(room, energyAvailable) {
@@ -84,6 +94,7 @@ mod.sumThreatValueByCnt = function(bodypartsCnt) {
 };
 
 //TODO honour boost part
+//TODO if there is only healer, don't count it?
 mod.sumThreatValueByBody = function(body) {
     var value = 0;
     for(var i=0; i<body.length; i++) {
@@ -116,7 +127,7 @@ mod.sortHostilesByPos = function(room, pos) {
     });
     return _.sortBy(hostileMap, ['threat', 'range', 'id']);
 };
-//FIXME What if we can't even survive? Like low 3 level.
+
 //TODO Calculate suitable body parts for spawner to spawn guardian
 mod.shouldSpawnGuardian = function(room) {
     var towers = room.find(FIND_MY_STRUCTURES, {
@@ -125,8 +136,7 @@ mod.shouldSpawnGuardian = function(room) {
                 structure.energy > Config.EnergyForDefend;
         }
     });
-    //var currentThreatValue = this.getCurrentThreatValue(room);
-    //If there is no tower, just spawn one
-    if(towers.length==0) return true;
-    return false;
+    //If there is a tower at least, then we can generate a guardian to help it
+    if(towers.length>=1 && this.threatValue[room.name]>=0) return true;
+    else return false;
 };

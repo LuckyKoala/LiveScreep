@@ -29,6 +29,10 @@ mod.memorize = function(key, entry) {
     _.set(Memory, ['stat', 'last', key], entry);
 };
 
+mod.getEntry = function(key) {
+    _.get(Memory, ['stat', 'last', key]);
+};
+
 mod.forgetAll = function() {
     if(Memory.stat) delete Memory.stat.last;
 };

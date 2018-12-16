@@ -18,6 +18,8 @@ const loop0 = function () {
     //Run rooms
     var entry = {};
     _.forEach(Game.rooms, function(room) {
+        //Compute threat value
+        Util.Defense.loop(room);
         RoomManager.loop(room);
         entry[room.name] = room.energyAvailable;
     });
