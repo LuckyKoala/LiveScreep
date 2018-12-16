@@ -38,7 +38,6 @@ mod.loop = function(room) {
         queue = [Setup.Worker];
     } else {
         //Complex strategy
-        //TODO do some optimize here!
         //Do we have enough incoming energy?
         // that depends on whether we have a pair of havester/hauler at least
         const harC = cnt[lowerFirst(Role.Harvester.roleName)];

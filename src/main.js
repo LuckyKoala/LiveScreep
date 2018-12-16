@@ -33,7 +33,6 @@ const loop0 = function () {
         if(roleModule) {
             roleModule.loop(creep);
         } else {
-            //TODO assign a role depends on its body part
             console.log('[Error] Undefined role module is in memory of creep -> '+name);
         }
     }

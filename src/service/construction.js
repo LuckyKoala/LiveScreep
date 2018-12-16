@@ -3,8 +3,6 @@ var mod = {};
 module.exports = mod;
 
 //NOTE be careful to use findPath, it costs CPU
-//TODO place extension site
-//TODO place tower site
 mod.loop = function(room) {
     //Init memory
     if(_.isUndefined(Memory.construction)) Memory.construction = {};

@@ -5,7 +5,7 @@ mod.roleConfig = {
     inStack: [Action.Pickup],
     outStack: [Action.Put],
 };
-//TODO ant can stay near spawn to collect dropped energy while other creep being recycled
+
 mod.loop = function(creep) {
 	if(creep.memory.controlledByTask) {
 		//Behaviour will be control by smalltask
