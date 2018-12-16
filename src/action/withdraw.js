@@ -7,10 +7,9 @@ function findTargetForHauler(creep, suitableContainers) {
     // used by hauler.
     const controllerContainer = creep.room.controller.container;
     var targets = suitableContainers;
-    const controllerContainerId = controllerContainer.id;
     if(controllerContainer) {
-        targets = _.filter(targets, o => o.id != controllerContainerId);
-    } 
+        targets = _.filter(targets, o => o.id != controllerContainer.id);
+    };
     return creep.pos.findClosestByRange(targets);
 }
 

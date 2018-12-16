@@ -7,7 +7,7 @@ mod.nextTarget = function() {
         if(sortHostiles.length) {
             return Game.getObjectById(_.last(sortHostiles).id);
         }
-        //Destroy spawn
+        //TODO Destroy spawn
     }, this.actionName);
 };
 
