@@ -20,7 +20,7 @@ const loop0 = function () {
     _.forEach(Game.rooms, function(room) {
         //Compute threat value
         Util.Defense.loop(room);
-        RoomManager.loop(room);
+        RoomManager.dispatch(room);
         entry[room.name] = room.energyAvailable;
     });
     Util.Stat.memorize('last-energyAvailable', entry);
