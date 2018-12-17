@@ -1,7 +1,6 @@
 let mod = new ActionObj('Pickup');
 module.exports = mod;
 
-//TODO: We need handle Tombstone now!
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, creep => {
         const remainCapacity = creep.carryCapacity - _.sum(creep.carry);

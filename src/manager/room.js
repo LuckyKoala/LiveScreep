@@ -40,9 +40,9 @@ mod.dispatch = function(room) {
 };
 
 mod.loopOwnedRoom = function(room) {
-    console.log('OwnedRoom');
     room.saveLinks();
     room.saveSpawns();
+    room.saveSources();
 
     ConstructionService.loop(room);
     SpawnService.loop(room);
@@ -51,7 +51,6 @@ mod.loopOwnedRoom = function(room) {
 };
 
 mod.loopExternalRoom = function(room) {
-    console.log('ExternalRoom');
     //Do a task
     //1. Remote Mining
     //2. Invading
@@ -59,17 +58,14 @@ mod.loopExternalRoom = function(room) {
 };
 
 mod.loopHighway = function(room) {
-    console.log('Highway');
     //Travel or teleport
 };
 
 mod.loopCenterRoom = function(room) {
-    console.log('CenterRoom');
     //Remote mining
 };
 
 mod.loopKeeperRoom = function(room) {
-    console.log('KeeperRoom');
     //Remote Mining
     //Handle creeps from KeeperLair
 };

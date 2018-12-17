@@ -11,8 +11,8 @@ mod.setupConfig = {
     },
     Normal: {
         minEnergy: 500,
-        essBody: [WORK,WORK,WORK,WORK,CARRY,MOVE],
-        extraBody: [WORK, MOVE],
+        essBody: [WORK,WORK,WORK,WORK,MOVE,MOVE],
+        extraBody: [WORK,CARRY,MOVE],
         maxExtraAmount: 1,
         prefix: '[Harvester]',
         memory: {role: 'harvester'},
@@ -20,7 +20,7 @@ mod.setupConfig = {
 };
 
 mod.shouldSpawn = function(room, cnt) {
-    const cntLimit = room.energyCapacityAvailable < 500 ? 4 : 2; //8 work or 8~10 work
+    const cntLimit = room.energyCapacityAvailable < this.setupConfig.Normal.minEnergy ? 4 : 2; //10 work or 8 work
     const existCount = cnt[lowerFirst(this.setupName)];
     return _.isUndefined(existCount) || existCount < cntLimit;
 };

@@ -1,12 +1,6 @@
 var mod = {};
 module.exports = mod;
 
-const SpawnQueueHigh = [Setup.Guardian];
-const SpawnQueueUrgent = [Setup.Harvester, Setup.Hauler];
-const SpawnQueueNormal = [Setup.Harvester, Setup.Hauler, Setup.Filler];
-const SpawnQueueLow = [Setup.Upgrader, Setup.Builder, Setup.Task];
-const SpawnQueue = _.union(SpawnQueueHigh, SpawnQueueNormal, SpawnQueueLow);
-
 mod.loop = function(room) {
     //=== Role count ===
     const roomCreeps = _.filter(Game.creeps, function(creep) { return creep.memory.homeRoom == room.name; });
@@ -27,29 +21,27 @@ mod.loop = function(room) {
     const rcl = room.controller.level;
     let urgent = false;
     let queue;
-    //= What's our main target now ? =
-    // First, we must reach to level 3 ASAP
-    if(rcl < 3) {
-        //Simple strategy
-        // Only spawn workers, which only drill source and upgrade controller
-        //Do we have enough incoming energy?
-        // that depends on whether we have a worker at least
-        urgent = cnt[lowerFirst(Role.Worker.roleName)]>=1;
-        queue = [Setup.Worker];
+    //Do we have enough incoming energy?
+    // that depends on whether we have a pair of havester/hauler at least
+    const harC = cnt[lowerFirst(Role.Harvester.roleName)];
+    const hauC = cnt[lowerFirst(Role.Hauler.roleName)];
+    //And also we should keep at least one upgrader
+    const upgC = cnt[lowerFirst(Role.Upgrader.roleName)];
+    urgent = !(harC >=1 && hauC>=1 && upgC>=1);
+    if(harC < 1) {
+        queue = [Setup.Harvester];
+    } else if(hauC < 1) {
+        queue = [Setup.Hauler];
+    } else if(upgC < 1) {
+        queue = [Setup.Upgrader];
     } else {
-        //Complex strategy
-        //Do we have enough incoming energy?
-        // that depends on whether we have a pair of havester/hauler at least
-        const harC = cnt[lowerFirst(Role.Harvester.roleName)];
-        const hauC = cnt[lowerFirst(Role.Hauler.roleName)];
-        urgent = !(harC >=1 && hauC>=1);
-        if(harC < 1) {
-            queue = [Setup.Harvester];
-        } else if(hauC < 1) {
-            queue = [Setup.Hauler];
-        } else {
-            queue = SpawnQueue;
-        }
+        //Task first since it is issued by humans, and a guardian first to keep room safe.
+        const SpawnQueueHigh = [Setup.Task, Setup.Guardian];
+        //Harvest more and do something with energy harvested.
+        const SpawnQueueNormal = [Setup.Harvester, Setup.Hauler, Setup.Filler];
+        //Now build something and upgrade our controller!
+        const SpawnQueueLow = [Setup.Builder, Setup.Upgrader];
+        queue = _.union(SpawnQueueHigh, SpawnQueueNormal, SpawnQueueLow);
     }
 
     const self = this;

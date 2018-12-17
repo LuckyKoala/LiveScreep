@@ -226,7 +226,29 @@ Object.defineProperties(Room.prototype, {
         enumerable: false,
         configurable: true
     },
+    'sources': {
+        get: function() {
+            if (!this._sources) {
+                const sourceIds = this.memory.sourceIds; 
+                if (sourceIds) {
+                    var sources = _.map(sourceIds, id => Game.getObjectById(id));
+                    //TODO Validate sources
+                    this._sources = sources;
+                } else {
+                    return false;
+                }
+            }
+            return this._sources;
+        },
+        set: function(sources) {
+            this.memory.sourceIds = _.map(sources, source => source.id); 
+            this._sources = sources;
+        },
+        enumerable: false,
+        configurable: true
+    },
 });
+
 Room.prototype.saveLinks = function() {
     if(this.sourceLink && this.spawnLink && this.controllerLink) return; //Only do search when links is not valid.
     const self = this;
@@ -248,8 +270,12 @@ Room.prototype.saveLinks = function() {
         }
     });
 };
+
 Room.prototype.saveSpawns = function() {
     const roomName = this.name;
     this.spawns = _.filter(Game.spawns, spawn => spawn.room.name===roomName);
 };
 
+Room.prototype.saveSources = function() {
+    this.sources = this.find(FIND_SOURCES);
+};

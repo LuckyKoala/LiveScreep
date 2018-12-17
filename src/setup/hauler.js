@@ -3,8 +3,8 @@ module.exports = mod;
 
 mod.setupConfig = {
     Low: {
-        minEnergy: 300,
-        essBody: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE],
+        minEnergy: 150,
+        essBody: [CARRY, CARRY, MOVE],
         extraBody: [],
         prefix: '[LowHauler]',
         memory: {role: 'hauler'},
@@ -19,7 +19,7 @@ mod.setupConfig = {
 };
 
 mod.shouldSpawn = function(room, cnt) {
-    const cntLimit = room.energyCapacityAvailable < 450 ? 3 : 2; //12 carry or 12 carry
+    const cntLimit = room.energyCapacityAvailable < this.setupConfig.Normal.minEnergy ? 3 : 1; //6 carry
     const existCount = cnt[lowerFirst(this.setupName)];
     return _.isUndefined(existCount) || existCount < cntLimit;
 };

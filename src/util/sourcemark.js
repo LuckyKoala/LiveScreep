@@ -7,10 +7,10 @@ module.exports = {
         }
     },
     findAndMarkSource: function(creep) {
-        var sources = creep.room.find(FIND_SOURCES);
+        const sources = creep.room.sources;
         for(var i=0; i<sources.length; i++) {
             var source = sources[i];
-            if(source && isSourceAvailable(creep, source)) {
+            if(source && isSourceAvailable(creep.getActiveBodyparts(WORK), source)) {
                 markSource(creep, source);
                 return true;
             }
@@ -70,9 +70,9 @@ function initSourceMark(source) {
     };
 }
 
-function isSourceAvailable(creep, source) {
+function isSourceAvailable(workParts, source) {
     ensureSourceMarkInitialize(source);
-    const needParts = creep.getActiveBodyparts(WORK);
+    const needParts = workParts;
     const available = source.memory.mark.available;
     return available.spots>=1 && available.parts>=needParts;
 }
