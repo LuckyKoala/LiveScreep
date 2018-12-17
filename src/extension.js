@@ -106,7 +106,7 @@ Object.defineProperties(StructureController.prototype, {
         get: function() {
             if (!this._container) {
                 if (!this.memory.containerId) {
-                    const targets = this.pos.findInRange(FIND_STRUCTURES, 4, {
+                    const targets = this.pos.findInRange(FIND_STRUCTURES, 2, {
                         filter: o => o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE
                     });
                     const closestTarget = this.pos.findClosestByRange(targets);

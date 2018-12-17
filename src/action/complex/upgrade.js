@@ -7,6 +7,7 @@ mod.nextTarget = function() {
 
 mod.word = '⚙️ Xupgrade';
 
+//=== NOTE ===
 //Only work for controller container exist and it is located at where
 //  creep can do withdraw and upgrade at same tick
 //Updated: Only withdraw energy if energy remain on creep isn't enough for next action

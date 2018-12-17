@@ -95,7 +95,7 @@ mod.placeSitesNearby = function(room, objs, range, structureType) {
 //Random range selection, prefer plain terrain
 mod.initContainer = function(room, sources) {
     //=== Build container near controller ===
-    this.placeSitesNearby(room, [room.controller], 4, STRUCTURE_CONTAINER);
+    this.placeSitesNearby(room, [room.controller], 2, STRUCTURE_CONTAINER);
 
     //=== Build containers near sources ===
     this.placeSitesNearby(room, sources, 1, STRUCTURE_CONTAINER);
