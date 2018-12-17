@@ -2,6 +2,8 @@
 var mod = {};
 module.exports = mod;
 
+//TODO restore mechanism
+//TODO cache in memory instead of place all sites immediately and directly
 //NOTE be careful to use findPath, it costs CPU
 mod.loop = function(room) {
     //Init memory
@@ -42,20 +44,19 @@ mod.initRoad = function(room, sources) {
     //creep.moveTo(exit);
 };
 
-mod.initContainer = function(room, sources) {
+mod.placeSitesNearby = function(room, objs, range, structureType) {
     const terrain = new Room.Terrain(room.name);
-
-    _.forEach(sources, source => {
-        const y = source.pos.y;
-        const x = source.pos.x;
+    _.forEach(objs, obj => {
+        const y = obj.pos.y;
+        const x = obj.pos.x;
         let swamps = [];
-        for(let xi=x-1; xi<=x+1; xi++) {
-            for(let yi=y-1; yi<=y+1; yi++) {
+        for(let xi=x-range; xi<=x+range; xi++) {
+            for(let yi=y-range; yi<=y+range; yi++) {
                 //traverse fields nearby
                 if(xi===x && yi===y) continue;
                 if(0 === terrain.get(xi, yi)) {
                     //Plain Terrain is Best!
-                    room.createConstructionSite(xi, yi, STRUCTURE_CONTAINER);
+                    room.createConstructionSite(xi, yi, structureType);
                     return;
                 }
                 if(TERRAIN_MASK_SWAMP === terrain.get(xi, yi)) {
@@ -66,9 +67,18 @@ mod.initContainer = function(room, sources) {
         }
         if(swamps.length >= 1) {
             //So we must choose from swamps since there is no plain terrain as alternative
-            room.createConstructionSite(swamps[0].x, swamps[0].y, STRUCTURE_CONTAINER);
+            room.createConstructionSite(swamps[0].x, swamps[0].y, structureType);
         }
     });
+};
+
+//Random range selection, prefer plain terrain
+mod.initContainer = function(room, sources) {
+    //=== Build container near controller ===
+    this.placeSitesNearby(room, [room.controller], 4, STRUCTURE_CONTAINER);
+
+    //=== Build containers near sources ===
+    this.placeSitesNearby(room, sources, 1, STRUCTURE_CONTAINER);
 };
 
 mod.showRoadPath = function(room, from, to) {
