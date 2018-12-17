@@ -3,23 +3,23 @@ module.exports = mod;
 
 mod.setupConfig = {
     Low: {
-		minEnergy: 250,
-		essBody: [WORK, CARRY, CARRY, MOVE],
-		extraBody: [],
-		prefix: '[LowBuilder]',
-		memory: {role: 'builder'},
-	},
+		    minEnergy: 250,
+		    essBody: [WORK, CARRY, CARRY, MOVE],
+		    extraBody: [],
+		    prefix: '[LowBuilder]',
+		    memory: {role: 'builder'},
+	  },
     Normal: {
-		minEnergy: 550,
-		essBody: [WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE],
-		extraBody: [],
-		prefix: '[Builder]',
-		memory: {role: 'builder'},
-	},
+		    minEnergy: 550,
+		    essBody: [WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE],
+		    extraBody: [],
+		    prefix: '[Builder]',
+		    memory: {role: 'builder'},
+	  },
 };
 
 mod.shouldSpawn = function(room, cnt) {
-	const cntLimit = room.energyCapacityAvailable < 550 ? 2 : 1; //2 work or 2 work
+	  const cntLimit = room.energyCapacityAvailable < this.setupConfig.Normal.minEnergy ? 2 : 1; //2 work or 2 work
     const existCount = cnt[lowerFirst(this.setupName)];
     const needBuildStructures = room.find(FIND_CONSTRUCTION_SITES);
     const needRepairStructures = room.find(FIND_STRUCTURES, {

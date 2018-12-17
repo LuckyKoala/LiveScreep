@@ -44,6 +44,26 @@ mod.initRoad = function(room, sources) {
     //creep.moveTo(exit);
 };
 
+//0 match anything
+//1 match walkable type
+//2 match particular type
+//TODO better look from selected center point
+mod.placeSitesBlock = function(room, structureType) {
+    const terrain = new Room.Terrain(room.name);
+    //1. Declare a block which defines a pattern
+    const extensionBlock = [
+        [0,0,1,0,0],
+        [0,1,2,1,0],
+        [1,2,2,2,1],
+        [0,1,2,1,0],
+        [0,0,1,0,0],
+    ];
+    //2. separate room into according size of blocks
+    //3. traverse these blocks and try to match the pattern
+    //const look = room.lookAtArea(10,5,11,7);
+    //4. place sites in position which is marked as '2'
+};
+
 mod.placeSitesNearby = function(room, objs, range, structureType) {
     const terrain = new Room.Terrain(room.name);
     _.forEach(objs, obj => {
