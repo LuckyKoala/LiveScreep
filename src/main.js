@@ -12,7 +12,7 @@ module.exports.loop = function() {
 
 const loop0 = function () {
     //Validate and clear data
-    clearCreepAndStructure();
+    GC();
     Util.SourceMark.loop();
     Util.Stat.loop();
     //Run rooms
@@ -38,18 +38,29 @@ const loop0 = function () {
     }
 };
 
-var clearCreepAndStructure = function() {
-    for(var name in Memory.creeps) {
+function GC() {
+    for(let name in Memory.creeps) {
         if(!Game.creeps[name]) {
             delete Memory.creeps[name];
             console.log('Clearing non-existing creep memory: ', name);
         }
     }
-    for(var id in Memory.structures) {
+    for(let id in Memory.structures) {
         if(!Game.getObjectById(id)) {
             delete Memory.structures[id];
             console.log('Clearing non-existing structure memory: ', id);
         }
     }
-    //Consider do gc for Memory.rooms
+    for(let id in Memory.sources) {
+        if(!Game.getObjectById(id)) {
+            delete Memory.sources[id];
+            console.log('Clearing non-existing source memory: ', id);
+        }
+    }
+    for(let name in Memory.rooms) {
+        if(Game.rooms[name] === undefined) {
+            delete Memory.rooms[name];
+            console.log('Clearing non-existing room memory: ', name);
+        }
+    }
 };
