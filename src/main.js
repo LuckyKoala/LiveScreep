@@ -63,4 +63,10 @@ function GC() {
             console.log('Clearing non-existing room memory: ', name);
         }
     }
+    for(let name in Memory.construction) {
+        if(Game.rooms[name] === undefined) {
+            delete Memory.construction[name];
+            console.log('Clearing non-existing construction memory: ', name);
+        }
+    }
 };
