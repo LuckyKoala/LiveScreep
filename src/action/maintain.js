@@ -32,6 +32,7 @@ mod.loop = function(creep) {
             if(result == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
             } else if(result == OK) {
+                Util.Stat.incEnergyOut(creep.room.name, creep.getActiveBodyparts(WORK)*REPAIR_POWER*REPAIR_COST);
                 //Not to unmark it, so next tick it will be maintain to normal threshold
                 //Util.Mark.unmarkTarget(creep, this.actionName);
             }

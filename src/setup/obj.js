@@ -14,12 +14,9 @@ var mod = function(name) {
             memory: {role: 'ant'},
         },
     };
-    this.shouldSpawn = function(room, cnt) {
-        return false;
-    };
     this.shouldUseHighLevel = function() {
         return false;
-    }
+    };
 };
 
 module.exports = mod;

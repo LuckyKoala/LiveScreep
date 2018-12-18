@@ -12,10 +12,3 @@ mod.setupConfig = {
         memory: {role: 'guardian'},
     },
 };
-
-//FIXME Only spawn guard when energy is enough and we can survive after somehow
-mod.shouldSpawn = function(room, cnt) {
-    const existCount = cnt[lowerFirst(this.setupName)];
-    return Util.Defense.shouldSpawnGuardian(room) 
-        && (_.isUndefined(existCount) || existCount < 1);
-};

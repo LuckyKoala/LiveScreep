@@ -2,88 +2,26 @@ var mod = {};
 module.exports = mod;
 
 mod.loop = function(room) {
-    //=== Role count ===
-    const roomCreeps = _.filter(Game.creeps, function(creep) { return creep.memory.homeRoom == room.name; });
-    var cnt = {
-        total: 0,
-    };
-    _.forEach(Role, o => cnt[lowerFirst(o.roleName)] = 0); //Init cnt
-    //All role is required
-    for(var name in roomCreeps) {
-        const creep = roomCreeps[name];
-        const role = creep.memory.role;
-        cnt[role]++;
-        cnt.total++;
-    }
-
-    //=== Decide spawn queue ===
-    //Spawn related variable
-    const rcl = room.controller.level;
-    let urgent = false;
-    let queue;
-    //Do we have enough incoming energy?
-    // that depends on whether we have a pair of havester/hauler at least
-    const harC = cnt[lowerFirst(Role.Harvester.roleName)];
-    const hauC = cnt[lowerFirst(Role.Hauler.roleName)];
-    //And also we should keep at least one upgrader
-    const upgC = cnt[lowerFirst(Role.Upgrader.roleName)];
-    urgent = !(harC >=1 && hauC>=1 && upgC>=1);
-    if(harC < 1) {
-        queue = [Setup.Harvester];
-    } else if(hauC < 1) {
-        queue = [Setup.Hauler];
-    } else if(upgC < 1) {
-        queue = [Setup.Upgrader];
-    } else {
-        //Task first since it is issued by humans, and a guardian first to keep room safe.
-        const SpawnQueueHigh = [Setup.Task, Setup.Guardian];
-        //Harvest more and do something with energy harvested.
-        const SpawnQueueNormal = [Setup.Harvester, Setup.Hauler, Setup.Filler];
-        //Now build something and upgrade our controller!
-        const SpawnQueueLow = [Setup.Builder, Setup.Upgrader];
-        queue = _.union(SpawnQueueHigh, SpawnQueueNormal, SpawnQueueLow);
-    }
-
-    const self = this;
-    const trySpawn = function(setupObj, cnt, successCallBack) {
-        if(setupObj.shouldSpawn(room, cnt)) {
-            spawningStatus = self.spawnWithSetup(spawn, urgent, setupObj);
-            if(spawningStatus) {
-                successCallBack(spawningStatus); //Pass data to callback function
-            }
-            return true;
-        } else {
-            return false;
-        }
-    };
-
     //Try all the spawn
-    var spawns = room.spawns;
-    var spawn = spawns.shift();
-    while(spawn) {
-        var spawningStatus = false;
-        const callback = function(spawningStatus) {
-            const roleName = spawningStatus.memory.role;
-            cnt[roleName]++;
-            cnt.total++;
-        };
-        for(var index in queue) {
-            //If urgent, then try first one and break loop
-            // otherwise, try util spawn successed
-            if(trySpawn(queue[index], cnt, callback) || urgent) {
-                break;
+    let spawns = room.spawns;
+    for(let spawn of spawns) {
+        if(room.queue.urgent.length > 0) {
+            if(this.spawnWithSetup(spawn, true, room.queue.urgent[0])) {
+                room.queue.urgent.shift();
+            }
+        } else if(room.queue.normal.length > 0) {
+            if(this.spawnWithSetup(spawn, false, room.queue.normal[0])) {
+                room.queue.normal.shift();
             }
         }
-        spawn = spawns.shift();
     }
-
-    Util.Stat.memorize('last-creeps-cnt', cnt);
 };
 
+// Return true indicates that creep can be created
 //When incoming energy of spawn is low, then spawn of worker/harvester-hauler
 //  is urgent, otherwise it is not urgent, we can wait for it to be bigger.
-mod.spawnWithSetup = function(spawn, urgent=true, {setupConfig, shouldUseHighLevel}) {
-    if(spawn.spawning) return;
+mod.spawnWithSetup = function(spawn, urgent, {setupConfig, shouldUseHighLevel}) {
+    if(spawn.spawning) return false;
 
     const energyAvailable = spawn.room.energyAvailable;
     let energyForSpawnCapacity = spawn.room.energyAvailable;
@@ -103,7 +41,7 @@ mod.spawnWithSetup = function(spawn, urgent=true, {setupConfig, shouldUseHighLev
     const body = this.getMaxiumBody(essBody, extraBody, maxExtraAmount, energyForSpawnCapacity);
     const bodyCost = this.getBodyCost(body);
     //Check energyAvailable is enough for this spawn action
-    if(energyAvailable < bodyCost) return;
+    if(energyAvailable < bodyCost) return false;
     //Calculate name
     const name = prefix+spawn.name+'->'+Game.time;
     memory['homeRoom'] = spawn.room.name;
@@ -111,8 +49,11 @@ mod.spawnWithSetup = function(spawn, urgent=true, {setupConfig, shouldUseHighLev
         memory: memory,
     });
     console.log(`Code[${result}] Spawning ${name}, cost ${bodyCost}, body ${JSON.stringify(body)}`);
-    if(result == OK) return Game.creeps[name];
-    else return false;
+    if(result == OK) {
+        Util.Stat.incEnergyOut(spawn.room.name, bodyCost);
+        return true;
+    }
+    return false;
 };
 
 const bodyMaxium = 50; //Creep Body Part Maxium Amount

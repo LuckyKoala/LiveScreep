@@ -9,7 +9,3 @@ mod.setupConfig = {
         memory: {role: 'worker'},
     },
 };
-
-mod.shouldSpawn = function(room, cnt) {
-    return cnt["worker"] < 5;
-};

@@ -17,7 +17,7 @@ mod.threatValue = {};
 mod.loop = function(room) {
     if(room.controller && room.controller.my) {
         this.threatValue[room.name] = this.getCurrentThreatValue(room);
-        if(this.threatValue[room.name] >= 5) {
+        if(this.threatValue[room.name] >= 12) {
             //We can not handle it without tower
             const time = Game.time;
             if(OK === room.controller.activateSafeMode()) Game.notify(`[${time}]Threat coming,activated safe mode!!!`);

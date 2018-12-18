@@ -18,7 +18,7 @@ mod.loop = function(creep) {
             if(result == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
             } else if(result == OK) {
-                //Do nothing
+                Util.Stat.incEnergyIn(creep.room.name, creep.getActiveBodyparts(WORK)*DISMANTLE_POWER*DISMANTLE_COST);
             }
         } else {
             target.remove(); //Remove flag since there is no structures to dismantle

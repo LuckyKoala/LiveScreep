@@ -39,6 +39,7 @@ mod.loop = function(creep) {
         if(result == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
         } else if(result == OK) {
+            Util.Stat.incEnergyOut(creep.room.name, creep.getActiveBodyparts(WORK)*REPAIR_POWER*REPAIR_COST);
             if(target.structureType==STRUCTURE_WALL && Util.Defense.canReleaseWall(target.hits)) {
                 Util.Mark.unmarkTarget(creep, this.actionName);
             } else if(target.hits==target.hitsMax) {

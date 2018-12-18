@@ -18,9 +18,3 @@ mod.setupConfig = {
         memory: {role: 'harvester'},
     },
 };
-
-mod.shouldSpawn = function(room, cnt) {
-    const cntLimit = room.energyCapacityAvailable < this.setupConfig.Normal.minEnergy ? 4 : 2; //10 work or 8 work
-    const existCount = cnt[lowerFirst(this.setupName)];
-    return _.isUndefined(existCount) || existCount < cntLimit;
-};

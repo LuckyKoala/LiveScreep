@@ -11,10 +11,6 @@ module.exports.loop = function() {
 };
 
 const loop0 = function () {
-    //Validate and clear data
-    GC();
-    Util.SourceMark.loop();
-    Util.Stat.loop();
     //Run rooms
     var entry = {};
     _.forEach(Game.rooms, function(room) {
@@ -36,6 +32,10 @@ const loop0 = function () {
             console.log('[Error] Undefined role module is in memory of creep -> '+name);
         }
     }
+    //Validate and clear data
+    GC();
+    Util.SourceMark.loop();
+    Util.Stat.loop();
 };
 
 function GC() {

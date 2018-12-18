@@ -17,16 +17,3 @@ mod.setupConfig = {
 		    memory: {role: 'builder'},
 	  },
 };
-
-mod.shouldSpawn = function(room, cnt) {
-	  const cntLimit = room.energyCapacityAvailable < this.setupConfig.Normal.minEnergy ? 2 : 1; //2 work or 2 work
-    const existCount = cnt[lowerFirst(this.setupName)];
-    const needBuildStructures = room.find(FIND_CONSTRUCTION_SITES);
-    const needRepairStructures = room.find(FIND_STRUCTURES, {
-        filter: function(o) {
-            return o.hits < o.hitsMax;
-        }
-    });
-    const needBuilder = (needBuildStructures.length + needRepairStructures.length) > 0;
-    return needBuilder && (_.isUndefined(existCount) || existCount < cntLimit);
-};

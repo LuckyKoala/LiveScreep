@@ -19,8 +19,3 @@ mod.setupConfig = {
         memory: {role: 'filler'},
     },
 };
-
-mod.shouldSpawn = function(room, cnt) {
-    const existCount = cnt[lowerFirst(this.setupName)];
-    return _.isUndefined(existCount) || (room.storage && existCount < 1);
-};

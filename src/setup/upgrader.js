@@ -29,17 +29,6 @@ mod.setupConfig = {
     },
 };
 
-mod.shouldSpawn = function(room, cnt) {
-    const existCount = cnt[lowerFirst(this.setupName)];
-    var limit = room.energyCapacityAvailable < this.setupConfig.Normal.minEnergy ? 3 : 2; //12 work or 12 work
-    
-    if(room.storage && room.storage.store.energy>StorageBoundForAddUpgrader && room.energyAvailable>=this.setupConfig.Normal.minEnergy) {
-        limit++;
-    }
-
-    return _.isUndefined(existCount) || existCount < limit;
-};
-
 mod.shouldUseHighLevel = function(room) {
     return room.controller.level == 8;
 };

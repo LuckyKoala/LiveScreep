@@ -24,16 +24,45 @@ mod.forgetCreep = function(creepName) {
     delete Memory.stat.creep[creepName];
 };
 
-//Count
-mod.memorize = function(key, entry) {
-    _.set(Memory, ['stat', 'last', key], entry);
+//IN: harvest dismantle
+//OUT: build maintain repair upgrade
+//     tower spawn
+const ENERGY_IN = 'energyIn';
+const ENERGY_OUT = 'energyOut';
+mod.energyIn = function(roomName) {
+    return this.getEntry(ENERGY_IN, roomName) || 0;
+};
+mod.energyOut = function(roomName) {
+    return this.getEntry(ENERGY_OUT, roomName) || 0;
+};
+mod.incEnergyIn = function(roomName, amount) {
+    const last = this.energyIn(name);
+    this.memorize(ENERGY_IN, last+amount, roomName);
+};
+mod.incEnergyOut = function(roomName, amount) {
+    const last = this.energyOut(roomName);
+    this.memorize(ENERGY_OUT, last+amount, roomName);
 };
 
-mod.getEntry = function(key) {
-    _.get(Memory, ['stat', 'last', key]);
+//Count
+mod.memorize = function(key, entry, roomName) {
+    if(roomName) {
+        _.set(Memory.rooms, [roomName, 'stat', 'last', key], entry);
+    } else {
+        _.set(Memory, ['stat', 'last', key], entry);
+    }
+};
+
+mod.getEntry = function(key, roomName) {
+    if(roomName) {
+        _.get(Memory.rooms, [roomName, 'stat', 'last', key]);
+    } else {
+        _.get(Memory, ['stat', 'last', key]);
+    }
 };
 
 mod.forgetAll = function() {
+    //Leave room stat to upper level gc.
     if(Memory.stat) delete Memory.stat.last;
 };
 

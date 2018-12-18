@@ -136,6 +136,28 @@ Object.defineProperties(StructureController.prototype, {
 });
 
 Object.defineProperties(Room.prototype, {
+    'queue': {
+        get: function() {
+            if (!this._queue) {
+                if (this.memory.queue) {
+                    this._queue = this.memory.queue;
+                } else {
+                    this.memory.queue = {
+                        urgent: [],
+                        normal: []
+                    };
+                    this._queue = this.memory.queue;
+                }
+            }
+            return this._queue;
+        },
+        set: function(queue) {
+            this.memory.queue = queue;
+            this._queue = queue;
+        },
+        enumerable: false,
+        configurable: true
+    },
     'spawnLink': {
         get: function() {
             if (!this._spawnLink) {
@@ -208,19 +230,22 @@ Object.defineProperties(Room.prototype, {
     'spawns': {
         get: function() {
             if (!this._spawns) {
-                const spawnIds = this.memory.spawnIds; 
-                if (spawnIds) {
+                const spawnIds = this.memory.spawnIds;
+                //If array has no item, re-search and cache it
+                if (spawnIds && spawnIds.length > 0) {
                     var spawns = _.map(spawnIds, id => Game.getObjectById(id));
-                    //TODO Validate spawns
                     this._spawns = spawns;
                 } else {
-                    return false;
+                    const roomName = this.name;
+                    const spawns = _.filter(Game.spawns, spawn => spawn.room.name===roomName);
+                    this.memory.spawnIds = _.map(spawns, spawn => spawn.id);
+                    this._spawns = spawns;
                 }
             }
             return this._spawns;
         },
         set: function(spawns) {
-            this.memory.spawnIds = _.map(spawns, spawn => spawn.id); 
+            this.memory.spawnIds = _.map(spawns, spawn => spawn.id);
             this._spawns = spawns;
         },
         enumerable: false,
@@ -229,19 +254,21 @@ Object.defineProperties(Room.prototype, {
     'sources': {
         get: function() {
             if (!this._sources) {
-                const sourceIds = this.memory.sourceIds; 
-                if (sourceIds) {
-                    var sources = _.map(sourceIds, id => Game.getObjectById(id));
-                    //TODO Validate sources
+                const sourceIds = this.memory.sourceIds;
+                //If array has no item, re-search and cache it
+                if (sourceIds && sourceIds.length > 0) {
+                    let sources = _.map(sourceIds, id => Game.getObjectById(id));
                     this._sources = sources;
                 } else {
-                    return false;
+                    const sources = this.find(FIND_SOURCES);
+                    this.memory.sourceIds = _.map(sources, source => source.id);
+                    this._sources = sources;
                 }
             }
             return this._sources;
         },
         set: function(sources) {
-            this.memory.sourceIds = _.map(sources, source => source.id); 
+            this.memory.sourceIds = _.map(sources, source => source.id);
             this._sources = sources;
         },
         enumerable: false,
@@ -269,13 +296,4 @@ Room.prototype.saveLinks = function() {
             self.spawnLink = link;
         }
     });
-};
-
-Room.prototype.saveSpawns = function() {
-    const roomName = this.name;
-    this.spawns = _.filter(Game.spawns, spawn => spawn.room.name===roomName);
-};
-
-Room.prototype.saveSources = function() {
-    this.sources = this.find(FIND_SOURCES);
 };

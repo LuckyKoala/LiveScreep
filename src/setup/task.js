@@ -10,9 +10,3 @@ mod.setupConfig = {
 		memory: {role: 'ant'},
 	},
 };
-
-mod.shouldSpawn = function(room, cnt) {
-    //Find available task
-    //Get override setupConfig and shouldSpawn of task
-    return false;
-};

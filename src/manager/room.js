@@ -1,6 +1,7 @@
+const QueueService = require('service_queue');
+const SpawnService = require('service_spawn');
 const LinkService = require('service_link');
 const ConstructionService = require('service_construction');
-const SpawnService = require('service_spawn');
 const TowerService = require('service_tower');
 
 var mod = {};
@@ -41,13 +42,13 @@ mod.dispatch = function(room) {
 
 mod.loopOwnedRoom = function(room) {
     room.saveLinks();
-    room.saveSpawns();
-    room.saveSources();
 
-    ConstructionService.loop(room);
-    SpawnService.loop(room);
     TowerService.loop(room);
     LinkService.loop(room);
+    ConstructionService.loop(room);
+    //Init queue before spawn
+    QueueService.loop(room);
+    SpawnService.loop(room);
 };
 
 mod.loopExternalRoom = function(room) {

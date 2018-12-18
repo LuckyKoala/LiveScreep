@@ -18,6 +18,8 @@ global.tryRequire = (path, silent = false) => {
     return mod;
 };
 
+global.cli = require('util_cli');
+
 const DefaultConfig = require('config_default');
 const OverrideConfig = tryRequire('config_override', true) || {};
 global.Config = _.defaultsDeep(OverrideConfig, DefaultConfig);
@@ -34,7 +36,7 @@ global.FlagUtil = {
         color: COLOR_BLUE,
         secondaryColor: COLOR_BLUE,
     },
-}
+};
 function makeExamineFunction(constant) {
     return o => o.color==constant.color && o.secondaryColor==constant.secondaryColor;
 };

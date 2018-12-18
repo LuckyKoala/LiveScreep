@@ -21,7 +21,9 @@ mod.loop = function(room) {
         const hostile = sortHostiles.length ?
         　　Game.getObjectById(_.last(sortHostiles).id) : false;
         if(hostile) {
-            tower.attack(hostile);
+            if(tower.attack(hostile) === OK) {
+                Util.Stat.incEnergyOut(tower.room.name, TOWER_ENERGY_COST);
+            }
             return;
         }
 
@@ -31,7 +33,9 @@ mod.loop = function(room) {
             filter: (creep) => creep.hits < creep.hitsMax
         });
         if(closestInjuredCreep) {
-            tower.heal(closestInjuredCreep);
+            if(tower.heal(closestInjuredCreep) === OK) {
+                Util.Stat.incEnergyOut(tower.room.name, TOWER_ENERGY_COST);
+            }
             return;
         }
         //Repair structure
@@ -48,14 +52,16 @@ mod.loop = function(room) {
                     } else if(structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_RAMPART) {
                         return false;
                     } else if(structure.structureType == STRUCTURE_ROAD) {
-                        return false; 
+                        return false;
                     }
                     return true;
                 }
             }
         });
         if(closestDamagedStructure) {
-            tower.repair(closestDamagedStructure);
+            if(tower.repair(closestDamagedStructure) === OK) {
+                Util.Stat.incEnergyOut(tower.room.name, TOWER_ENERGY_COST);
+            }
             return;
         }
     });

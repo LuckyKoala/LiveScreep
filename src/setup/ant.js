@@ -10,7 +10,3 @@ mod.setupConfig = {
 		memory: {role: 'ant'},
 	},
 };
-
-mod.shouldSpawn = function(room, cnt) {
-    return true;
-};

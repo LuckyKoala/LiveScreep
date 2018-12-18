@@ -17,9 +17,3 @@ mod.setupConfig = {
         memory: {role: 'hauler'},
     },
 };
-
-mod.shouldSpawn = function(room, cnt) {
-    const cntLimit = room.energyCapacityAvailable < this.setupConfig.Normal.minEnergy ? 2 : 1; //6 carry
-    const existCount = cnt[lowerFirst(this.setupName)];
-    return _.isUndefined(existCount) || existCount < cntLimit;
-};
