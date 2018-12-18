@@ -1,7 +1,7 @@
 var _global = require('global');
 var _extension = require('extension');
 const RoomManager = require('manager_room');
-const profiler = require('lib_screeps-profiler');
+//const profiler = require('lib_screeps-profiler');
 
 // This line monkey patches the global prototypes.
 //const EnableProfiler = Config.EnableProfiler;
