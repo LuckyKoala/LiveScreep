@@ -36,7 +36,7 @@ mod.energyOut = function(roomName) {
     return this.getEntry(ENERGY_OUT, roomName) || 0;
 };
 mod.incEnergyIn = function(roomName, amount) {
-    const last = this.energyIn(name);
+    const last = this.energyIn(roomName);
     this.memorize(ENERGY_IN, last+amount, roomName);
 };
 mod.incEnergyOut = function(roomName, amount) {
