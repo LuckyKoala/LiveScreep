@@ -8,8 +8,10 @@ mod.nextTarget = function() {
     if(!markSource) {
         //Not found
         console.log("Finding unmark source => "+creep.name);
-        Util.SourceMark.findAndMarkSource(creep);
-        markSource = Util.SourceMark.getMarkSource(creep);
+        let found = Util.SourceMark.findAndMarkSource(creep);
+        if(found) {
+            markSource = Util.SourceMark.getMarkSource(creep);
+        }
     }
 
     return markSource;

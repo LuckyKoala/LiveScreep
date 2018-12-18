@@ -15,7 +15,8 @@ mod.loop = function(room) {
         cnt.total++;
     }
     //Count role in queue as well
-    for(let setup of _.union(room.queue.urgent, room.queue.normal)) {
+    const queue = _.union(room.queue.urgent, room.queue.normal);
+    for(let setup of queue) {
         const role = lowerFirst(setup.setupName);
         cnt[role]++;
         cnt.total++;
@@ -40,6 +41,16 @@ mod.loop = function(room) {
                 room.queue.normal.push(Setup.Hauler);
             }
             cnt['hauler']++;
+        }
+    }
+    //If harvester is enough and hauler is not enough
+    // just spawn it alone
+    while(needHauler-- > 0) {
+        if(cnt['hauler']===0) {
+            //No hauler at all, so it's urgent
+            room.queue.urgent.push(Setup.Hauler);
+        } else {
+            room.queue.normal.push(Setup.Hauler);
         }
     }
     //One upgrader in queue.urgent and one in queue.normal
@@ -86,5 +97,40 @@ mod.loop = function(room) {
     if(cnt['guardian'] === 0 && Util.Defense.shouldSpawnGuardian(room)) {
         room.queue.urgent.push(Setup.Guardian);
         cnt['guardian']++;
+    }
+
+    //=== Dynamic balance ===
+    if(queue.length === 0 && !room.storage && (Game.time-room.queue.lastBalanceTick) > 100) {
+        //All base creep has been spawned, no creep in the queue
+        // No storage to store extra energy or
+        //   to compensate lack of energy, find a way to balance it!
+        //Now let's see we have more energyIn or energyOut
+        const energyIn = Util.Stat.energyIn();
+        const energyOut = Util.Stat.energyOut();
+        const hasMoreEnergy = (energyIn - energyOut) > 0;
+        if(hasMoreEnergy) {
+            //Firstly, do we need builder?
+            if(needBuilder) {
+                //Add a builder
+                console.log('More builder!');
+                room.queue.normal.push(Setup.Builder);
+                cnt['builder']++;
+                room.queue.lastBalanceTick = Game.time;
+                return;
+            }
+            //Secondly, more upgrader is always good
+            console.log('More upgrader!');
+            room.queue.normal.push(Setup.Upgrader);
+            cnt['upgrader']++;
+            room.queue.lastBalanceTick = Game.time;
+        } else {
+            //Can we gain more energy ?
+            //1. add harvester in room
+            console.log('More harvester!');
+            room.queue.normal.push(Setup.Harvester);
+            cnt['harvester']++;
+            room.queue.lastBalanceTick = Game.time;
+            //2. add remote mining harvester
+        }
     }
 };

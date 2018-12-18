@@ -144,7 +144,8 @@ Object.defineProperties(Room.prototype, {
                 } else {
                     this.memory.queue = {
                         urgent: [],
-                        normal: []
+                        normal: [],
+                        lastBalanceTick: 0,
                     };
                     this._queue = this.memory.queue;
                 }

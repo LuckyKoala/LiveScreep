@@ -4,10 +4,11 @@ const RoomManager = require('manager_room');
 const profiler = require('lib_screeps-profiler');
 
 // This line monkey patches the global prototypes.
-const EnableProfiler = Config.EnableProfiler;
-if(EnableProfiler) profiler.enable();
+//const EnableProfiler = Config.EnableProfiler;
+//if(EnableProfiler) profiler.enable();
 module.exports.loop = function() {
-  profiler.wrap(loop0);
+    //profiler.wrap(loop0);
+    loop0();
 };
 
 const loop0 = function () {
@@ -18,6 +19,7 @@ const loop0 = function () {
         Util.Defense.loop(room);
         RoomManager.dispatch(room);
         entry[room.name] = room.energyAvailable;
+        Util.Stat.sumEnergyHistory(room.name);
     });
     Util.Stat.memorize('last-energyAvailable', entry);
     //Run creeps

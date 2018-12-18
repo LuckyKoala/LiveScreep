@@ -27,21 +27,43 @@ mod.forgetCreep = function(creepName) {
 //IN: harvest dismantle
 //OUT: build maintain repair upgrade
 //     tower spawn
-const ENERGY_IN = 'energyIn';
-const ENERGY_OUT = 'energyOut';
+const ENERGY_HISTORY = 'energyHistory';
+const HISTORY_RESET_TICK = 1000;
+let energyIn = 0;
+let energyOut = 0;
 mod.energyIn = function(roomName) {
-    return this.getEntry(ENERGY_IN, roomName) || 0;
+    return energyIn;
 };
 mod.energyOut = function(roomName) {
-    return this.getEntry(ENERGY_OUT, roomName) || 0;
+    return energyOut;
 };
 mod.incEnergyIn = function(roomName, amount) {
-    const last = this.energyIn(roomName);
-    this.memorize(ENERGY_IN, last+amount, roomName);
+    energyIn+=amount;
 };
 mod.incEnergyOut = function(roomName, amount) {
-    const last = this.energyOut(roomName);
-    this.memorize(ENERGY_OUT, last+amount, roomName);
+    energyOut+=amount;
+};
+mod.sumEnergyHistory = function(roomName) {
+    const lastHistory = _.get(Memory.rooms, [roomName, 'stat', ENERGY_HISTORY]) || {
+        energyInTotal: 0,
+        energyOutTotal: 0,
+        tickTotal: 0,
+        lastAvgIn: 0,
+        lastAvgOut: 0,
+    };
+    lastHistory.energyInTotal += this.energyIn();
+    lastHistory.energyOutTotal += this.energyOut();
+    lastHistory.tickTotal ++;
+    if(lastHistory.tickTotal > HISTORY_RESET_TICK) {
+        //Average and reset total count history
+        lastHistory.lastAvgIn = lastHistory.energyInTotal/lastHistory.tickTotal;
+        lastHistory.lastAvgOut = lastHistory.energyOutTotal/lastHistory.tickTotal;
+        lastHistory.energyInTotal = 0;
+        lastHistory.energyOutTotal = 0;
+        lastHistory.tickTotal = 0;
+    }
+    //Write back to memory
+    _.set(Memory.rooms, [roomName, 'stat', ENERGY_HISTORY], lastHistory);
 };
 
 //Count
@@ -55,14 +77,13 @@ mod.memorize = function(key, entry, roomName) {
 
 mod.getEntry = function(key, roomName) {
     if(roomName) {
-        _.get(Memory.rooms, [roomName, 'stat', 'last', key]);
+        return _.get(Memory.rooms, [roomName, 'stat', 'last', key]);
     } else {
-        _.get(Memory, ['stat', 'last', key]);
+        return _.get(Memory, ['stat', 'last', key]);
     }
 };
 
 mod.forgetAll = function() {
-    //Leave room stat to upper level gc.
     if(Memory.stat) delete Memory.stat.last;
 };
 

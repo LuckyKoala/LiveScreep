@@ -8,34 +8,55 @@ module.exports = {
     },
     findAndMarkSource: function(creep) {
         const sources = creep.room.sources;
-        for(var i=0; i<sources.length; i++) {
-            var source = sources[i];
+        for(let source of sources) {
             if(source && isSourceAvailable(creep.getActiveBodyparts(WORK), source)) {
                 markSource(creep, source);
                 return true;
             }
         }
+        //No exactly matched source
+        //Try again to only match source with available spots
+        for(let source of sources) {
+            if(source && isSourceAvailable(0, source)) {
+                markSource(creep, source);
+                return true;
+            }
+        }
+
         return false;
     },
     getMarkSource: function(creep) {
         var id = _.get(creep, 'memory.sourceMark.target', false);
         if(id) {
-            return Game.getObjectById(id);
-            /*
+            //return Game.getObjectById(id);
             const source = Game.getObjectById(id);
             if(source) ensureSourceMarkInitialize(source);
             if(_.isUndefined(source.memory.mark.status[creep.name])) {
+                console.log(`Clean sourceMark of ${creep.name}`);
                 clearSourceMark(creep);
                 return false;
             } else {
-                return true;
+                return source;
             }
-            */
         }
         else {
             return false;
         }
     },
+    //Only check spots available > 1
+    getAvailablePartsToMatchSource: function(room) {
+        const sources = room.sources;
+        let maxParts = 0;
+        for(var i=0; i<sources.length; i++) {
+            var source = sources[i];
+            if(source) {
+                ensureSourceMarkInitialize(source);
+                const available = source.memory.mark.available;
+                if(available.spots>=1) maxParts = Math.max(maxParts, available.parts);
+            }
+        }
+        return maxParts;
+    }
 };
 
 /**
@@ -80,10 +101,6 @@ function isSourceAvailable(workParts, source) {
 function markSource(creep, source) {
     ensureSourceMarkInitialize(source);
     //Now mark it
-    //Update creep mark
-    creep.memory.sourceMark = {
-        target: source.id,
-    };
     //Update source mark
     var available = source.memory.mark.available;
     var status = source.memory.mark.status;
@@ -91,8 +108,13 @@ function markSource(creep, source) {
     available.spots--;
     available.parts -= takeParts;
     status[creep.name] = takeParts;
+    //Write back
     source.memory.mark.available = available;
     source.memory.mark.status = status;
+    //Update creep mark
+    creep.memory.sourceMark = {
+        target: source.id,
+    };
     //Log
     console.log("Mark source [" + source.id + "] by "+creep.name);
 }
@@ -131,5 +153,6 @@ function ensureSourceMarkInitialize(source) {
     //Has source been initialized?
     if(_.isUndefined(source.memory.mark)) {
         initSourceMark(source);
+        console.log(`Init source mark for [${source.id}]`);
     }
 }
