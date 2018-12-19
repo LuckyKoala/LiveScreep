@@ -93,8 +93,13 @@ function initSourceMark(source) {
 
 function isSourceAvailable(workParts, source) {
     ensureSourceMarkInitialize(source);
-    const needParts = workParts;
     const available = source.memory.mark.available;
+    if(workParts === 0) {
+        //So this is not exactly match
+        // neglect workParts
+        return available.spots>=1;
+    }
+    const needParts = workParts;
     return available.spots>=1 && available.parts>=needParts;
 }
 

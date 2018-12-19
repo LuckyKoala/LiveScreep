@@ -28,7 +28,7 @@ mod.forgetCreep = function(creepName) {
 //OUT: build maintain repair upgrade
 //     tower spawn
 const ENERGY_HISTORY = 'energyHistory';
-const HISTORY_RESET_TICK = 1000;
+const HISTORY_RESET_TICK = 300;
 let energyIn = 0;
 let energyOut = 0;
 mod.energyIn = function(roomName) {
@@ -43,14 +43,17 @@ mod.incEnergyIn = function(roomName, amount) {
 mod.incEnergyOut = function(roomName, amount) {
     energyOut+=amount;
 };
-mod.sumEnergyHistory = function(roomName) {
-    const lastHistory = _.get(Memory.rooms, [roomName, 'stat', ENERGY_HISTORY]) || {
+mod.getLastHistory = function(roomName) {
+    return _.get(Memory.rooms, [roomName, 'stat', ENERGY_HISTORY]) || {
         energyInTotal: 0,
         energyOutTotal: 0,
         tickTotal: 0,
         lastAvgIn: 0,
         lastAvgOut: 0,
     };
+};
+mod.sumEnergyHistory = function(roomName) {
+    const lastHistory = this.getLastHistory(roomName);
     lastHistory.energyInTotal += this.energyIn();
     lastHistory.energyOutTotal += this.energyOut();
     lastHistory.tickTotal ++;

@@ -25,6 +25,16 @@ mod.loop = function(room) {
     //One pair of harvester-hauler per source
     let needHarvester = room.sources.length - cnt['harvester'];
     let needHauler = room.sources.length - cnt['hauler'];
+    //Adjust queue depends on avg in and out
+    const lastHistory = Util.Stat.getLastHistory(room.name);
+    const energyIn = lastHistory.lastAvgIn;
+    const energyOut = lastHistory.lastAvgOut;
+    if(energyIn > energyOut) {
+        //Too many energy not used, pair of harvester-hauler is enough
+        // That means, we don't need harvester unless no harvester at all, but pair of hauler is required
+        needHarvester = 1-cnt['harvester'];
+        needHauler = cnt['harvester']-cnt['hauler'];
+    }
     while(needHarvester-- > 0) {
         if(cnt['harvester']===0) {
             //No harvester at all, so it's urgent
@@ -107,13 +117,15 @@ mod.loop = function(room) {
 
     //=== Dynamic balance ===
     if(queue.length === 0 && !room.storage && (Game.time-room.queue.lastBalanceTick) > 100) {
+        //Refresh check time
+        room.queue.lastBalanceTick = Game.time;
         //All base creep has been spawned, no creep in the queue
         // No storage to store extra energy or
         //   to compensate lack of energy, find a way to balance it!
         //Now let's see we have more energyIn or energyOut
-        const energyIn = Util.Stat.energyIn();
-        const energyOut = Util.Stat.energyOut();
         const hasMoreEnergy = (energyIn - energyOut) > 0;
+        const hasLessEnergy = (energyIn - energyOut) < 0;
+        console.log(`In ${energyIn}, Out ${energyOut}, hasMoreEnergy ${hasMoreEnergy}`);
         if(hasMoreEnergy) {
             //Firstly, do we need builder?
             // if there are sites need to be build,
@@ -123,7 +135,6 @@ mod.loop = function(room) {
                 console.log('More builder!');
                 room.queue.normal.push(Setup.Builder);
                 cnt['builder']++;
-                room.queue.lastBalanceTick = Game.time;
                 return;
             }
             //Secondly, more upgrader is always good
@@ -132,15 +143,13 @@ mod.loop = function(room) {
                 console.log('More upgrader!');
                 room.queue.normal.push(Setup.Upgrader);
                 cnt['upgrader']++;
-                room.queue.lastBalanceTick = Game.time;
             }
-        } else {
+        } else if(hasLessEnergy) {
             //Can we gain more energy ?
             //1. add harvester in room
             console.log('More harvester!');
             room.queue.normal.push(Setup.Harvester);
             cnt['harvester']++;
-            room.queue.lastBalanceTick = Game.time;
             //2. add remote mining harvester
         }
     }

@@ -5,7 +5,8 @@ mod.setupConfig = {
     Low: {
         minEnergy: 150,
         essBody: [CARRY, CARRY, MOVE],
-        extraBody: [],
+        extraBody: [CARRY, CARRY, MOVE],
+        maxExtraAmount: 1,
         prefix: '[LowHauler]',
         memory: {role: 'hauler'},
     },
