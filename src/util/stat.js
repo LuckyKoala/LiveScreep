@@ -28,7 +28,7 @@ mod.forgetCreep = function(creepName) {
 //OUT: build maintain repair upgrade
 //     tower spawn
 const ENERGY_HISTORY = 'energyHistory';
-const HISTORY_RESET_TICK = 300;
+global.HISTORY_RESET_TICK = 300;
 let energyIn = 0;
 let energyOut = 0;
 mod.energyIn = function(roomName) {

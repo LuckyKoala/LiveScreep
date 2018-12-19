@@ -116,7 +116,7 @@ mod.loop = function(room) {
     }
 
     //=== Dynamic balance ===
-    if(queue.length === 0 && !room.storage && (Game.time-room.queue.lastBalanceTick) > 100) {
+    if(queue.length === 0 && !room.storage && (Game.time-room.queue.lastBalanceTick) > HISTORY_RESET_TICK) {
         //Refresh check time
         room.queue.lastBalanceTick = Game.time;
         //All base creep has been spawned, no creep in the queue
