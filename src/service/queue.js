@@ -110,7 +110,9 @@ mod.loop = function(room) {
         const hasMoreEnergy = (energyIn - energyOut) > 0;
         if(hasMoreEnergy) {
             //Firstly, do we need builder?
-            if(needBuilder) {
+            // if there are sites need to be build,
+            //  then one builder more is enough
+            if(needBuilder && needBuildStructures.length>1 && cnt['builder']<2) {
                 //Add a builder
                 console.log('More builder!');
                 room.queue.normal.push(Setup.Builder);
