@@ -94,5 +94,6 @@ global.Util = {
     SourceMark: require('util_sourcemark'),
     Smalltask: require('util_smalltask'),
     Stat: require('util_stat'),
+    Helper: require('util_helper'),
 };
 global.State= {};

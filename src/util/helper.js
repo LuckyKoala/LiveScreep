@@ -1,0 +1,71 @@
+var mod = {};
+module.exports = mod;
+
+mod.getTerrain = function(roomName) {
+    //create 50x50 array
+    let arr = new Array(50);
+    for (let i = 0; i < 50; i++) {
+        arr[i] = new Array(50);
+    }
+    //set terrain value
+    const get = getTerrainAt(roomName);
+    for(let x=0; x<50; x++) {
+        for(let y=0; y<50; y++) {
+            arr[y][x] = get(x,y);
+        }
+    }
+    return arr;
+};
+
+mod.findBlockInRoom = function(roomName, xlen, ylen) {
+    return findBlock(getTerrainAt(roomName), xlen, ylen, 50, TERRAIN_MASK_WALL);
+};
+
+function getTerrainAt(roomName) {
+    const terrain = new Room.Terrain(roomName);
+    return (x,y) => terrain.get(x,y);
+};
+
+//Search direction
+//↓↓→→
+//One-way search
+function findBlock(getFunc, xlen, ylen, width, blockValue) {
+    //Search points
+    const start = 3; //Away from exit
+    let xok = false;
+    //Search from start point
+    let xpos = start;
+    let ypos = start;
+    for(let x=start; x<width; x++) {
+        let yok = false;
+        //Search from ypos line
+        for(let y=ypos; y<width; y++) {
+            if(getFunc(x,y)===blockValue) {
+                //Found wall, so this line is not totally empty
+                // this y line should step forward
+                // Inc ypos to indicate where to start next time
+                ypos = y+1;
+                //If we change y line, then x line should change as well
+                xpos = x;
+            } else if((y-ypos+1) === ylen) {
+                //found enough y!
+                yok = true;
+                if((x-xpos+1) === xlen) {
+                    //found enough x!
+                    xok = true;
+                    return [xpos, ypos];
+                } else {
+                    //Not enough x, so we keep searching
+                    break;
+                }
+            }
+        }
+        if(!yok) {
+            //So we can't find enough of y
+            // this x line should step forward
+            // and y line should restore to start line
+            xpos=x+1;
+            ypos=start;
+        }
+    }
+};
