@@ -64,12 +64,18 @@ mod.loop = function(room) {
     }
     //=== Extended creeps ===
     //If there is a storage, spawn a filler and a extra hauler
+    // or if there is a controllerContainer, spawn a extra hauler
     if(room.storage) {
         if(cnt['filler'] === 0) {
             room.queue.urgent.push(Setup.Filler);
             cnt['filler']++;
         }
-        if(cnt['hauler'-room.sources.length] === 0) {
+        if(cnt['hauler']-room.sources.length === 0) {
+            room.queue.normal.push(Setup.Hauler);
+            cnt['hauler']++;
+        }
+    } else if(room.controller.container) {
+        if(cnt['hauler']-room.sources.length === 0) {
             room.queue.normal.push(Setup.Hauler);
             cnt['hauler']++;
         }
@@ -121,10 +127,13 @@ mod.loop = function(room) {
                 return;
             }
             //Secondly, more upgrader is always good
-            console.log('More upgrader!');
-            room.queue.normal.push(Setup.Upgrader);
-            cnt['upgrader']++;
-            room.queue.lastBalanceTick = Game.time;
+            // if and only if controller container can afford
+            if(room.controller.container && room.controller.container.store[RESOURCE_ENERGY] > 500) {
+                console.log('More upgrader!');
+                room.queue.normal.push(Setup.Upgrader);
+                cnt['upgrader']++;
+                room.queue.lastBalanceTick = Game.time;
+            }
         } else {
             //Can we gain more energy ?
             //1. add harvester in room
