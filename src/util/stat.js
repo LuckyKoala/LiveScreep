@@ -62,6 +62,9 @@ mod.sumEnergyHistory = function(roomName) {
         lastHistory.energyOutTotal = 0;
         lastHistory.tickTotal = 0;
     }
+    //Reset value of global variable to 0
+    energyIn = 0;
+    energyOut = 0;
     //Write back to memory
     _.set(Memory.rooms, [roomName, 'stat', ENERGY_HISTORY], lastHistory);
 };

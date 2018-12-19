@@ -30,16 +30,20 @@ mod.loop = function(creep) {
             //Try stay above the container
             if(creep.pos.isEqualTo(container)) {
                 let result = creep.harvest(source);
-                if(result===OK)
-                    Util.Stat.incEnergyIn(creep.room.name, creep.getActiveBodyparts(WORK)*HARVEST_POWER);
+                if(result===OK) {
+                    let amount = creep.getActiveBodyparts(WORK)*HARVEST_POWER;
+                    Util.Stat.incEnergyIn(creep.room.name, amount);
+                }
             } else {
                 creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         } else {
             if(creep.pos.isNearTo(source)) {
                 let result = creep.harvest(source);
-                if(result===OK)
-                    Util.Stat.incEnergyIn(creep.room.name, creep.getActiveBodyparts(WORK)*HARVEST_POWER);
+                if(result===OK) {
+                    let amount = creep.getActiveBodyparts(WORK)*HARVEST_POWER;
+                    Util.Stat.incEnergyIn(creep.room.name, amount);
+                }
             } else {
                 creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
