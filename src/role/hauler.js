@@ -8,7 +8,7 @@ mod.roleConfig = {
 
 mod.roleConfigWhenNoStorage = {
     inStack: [Action.Pickup, Action.Withdraw],
-    outStack: [Action.Fill, Action.Feed, Action.Fuel, Action.Put],
+    outStack: [Action.Fill, Action.Fuel, Action.Put],
 };
 
 mod.loop = function(creep) {

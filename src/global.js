@@ -47,7 +47,6 @@ addExamineToFlagUtil();
 
 global.Action = {
     Harvest: require('action_harvest'),
-    Feed: require('action_feed'),
     Fill: require('action_fill'),
     Idle: require('action_idle'),
     Upgrade: require('action_upgrade'),
