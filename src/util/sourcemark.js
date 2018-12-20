@@ -42,20 +42,6 @@ module.exports = {
         else {
             return false;
         }
-    },
-    //Only check spots available > 1
-    getAvailablePartsToMatchSource: function(room) {
-        const sources = room.sources;
-        let maxParts = 0;
-        for(var i=0; i<sources.length; i++) {
-            var source = sources[i];
-            if(source) {
-                ensureSourceMarkInitialize(source);
-                const available = source.memory.mark.available;
-                if(available.spots>=1) maxParts = Math.max(maxParts, available.parts);
-            }
-        }
-        return maxParts;
     }
 };
 
@@ -94,13 +80,8 @@ function initSourceMark(source) {
 function isSourceAvailable(workParts, source) {
     ensureSourceMarkInitialize(source);
     const available = source.memory.mark.available;
-    if(workParts === 0) {
-        //So this is not exactly match
-        // neglect workParts
-        return available.spots>=1;
-    }
     const needParts = workParts;
-    return available.spots>=1 && available.parts>=needParts;
+    return available.spots>=1 && available.parts>needParts;
 }
 
 function markSource(creep, source) {
@@ -142,10 +123,32 @@ function validateSourceMark(source) {
             //Release mark if creep is dead or creep is recycler 
             //  which means it won't work anymore
             clearSourceMark(creep);
+            // release
             available.spots++;
             available.parts += status[name];
             delete status[name];
             updated = true;
+        } else {
+            let id = _.get(creep, 'memory.sourceMark.target', false);
+            //For readability, not to merge this two case in to one
+            if(id) {
+                //Creep has a mark
+                if(id !== source.id) {
+                    //Not matched
+                    // release
+                    available.spots++;
+                    available.parts += status[name];
+                    delete status[name];
+                    updated = true;
+                }
+            } else {
+                //Not matched
+                // release
+                available.spots++;
+                available.parts += status[name];
+                delete status[name];
+                updated = true;
+            }
         }
     }
     if(updated) {
