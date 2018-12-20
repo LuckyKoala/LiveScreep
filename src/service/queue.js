@@ -92,7 +92,7 @@ mod.loop = function(room) {
     }
     //If there are sites need to be build or structures need to be maintain,
     //  spawn a builder for room without storage
-    //  spawn two builder from room with storage
+    //  spawn two builder from room with storage(> 15000 energy remain)
     const needBuildStructures = room.find(FIND_CONSTRUCTION_SITES);
     const needRepairStructures = room.find(FIND_STRUCTURES, {
         filter: function(o) {
@@ -104,7 +104,7 @@ mod.loop = function(room) {
         if(cnt['builder']===0) {
             room.queue.normal.push(Setup.Builder);
             cnt['builder']++;
-        } else if(cnt['builder']===1 && room.storage) {
+        } else if(cnt['builder']===1 && room.storage && room.storage.store[RESOURCE_ENERGY] > 15000) {
             room.queue.normal.push(Setup.Builder);
             cnt['builder']++;
         }
@@ -147,9 +147,11 @@ mod.loop = function(room) {
         } else if(hasLessEnergy) {
             //Can we gain more energy ?
             //1. add harvester in room
-            console.log('More harvester!');
-            room.queue.normal.push(Setup.Harvester);
-            cnt['harvester']++;
+            //NOTE this is bad idea since more harvester will break source mark system
+            // and consequence is two 5xWORK harvester may mining same source
+            //console.log('More harvester!');
+            //room.queue.normal.push(Setup.Harvester);
+            //cnt['harvester']++;
             //2. add remote mining harvester
         }
     }
