@@ -1,14 +1,14 @@
 var _global = require('global');
 var _extension = require('extension');
 const RoomManager = require('manager_room');
-//const profiler = require('lib_screeps-profiler');
+const profiler = require('lib_screeps-profiler');
+const _roomvisual = require('lib_RoomVisual');
 
 // This line monkey patches the global prototypes.
-//const EnableProfiler = Config.EnableProfiler;
-//if(EnableProfiler) profiler.enable();
+const EnableProfiler = Config.EnableProfiler;
+if(EnableProfiler) profiler.enable();
 module.exports.loop = function() {
-    //profiler.wrap(loop0);
-    loop0();
+    profiler.wrap(loop0);
 };
 
 const loop0 = function () {
