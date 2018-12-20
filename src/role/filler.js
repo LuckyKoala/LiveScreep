@@ -14,8 +14,15 @@ mod.loop = function(creep) {
     if(creep.memory.filling && creep.carry.energy == 0) {
         creep.memory.filling = false;
     }
-    if(!creep.memory.filling && creep.carry.energy == creep.carryCapacity) {
-        creep.memory.filling = true;
+    if(!creep.memory.filling) {
+        const storage = creep.room.storage;
+        if(storage.store[RESOURCE_ENERGY] === 0 && creep.carry.energy > 0) {
+            //No more energy, so don't wait if filler carry on any energy
+            creep.memory.filling = true;
+        } else if(creep.carry.energy === creep.carryCapacity) {
+            //We have enough energy, go to working!
+            creep.memory.filling = true;
+        }
     }
 
     this.loop0(creep, creep.memory.filling);
