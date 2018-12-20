@@ -1,4 +1,4 @@
-let mod = new ActionObj('Feed');
+let mod = new ActionObj('Fuel');
 module.exports = mod;
 
 mod.nextTarget = function() {
