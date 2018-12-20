@@ -1,19 +1,24 @@
 var mod = new RoleObj('Hauler');
 module.exports = mod;
 
-mod.roleConfig = {
+//If storage is present, then filler and builder will handle energy in storage
+// so hauler only haul energy to storage now
+mod.roleConfigWithStorage = {
     inStack: [Action.Pickup, Action.Withdraw],
-    outStack: [Action.Fuel, Action.Put],
+    outStack: [Action.Store],
 };
 
-mod.roleConfigWhenNoStorage = {
+mod.roleConfigWithoutStorage = {
     inStack: [Action.Pickup, Action.Withdraw],
-    outStack: [Action.Fill, Action.Fuel, Action.Put],
+    outStack: [Action.Fill, Action.Fuel, Action.PutForUpgrade],
 };
 
 mod.loop = function(creep) {
-    if(!creep.room.storage) {
-        this.roleConfig = this.roleConfigWhenNoStorage;
+    //Switch role config
+    if(creep.room.storage) {
+        this.roleConfig = this.roleConfigWithStorage;
+    } else {
+        this.roleConfig = this.roleConfigWithoutStorage;
     }
     
     if(creep.memory.hauling && creep.carry.energy == 0) {

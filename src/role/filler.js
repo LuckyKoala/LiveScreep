@@ -1,10 +1,13 @@
-//Haul energy from spawn-container to spawn/container
+//Storage handler
+// storage -> spawns and extensions
+// storage -> towers
+// storage -> controller.container
 var mod = new RoleObj('Filler');
 module.exports = mod;
 
 mod.roleConfig = {
     inStack: [Action.Withdraw, Action.Pickup],
-    outStack: [Action.Fill],
+    outStack: [Action.Fill, Action.Fuel, Action.PutForUpgrade],
 };
 
 mod.loop = function(creep) {

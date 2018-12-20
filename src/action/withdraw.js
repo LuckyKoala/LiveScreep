@@ -1,18 +1,6 @@
 let mod = new ActionObj('Withdraw');
 module.exports = mod;
 
-function findTargetForHauler(creep, suitableContainers) {
-    //Hauler shouldn't withdraw energy from container/storage which is used by upgrader
-    // which will make hauler trapped in withdraw-transfer loop due to action.put is also
-    // used by hauler.
-    const controllerContainer = creep.room.controller.container;
-    var targets = suitableContainers;
-    if(controllerContainer) {
-        targets = _.filter(targets, o => o.id != controllerContainer.id);
-    };
-    return creep.pos.findClosestByRange(targets);
-}
-
 function findTargetForFiller(creep) {
     const spawnLink = creep.room.spawnLink;
     const sourceLink = creep.room.sourceLink;
@@ -48,26 +36,41 @@ function findTargetForFiller(creep) {
     }
 }
 
+const findSourceContainers = function(creep) {
+    for(let source of creep.room.sources) {
+        const need = creep.carryCapacity - creep.carry.energy;
+        const container = source.container || false;
+        if(container && container.store[RESOURCE_ENERGY] > need) {
+            return container;
+        }
+    }
+    return false;
+};
+
 const targetInitFunc = function(creep) {
     const role = creep.memory.role;
-    const suitableContainers = creep.room.find(FIND_STRUCTURES, {
-        filter: function(o) { 
-            if(o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE) {
-                var need = creep.carryCapacity - creep.carry.energy;
-                if(o.store[RESOURCE_ENERGY] > need) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    });
-    
-    if(role == 'hauler') {
-        return findTargetForHauler(creep, suitableContainers);
-    } else if(role == 'filler') {
+    if(role === 'hauler') {
+        //Only find source container
+        return findSourceContainers(creep);
+    } else if(role === 'filler') {
         return findTargetForFiller(creep);
+    } else if(role === 'builder') {
+        const storage = creep.room.storage;
+        if(storage) {
+            return storage;
+        } else {
+            return findSourceContainers(creep);
+        }
+    } else if(role === 'upgrader') {
+        const container = creep.room.controller.container;
+        if(container) {
+            return container;
+        } else {
+            return findSourceContainers(creep);
+        }
     } else {
-        return creep.pos.findClosestByRange(suitableContainers);
+        console.log(`error while ${creep.name} using withdraw action`);
+        return false;
     }
 };
 

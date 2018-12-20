@@ -54,6 +54,8 @@ global.Action = {
     Build: require('action_build'),
     Withdraw: require('action_withdraw'),
     Put: require('action_put'),
+    Store: require('action_store'),
+    PutForUpgrade: require('action_putForUpgrade'),
     Fuel: require('action_fuel'),
     Guard: require('action_guard'),
     Pickup: require('action_pickup'),

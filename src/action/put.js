@@ -4,45 +4,16 @@ module.exports = mod;
 //Warning: if you put more than one container near source,
 //  hauler will be in infinite loop of withdraw/transfer.
 const targetInitFunc = function(creep) {
-    const role = creep.memory.role;
-    const findSuitableContainer = function(o) {
-        if(o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE) {
-            if(_.sum(o.store) < o.storeCapacity) {
-                return true;
-            }
-        }
-        return false;
-    };
-    const suitableContainers = creep.room.find(FIND_STRUCTURES, {
-        filter: findSuitableContainer
-    });
-    
-    if(role == 'harvester') {
-        const sourceLink = creep.room.sourceLink;
-        if(sourceLink && creep.pos.getRangeTo(sourceLink)<=2 
-           && sourceLink.energy<sourceLink.energyCapacity) {
-            return sourceLink;
-        } else {
-            const markSource = Util.SourceMark.getMarkSource(creep);
-            return markSource ? markSource.container : false;
-        }
+    //Try link mining first
+    const sourceLink = creep.room.sourceLink;
+    if(sourceLink && creep.pos.getRangeTo(sourceLink)<=2
+       && sourceLink.energy<sourceLink.energyCapacity) {
+        return sourceLink;
     } else {
-        const sourceContainers = [];
-        for(var id in Memory.sources) {
-            const source = Game.getObjectById(id);
-            if(source && source.container) {
-                sourceContainers.push(source.container);
-            }
-        }
-        var targets = suitableContainers;
-        //Other roles shouldn't put energy to source container
-        //  which will occupy space for energy from source.
-        if(sourceContainers.length) {
-            const sourceContainerIds = _.map(sourceContainers, o => o.id);
-            targets = _.filter(targets, o => _.indexOf(sourceContainerIds, o.id) == -1);
-        } 
-        return creep.pos.findClosestByRange(targets);
-    } 
+        //Fallback to container mining
+        const markSource = Util.SourceMark.getMarkSource(creep);
+        return markSource ? markSource.container : false;
+    }
 };
 
 mod.nextTarget = function() {
@@ -53,13 +24,15 @@ mod.word = '➡︎ put';
 
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
-        //Maintain container first(Only for harvester which is stay still)
+        //Maintain container/link first(Only for harvester which is stay still)
         //So result is creep will harvest -> repair util
         // container hits equal to hitsMax.
-        
-        if(target.hits < target.hitsMax && creep.getActiveBodyparts(WORK) > 0 && creep.memory.role=='harvester') {
+        if(target.hits < target.hitsMax) {
             creep.say('🚧 repair');
-            if(creep.repair(target) == ERR_NOT_IN_RANGE) {
+            const result = creep.repair(target);
+            if(result === OK) {
+                Util.Stat.incEnergyOut(creep.room.name, creep.getActiveBodyparts(WORK)*REPAIR_POWER*REPAIR_COST);
+            } else if(result === ERR_NOT_IN_RANGE) {
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         } else {
