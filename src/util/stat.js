@@ -31,6 +31,7 @@ const ENERGY_HISTORY = 'energyHistory';
 global.HISTORY_RESET_TICK = 300;
 let energyIn = 0;
 let energyOut = 0;
+//FIXME should use different value for different rooms
 mod.energyIn = function(roomName) {
     return energyIn;
 };

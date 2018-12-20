@@ -51,7 +51,26 @@ mod.loopOwnedRoom = function(room) {
     SpawnService.loop(room);
 };
 
+//If we have vision of unowned room, record when
+// it was last seen.
+mod.recordLastSeen = function(roomName) {
+    if(Memory.rooms[roomName] === undefined) {
+        Memory.rooms[roomName] = {};
+    }
+    Memory.rooms[roomName].lastSeen = Game.time;
+};
+
+mod.expireRoom = function(roomName) {
+    const ExpirePeriod = 3000;
+    const lastSeen = Memory.rooms[roomName].lastSeen || 0;
+    if(Game.time - lastSeen > ExpirePeriod) {
+        delete Memory.rooms[roomName];
+        console.log('Clearing expired room memory: ', roomName);
+    }
+};
+
 mod.loopExternalRoom = function(room) {
+    this.recordLastSeen(room.name);
     //Do a task
     //1. Remote Mining
     //2. Invading
@@ -59,14 +78,17 @@ mod.loopExternalRoom = function(room) {
 };
 
 mod.loopHighway = function(room) {
+    this.recordLastSeen(room.name);
     //Travel or teleport
 };
 
 mod.loopCenterRoom = function(room) {
+    this.recordLastSeen(room.name);
     //Remote mining
 };
 
 mod.loopKeeperRoom = function(room) {
+    this.recordLastSeen(room.name);
     //Remote Mining
     //Handle creeps from KeeperLair
 };

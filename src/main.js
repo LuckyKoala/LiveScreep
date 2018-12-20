@@ -61,8 +61,7 @@ function GC() {
     }
     for(let name in Memory.rooms) {
         if(Game.rooms[name] === undefined) {
-            delete Memory.rooms[name];
-            console.log('Clearing non-existing room memory: ', name);
+            RoomManager.expireRoom(name);
         }
     }
     for(let name in Memory.construction) {
