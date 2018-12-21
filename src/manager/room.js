@@ -49,6 +49,20 @@ mod.loopOwnedRoom = function(room) {
     //Init queue before spawn
     QueueService.loop(room);
     SpawnService.loop(room);
+    //=== Stat Display ===
+    //Energy in and out
+    const lastHistory = Util.Stat.getLastHistory(room.name);
+    const energyIn = lastHistory.lastAvgIn;
+    const energyOut = lastHistory.lastAvgOut;
+    const energyDiff = energyIn-energyOut;
+    room.visual.text(`AvgEnergy +${energyIn.toFixed(2)} -${energyOut.toFixed(2)} =${energyDiff.toFixed(2)}`, 40, 2, {color: 'green', font: 0.8});
+    //Spawn queue
+    const queue = _.union(room.queue.urgent, room.queue.normal);
+    if(queue.length) {
+        room.visual.text(`Next creep role is ${queue[0].setupName}`, 40, 3, {color: 'green', font: 0.8});
+    } else {
+        room.visual.text(`No creep in spawn queue`, 40, 3, {color: 'green', font: 0.8});
+    }
 };
 
 //If we have vision of unowned room, record when
