@@ -135,26 +135,55 @@ Object.defineProperties(StructureController.prototype, {
     },
 });
 
+function genericGetter(self, name, internalName, initialFunc) {
+    if (!self[internalName]) {
+        if (self.memory[name]) {
+            self[internalName] = self.memory[name];
+        } else {
+            self.memory[name] = initialFunc();
+            self[internalName] = self.memory[name];
+        }
+    }
+    return self[internalName];
+}
+
+function genericSetter(self, name, internalName, value) {
+    self.memory[name] = value;
+    self[internalName] = value;
+}
+
 Object.defineProperties(Room.prototype, {
+    'layout': {
+        get: function() {
+            return genericGetter(this, 'layout', '_layout', () => {
+                const value = {
+                    'init': false,
+                };
+                value[STRUCTURE_CONTAINER] = [];
+                value[STRUCTURE_EXTENSION] = [];
+                value[STRUCTURE_STORAGE] = [];
+                value[STRUCTURE_ROAD] = [];
+                return value;
+            });
+        },
+        set: function(value) {
+            return genericSetter(this, 'layout', '_layout');
+        },
+        enumerable: false,
+        configurable: true
+    },
     'queue': {
         get: function() {
-            if (!this._queue) {
-                if (this.memory.queue) {
-                    this._queue = this.memory.queue;
-                } else {
-                    this.memory.queue = {
-                        urgent: [],
-                        normal: [],
-                        lastBalanceTick: 0,
-                    };
-                    this._queue = this.memory.queue;
-                }
-            }
-            return this._queue;
+            return genericGetter(this, 'queue', '_queue', () => {
+                return {
+                    urgent: [],
+                    normal: [],
+                    lastBalanceTick: 0,
+                };
+            });
         },
         set: function(queue) {
-            this.memory.queue = queue;
-            this._queue = queue;
+            return genericSetter(this, 'queue', '_queue');
         },
         enumerable: false,
         configurable: true

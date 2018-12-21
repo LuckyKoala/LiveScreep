@@ -6,29 +6,160 @@ function randomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
 
-//TODO restore mechanism
-//NOTE be careful to use findPath, it costs CPU
-mod.loop = function(room) {
+mod.saveStructure = function(room, pos, type) {
+    if(pos) {
+        const entry = room.layout[type];
+        if(entry) {
+            entry.push(pos);
+        }
+    }
+};
+
+//** Dissi Flower **
+// 60 extensions, 4 towers and 1 link
+const dissiFlower = {
+    vector: [
+        [2,1,1,0,0,0,0,0,1,1,2],
+        [1,0,1,1,0,0,0,1,1,0,1],
+        [1,1,0,1,1,0,1,1,0,1,1],
+        [0,1,1,0,1,0,1,0,1,1,0],
+        [0,0,1,1,0,3,0,1,1,0,0],
+        [0,0,0,1,0,0,0,1,0,0,0],
+        [0,0,1,1,0,1,0,1,1,0,0],
+        [0,1,1,0,1,1,1,0,1,1,0],
+        [1,1,0,1,1,0,1,1,0,1,1],
+        [1,0,1,1,0,0,0,1,1,0,1],
+        [2,1,1,0,0,0,0,0,1,1,2]
+    ],
+    extension: 1,
+    tower: 2,
+    link: 3
+};
+
+mod.showRoomPlan = function(room) {
+    for(const type in room.layout) {
+        if(type === 'init') continue; //skip init flag
+        const entry = room.layout[type];
+        for(const pos of entry) {
+            const x = pos[0];
+            const y = pos[1];
+            room.visual.structure(x, y, type);
+        }
+    }
+};
+
+function wrap2DArray(array) {
+    return function(x, y) {
+        return array[y][x];
+    };
+}
+
+//Calculate a layout for the room and save to memory
+//FIXME Structures may overlapped
+mod.init = function(room) {
+    const terrain = room.getTerrain();
+    //== Container ==
+    //Firstly, we need a container for upgrader so it won't move
+    this.saveStructure(room, posNearby(terrain, room.controller, 2), STRUCTURE_CONTAINER);
+    //Then we need a container per source
+    for(let source of room.sources) {
+        this.saveStructure(room, posNearby(terrain, source, 1), STRUCTURE_CONTAINER);
+    }
+    //== Extension ==
+    //Dissi flower here!
+    const xlen = dissiFlower.vector[0].length;
+    const ylen = dissiFlower.vector.length;
+    const blockStartPos = Util.Helper.findBlockInRoom(room.name, xlen, ylen);
+    if(blockStartPos) {
+        //We can build dissi flower!
+        const arrayWraper = wrap2DArray(dissiFlower.vector);
+        for(let x=0; x<xlen; x++) {
+            for(let y=0; y<ylen; y++) {
+                const actualX = blockStartPos[0] + x;
+                const actualY = blockStartPos[1] + y;
+                switch(arrayWraper(x,y)) {
+                case dissiFlower.extension:
+                    this.saveStructure(room, [actualX,actualY], STRUCTURE_EXTENSION);
+                    break;
+                case dissiFlower.link:
+                    this.saveStructure(room, [actualX,actualY], STRUCTURE_LINK);
+                    break;
+                case dissiFlower.tower:
+                    this.saveStructure(room, [actualX,actualY], STRUCTURE_TOWER);
+                    break;
+                }
+            }
+        }
+    }
+    //== Storage ==
+    this.saveStructure(room, posNearby(terrain, room.spawns[0], 4), STRUCTURE_STORAGE);
+    //== Road ==
+    this.initRoad(room, room.sources);
+    //== Link ==
+    //Don't place spawn link, it already be placed in dissiFlower
+    /*
+    if(!room.spawnLink) {
+        this.saveStructure(room, posNearby(terrain, room.spawns[0], 3), STRUCTURE_LINK);
+    }
+    */
+    //====== Wait to be implement ======
+    //=== Defense ===
+    //== Tower ==
+    //4 towers at dissi flower
+    //TODO 2 towers reserved for manual operation
+    //== Wall & Rampart ==
+    //=== Technology ===
+    //== Lab ==
+    //== Extractor ==
+    //== Spawn ==
+    //=== Outside world ===
+    //== Nuker ==
+    //== PowerSpawn ==
+    //== Observer ==
+    //== Terminal ==
+
+    //Set init flag
+    room.layout.init = true;
+};
+
+mod.loop = function(room, forceRun=false) {
+    //Do not init twice
+    if(!room.layout.init) this.init(room);
+    //Show room plan if ask
+    const show = room.memory.showRoomPlan;
+    if(show) this.showRoomPlan(room);
+    //Do not execute this function every tick
+    if(!forceRun && Game.time % 100 !== 0) return;
+
+    //one site at one time
     const sites = _.filter(Game.constructionSites, function(site) {
         return site.room.name === room.name;
     });
     const noSite = sites.length === 0;
-    //== Container ==
-    //Firstly, we need a container for upgrader so it won't move
-    //Order here matters since only one construction site at same pile is allowed
-    if(noSite && !room.controller.container) {
-        this.placeSitesNearby(room, room.controller, 2, STRUCTURE_CONTAINER);
+    if(!noSite) {
         return;
     }
-    //Then we need a container per source
-    const sources = _.filter(room.find(FIND_SOURCES), function(source) {
-        return source.container === false;
-    });
-    if(noSite && sources.length>0) {
-        this.placeSitesNearby(room, sources[0], 1, STRUCTURE_CONTAINER);
-        return;
-    }
-    //== Extension ==
+
+    //== Common iterate function ==
+    let success = false;
+    const iterateAndPlace = function(type) {
+        for(const pos of room.layout[type]) {
+            //Iterate
+            const x = pos[0];
+            const y = pos[1];
+            const arr = room.lookForAt(LOOK_STRUCTURES, x, y);
+            for(const structure of arr) {
+                if(structure.structureType === type) return false;
+            }
+            room.createConstructionSite(x, y, type);
+            return true;
+        }
+    };
+
+    //=== Container ===
+    success = iterateAndPlace(STRUCTURE_CONTAINER);
+    if(success) return;
+    //=== Extension ===
     //Build extension if we can
     const extensionLimit = CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][room.controller.level];
     var extensions = room.find(FIND_MY_STRUCTURES, {
@@ -36,44 +167,29 @@ mod.loop = function(room) {
             return structure.structureType == STRUCTURE_EXTENSION;
         }
     });
-    if(noSite && extensions.length<extensionLimit) {
-        //Random selection
-        const roomArea = CONTROLLER_STRUCTURES[STRUCTURE_ROAD][0];
-        const width = Math.sqrt(roomArea);
-        const x = randomInt(width);
-        const y = randomInt(width);
-        room.createConstructionSite(x, y, STRUCTURE_EXTENSION);
-        return;
+    if(extensions.length<extensionLimit) {
+        success = iterateAndPlace(STRUCTURE_EXTENSION);
     }
+    if(success) return;
     //== Tower ==
-    //Tower is important too !
+    //Build tower if we can
     const towerLimit = CONTROLLER_STRUCTURES[STRUCTURE_TOWER][room.controller.level];
     var towers = room.find(FIND_MY_STRUCTURES, {
         filter: (structure) => {
             return structure.structureType == STRUCTURE_TOWER;
         }
     });
-    if(noSite && towers.length<towerLimit) {
-        //We can build more tower!
-        const spawns = _.filter(Game.spawns, function(spawn) {
-            return spawn.room.name === room.name;
-        });
-        this.placeSitesNearby(room, spawns[0], 4, STRUCTURE_TOWER);
-        return;
+    if(towers.length<towerLimit) {
+        success = iterateAndPlace(STRUCTURE_TOWER);
     }
+    if(success) return;
+    //== Storage ==
+    if(!room.storage) {
+        success = iterateAndPlace(STRUCTURE_STORAGE);
+    }
+    if(success) return;
     //== Road ==
-    if(noSite) {
-        //Init memory
-        if(_.isUndefined(Memory.construction)) Memory.construction = {};
-        if(!_.isObject(Memory.construction)) Memory.construction = {};
-        const entry = Memory.construction[room.name] || {};
-        if(!entry['roadInit']) {
-            this.initRoad(room, sources);
-            entry['roadInit'] = true;
-        }
-        //Store entry in memory
-        Memory.construction[room.name] = entry;
-    }
+    iterateAndPlace(STRUCTURE_ROAD);
 };
 
 mod.initRoad = function(room, sources) {
@@ -91,22 +207,6 @@ mod.initRoad = function(room, sources) {
     //creep.moveTo(exit);
 };
 
-//** Dissi Flower **
-// 60 extensions
-const flower= [
-    [0,1,1,0,0,0,0,0,1,1,0],
-    [1,0,1,1,0,0,0,1,1,0,1],
-    [1,1,0,1,1,0,1,1,0,1,1],
-    [0,1,1,0,1,0,1,0,1,1,0],
-    [0,0,1,1,0,0,0,1,1,0,0],
-    [0,0,0,1,0,0,0,1,0,0,0],
-    [0,0,1,1,0,1,0,1,1,0,0],
-    [0,1,1,0,1,1,1,0,1,1,0],
-    [1,1,0,1,1,0,1,1,0,1,1],
-    [1,0,1,1,0,0,0,1,1,0,1],
-    [0,1,1,0,0,0,0,0,1,1,0]
-];
-
 mod.placeSiteAt = function(room, x, y, structureType) {
     const terrain = new Room.Terrain(room.name);
     if(0 === terrain.get(xi, yi)) {
@@ -118,9 +218,7 @@ mod.placeSiteAt = function(room, x, y, structureType) {
     }
 };
 
-//TODO Handle not available tile, e.g a structure is already there
-mod.placeSitesNearby = function(room, obj, range, structureType) {
-    const terrain = new Room.Terrain(room.name);
+function posNearby(terrain, obj, range) {
     const y = obj.pos.y;
     const x = obj.pos.x;
     let swamps = [];
@@ -130,8 +228,7 @@ mod.placeSitesNearby = function(room, obj, range, structureType) {
             if(xi===x && yi===y) continue;
             if(0 === terrain.get(xi, yi)) {
                 //Plain Terrain is Best!
-                room.createConstructionSite(xi, yi, structureType);
-                return;
+                return [xi, yi];
             }
             if(TERRAIN_MASK_SWAMP === terrain.get(xi, yi)) {
                 //Store pos and continue finding
@@ -141,8 +238,9 @@ mod.placeSitesNearby = function(room, obj, range, structureType) {
     }
     if(swamps.length >= 1) {
         //So we must choose from swamps since there is no plain terrain as alternative
-        room.createConstructionSite(swamps[0].x, swamps[0].y, structureType);
+        return [swamps[0].x, swamps[0].y];
     }
+    return false;
 };
 
 mod.showRoadPath = function(room, from, to) {
@@ -161,7 +259,8 @@ mod.buildRoad = function(room, from, to) {
     //Only build road between from and to, so we remove these two pos from path
     path.pop();
     path.shift();
-    _.forEach(path, o => room.createConstructionSite(o.x, o.y, STRUCTURE_ROAD));
+    const self = this;
+    _.forEach(path, o => self.saveStructure(room, [o.x, o.y], STRUCTURE_ROAD));
 };
 
 //Layout extension
