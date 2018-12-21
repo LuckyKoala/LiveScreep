@@ -128,8 +128,9 @@ mod.loop = function(room, forceRun=false) {
     //Show room plan if ask
     const show = room.memory.showRoomPlan;
     if(show) this.showRoomPlan(room);
-    //Do not execute this function every tick
-    if(!forceRun && Game.time % 100 !== 0) return;
+    //Do not loop room.layout every tick
+    const lastConstruct = room.memory.lastConstruct || 0;
+    if(!forceRun && (Game.time-lastConstruct) < 80) return;
 
     //one site at one time
     const sites = _.filter(Game.constructionSites, function(site) {
@@ -137,8 +138,13 @@ mod.loop = function(room, forceRun=false) {
     });
     const noSite = sites.length === 0;
     if(!noSite) {
+        // actually not loop room.layout
+        //  so we don not update lastConstruct here
         return;
     }
+
+    console.log(`Loop construction of room ${room.name}`);
+    room.memory.lastConstruct = Game.time;
 
     //== Common iterate function ==
     let success = false;
