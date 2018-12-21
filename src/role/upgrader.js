@@ -1,21 +1,22 @@
 var mod = new RoleObj('Upgrader');
 module.exports = mod;
 
-mod.roleConfig = {
+mod.roleConfigWithContainer = {
     inStack: [],
     outStack: [Action.ComplexUpgrade],
 };
 
-mod.roleConfigWhenNoControllerContainer = {
+mod.roleConfigWithoutContainer = {
     inStack: [Action.Withdraw, Action.Pickup],
     outStack: [Action.Upgrade],
 };
 
 mod.loop = function(creep) {
     if(creep.room.controller.container) {
+        this.roleConfig = this.roleConfigWithContainer;
         this.loop0(creep, true);
     } else {
-        this.roleConfig = this.roleConfigWhenNoControllerContainer;
+        this.roleConfig = this.roleConfigWithoutContainer;
         if(creep.memory.upgrading && creep.carry.energy == 0) {
             creep.memory.upgrading = false;
         }
