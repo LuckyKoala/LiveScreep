@@ -63,6 +63,8 @@ mod.loopOwnedRoom = function(room) {
     } else {
         room.visual.text(`No creep in spawn queue`, 40, 3, {color: 'green', font: 0.8});
     }
+    //Game time
+    room.visual.text(`Time: ${Game.time}`, 40, 4, {color: 'green', font: 0.8});
 };
 
 //If we have vision of unowned room, record when
