@@ -1,6 +1,6 @@
 ﻿# LiveScreep
 
-![ScreenShot in Simulation](img/simulation.jpg)
+![ScreenShot in Simulation](img/dissi_flower.jpg)
 
 Latest Release => `v0.1-StupidHalfAutomated`
 
@@ -14,7 +14,7 @@ Latest Release => `v0.1-StupidHalfAutomated`
 * Implemented logic of drop-mining, container-mining, link-mining and remote-mining. (Currently remote-mining are not automatically used, so if you want to use it, you have to dig in codebase and manually place some flags)
 * Semi-implemented SK-mining
 
-NOTE: Currently extensions are placed randomly.
+NOTE: Currently room plan system is under development, structures may overlapped.
 
 # Getting Started
 
