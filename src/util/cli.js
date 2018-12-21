@@ -2,10 +2,25 @@ module.exports = function(cmd, args) {
     //console.log(`$(cmd) $(args)`);
     if(cmd === 'roomPlan') {
         roomPlanCmdHandler(args);
+    } else if(cmd === 'reset') {
+        resetCmdHandler(args);
     } else {
         notImplemented();
     }
 };
+
+function resetCmdHandler(args) {
+    if(args && args.length===1) {
+        if(args[0]==='force') {
+            for(let key in Memory) {
+                delete Memory[key];
+                console.log('Reset done.');
+            }
+        }
+    } else {
+        console.log('This command will reset Memory, use reset force if you are sure about this');
+    }
+}
 
 function roomPlanCmdHandler(args) {
     //roomPlan on/off
