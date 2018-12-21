@@ -148,12 +148,16 @@ mod.loop = function(room, forceRun=false) {
             const x = pos[0];
             const y = pos[1];
             const arr = room.lookForAt(LOOK_STRUCTURES, x, y);
-            for(const structure of arr) {
-                if(structure.structureType === type) return false;
+            if(arr.length > 0) {
+                //There is a structure on the pos
+                // TODO check if type is equal and do properly rebuild
+                continue;
+            } else {
+                room.createConstructionSite(x, y, type);
+                return true;
             }
-            room.createConstructionSite(x, y, type);
-            return true;
         }
+        return false;
     };
 
     //=== Container ===
