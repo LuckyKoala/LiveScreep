@@ -29,20 +29,27 @@ mod.forgetCreep = function(creepName) {
 //     tower spawn
 const ENERGY_HISTORY = 'energyHistory';
 global.HISTORY_RESET_TICK = 300;
-let energyIn = 0;
-let energyOut = 0;
-//FIXME should use different value for different rooms
+let energyIn = {};
+let energyOut = {};
 mod.energyIn = function(roomName) {
-    return energyIn;
+    if(energyIn[roomName] === undefined) {
+        energyIn[roomName] = 0;
+    }
+    return energyIn[roomName];
 };
 mod.energyOut = function(roomName) {
-    return energyOut;
+    if(energyOut[roomName] === undefined) {
+        energyOut[roomName] = 0;
+    }
+    return energyOut[roomName];
 };
 mod.incEnergyIn = function(roomName, amount) {
-    energyIn+=amount;
+    const old = this.energyIn(roomName);
+    energyIn[roomName] = old+amount;
 };
 mod.incEnergyOut = function(roomName, amount) {
-    energyOut+=amount;
+    const old = this.energyOut(roomName);
+    energyOut[roomName] = old+amount;
 };
 mod.getLastHistory = function(roomName) {
     return _.get(Memory.rooms, [roomName, 'stat', ENERGY_HISTORY]) || {
@@ -55,8 +62,8 @@ mod.getLastHistory = function(roomName) {
 };
 mod.sumEnergyHistory = function(roomName) {
     const lastHistory = this.getLastHistory(roomName);
-    lastHistory.energyInTotal += this.energyIn();
-    lastHistory.energyOutTotal += this.energyOut();
+    lastHistory.energyInTotal += this.energyIn(roomName);
+    lastHistory.energyOutTotal += this.energyOut(roomName);
     lastHistory.tickTotal ++;
     if(lastHistory.tickTotal > HISTORY_RESET_TICK) {
         //Average and reset total count history
@@ -67,8 +74,8 @@ mod.sumEnergyHistory = function(roomName) {
         lastHistory.tickTotal = 0;
     }
     //Reset value of global variable to 0
-    energyIn = 0;
-    energyOut = 0;
+    energyIn[roomName] = 0;
+    energyOut[roomName] = 0;
     //Write back to memory
     _.set(Memory.rooms, [roomName, 'stat', ENERGY_HISTORY], lastHistory);
 };
