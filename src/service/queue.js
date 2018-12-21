@@ -29,9 +29,11 @@ mod.loop = function(room) {
     const lastHistory = Util.Stat.getLastHistory(room.name);
     const energyIn = lastHistory.lastAvgIn;
     const energyOut = lastHistory.lastAvgOut;
-    if(energyIn > energyOut) {
-        //Too many energy not used, pair of harvester-hauler is enough
-        // That means, we don't need harvester unless no harvester at all, but pair of hauler is required
+    if(energyIn > energyOut && !room.storage) {
+        //Too many energy not used, one pair of harvester-hauler is enough
+        // That means, we don't need harvester unless no harvester at all,
+        //  but pair of hauler is required to match existed harvester
+        // But if storage is present, we have store extra energy, so we need to add check on that
         needHarvester = 1-cnt['harvester'];
         needHauler = cnt['harvester']-cnt['hauler'];
     }
