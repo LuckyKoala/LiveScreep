@@ -3,8 +3,8 @@ module.exports = mod;
 
 mod.setupConfig = {
     Normal: {
-		minEnergy: 100,
-		essBody: [CARRY, MOVE],
+		minEnergy: 50,
+		essBody: [MOVE],
 		extraBody: [],
 		prefix: '[Ant]',
 		memory: {role: 'ant'},
