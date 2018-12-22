@@ -27,7 +27,11 @@ mod.loop = function(creep) {
             if(hostiles > 3) {
                 creep.rangedMassAttack();
             } else {
-                creep.rangedAttack(target);
+                if(creep.pos.inRangeTo(target, 1)) {
+                    creep.attack(target);
+                } else {
+                    creep.rangedAttack(target);
+                }
             }
         }
     });
