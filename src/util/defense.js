@@ -3,11 +3,11 @@ var mod = {};
 module.exports = mod;
 
 const RampartMaintainThreshold = Config.RampartMaintainThreshold;
-const WallMaintainThreshold = 300*Thousand; 
+const WallMaintainThreshold = 300*Thousand;
 const ThreatValue = {
     tough: 1,
-    ranged_attack: 2,
-    attack: 3,
+    attack: 2,
+    ranged_attack: 3,
     work: 4,
     heal: 5,
 };
@@ -15,13 +15,43 @@ const ThreatValue = {
 mod.threatValue = {};
 
 mod.loop = function(room) {
+    if(room.controller.safeMode) {
+        //Safe mode is on already
+        return;
+    }
     if(room.controller && room.controller.my) {
-        this.threatValue[room.name] = this.getCurrentThreatValue(room);
-        if(this.threatValue[room.name] >= 12) {
-            //We can not handle it without tower
-            const time = Game.time;
-            if(OK === room.controller.activateSafeMode()) Game.notify(`[${time}]Threat coming,activated safe mode!!!`);
-            else Game.notify(`[${time}]Threat coming,can not activate safe mode!!!`);
+        const hostiles = room.find(FIND_HOSTILE_CREEPS);
+        if(hostiles.length > 0) {
+            //So there are some invader
+            // Do we have towers which can still run for a tick at least?
+            let towers = room.find(FIND_MY_STRUCTURES, {
+                filter: (structure) => {
+                    return (structure.structureType == STRUCTURE_TOWER) &&
+                        structure.energy >= TOWER_ENERGY_COST;
+                }
+            });
+            if(towers.length > 0) {
+                //Yes, we do have working towers
+                // Then maybe we can survive from these invaders
+                //  Do nothing for now
+                //TODO spawn more guardian
+            } else {
+                //No, no working towers
+                // Then we have to assume this room may not survive
+                //  Try active safe mode.
+                if(room.controller.safeModeAvailable > 1) {
+                    if(room.controller.safeModeCooldown) {
+                        //Safe mode is still cool down, dangerous!
+                        Game.notify(`[${time}]Threat coming,safe mode is cooling down!!!`);
+                    } else {
+                        //Just activate it!
+                        const time = Game.time;
+                        if(OK === room.controller.activateSafeMode()) Game.notify(`[${time}]Threat coming,activated safe mode!!!`);
+                        else Game.notify(`[${time}]Threat coming,can not activate safe mode!!!`);
+                    }
+                }
+            }
+
         }
     }
 };
@@ -130,13 +160,16 @@ mod.sortHostilesByPos = function(room, pos) {
 
 //TODO Calculate suitable body parts for spawner to spawn guardian
 mod.shouldSpawnGuardian = function(room) {
-    var towers = room.find(FIND_MY_STRUCTURES, {
-        filter: (structure) => {
-            return (structure.structureType == STRUCTURE_TOWER) &&
-                structure.energy > Config.EnergyForDefend;
-        }
+    return true;
+    /*
+    let towers = room.find(FIND_MY_STRUCTURES, {
+      filter: (structure) => {
+        return (structure.structureType == STRUCTURE_TOWER) &&
+            structure.energy > Config.EnergyForDefend;
+      }
     });
     //If there is a tower at least, then we can generate a guardian to help it
     if(towers.length>=1 && this.threatValue[room.name]>=0) return true;
     else return false;
+    */
 };

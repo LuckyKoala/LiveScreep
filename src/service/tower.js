@@ -18,16 +18,24 @@ mod.loop = function(room) {
     _.forEach(towers, function(tower) {
         //Kill invader
         var sortHostiles = Util.Defense.sortHostilesByPos(room, tower.pos);
-        const hostile = sortHostiles.length ?
-        　　Game.getObjectById(_.last(sortHostiles).id) : false;
-        if(hostile) {
-            if(tower.attack(hostile) === OK) {
-                Util.Stat.incEnergyOut(tower.room.name, TOWER_ENERGY_COST);
+        if(sortHostiles.length) {
+            //TODO Do not attack creeps too far away
+            //  make workers flee
+            //  make guardian forward
+            //const hostileObj = _.last(_.filter(sortHostiles, (hostile) => hostile.range <= 2*TOWER_OPTIMAL_RANGE));
+            const hostileObj = _.last(sortHostiles);
+            if(hostileObj) {
+                const hostile = Game.getObjectById(hostileObj.id);
+                if(hostile) {
+                    if(tower.attack(hostile) === OK) {
+                        Util.Stat.incEnergyOut(tower.room.name, TOWER_ENERGY_COST);
+                    }
+                    return;
+                }
             }
-            return;
         }
 
-        if(tower.energy <= Config.EnergyForDefend) return; //Save energy for defend 
+        if(tower.energy <= Config.EnergyForDefend) return; //Save energy for defend
         //Heal creep
         var closestInjuredCreep = tower.pos.findClosestByRange(FIND_MY_CREEPS, {
             filter: (creep) => creep.hits < creep.hitsMax

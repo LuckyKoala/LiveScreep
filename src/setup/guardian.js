@@ -1,13 +1,12 @@
 var mod = new SetupObj('Guardian');
 module.exports = mod;
 
-//FIXME Guard in some places instead of going out
 mod.setupConfig = {
     Normal: {
-        minEnergy: 130,
-        essBody: [ATTACK, MOVE],
-        extraBody: [ATTACK, TOUGH, MOVE],
-        maxExtraAmount: 2,
+        minEnergy: 350,
+        essBody: [RANGED_ATTACK, RANGED_ATTACK, MOVE],
+        extraBody: [],
+        maxExtraAmount: 0,
         prefix: '[Guardian]',
         memory: {role: 'guardian'},
     },
