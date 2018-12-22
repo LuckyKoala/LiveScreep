@@ -16,8 +16,8 @@ mod.loop = function(room) {
     }
     //Count role in queue as well
     const queue = _.union(room.queue.urgent, room.queue.normal);
-    for(let setup of queue) {
-        const role = lowerFirst(setup.setupName);
+    for(let setupName of queue) {
+        const role = lowerFirst(setupName);
         cnt[role]++;
         cnt.total++;
     }
@@ -40,17 +40,17 @@ mod.loop = function(room) {
     while(needHarvester-- > 0) {
         if(cnt['harvester']===0) {
             //No harvester at all, so it's urgent
-            room.queue.urgent.push(Setup.Harvester);
+            room.queue.urgent.push(Setup.Harvester.setupName);
         } else {
-            room.queue.normal.push(Setup.Harvester);
+            room.queue.normal.push(Setup.Harvester.setupName);
         }
         cnt['harvester']++;
         if(needHauler-- > 0) {
             if(cnt['hauler']===0) {
                 //No hauler at all, so it's urgent
-                room.queue.urgent.push(Setup.Hauler);
+                room.queue.urgent.push(Setup.Hauler.setupName);
             } else {
-                room.queue.normal.push(Setup.Hauler);
+                room.queue.normal.push(Setup.Hauler.setupName);
             }
             cnt['hauler']++;
         }
@@ -60,18 +60,18 @@ mod.loop = function(room) {
     while(needHauler-- > 0) {
         if(cnt['hauler']===0) {
             //No hauler at all, so it's urgent
-            room.queue.urgent.push(Setup.Hauler);
+            room.queue.urgent.push(Setup.Hauler.setupName);
         } else {
-            room.queue.normal.push(Setup.Hauler);
+            room.queue.normal.push(Setup.Hauler.setupName);
         }
     }
     //One upgrader in queue.urgent and one in queue.normal
     let upgraderCnt = cnt['upgrader'];
     if(upgraderCnt === 0) {
-        room.queue.urgent.push(Setup.Upgrader);
+        room.queue.urgent.push(Setup.Upgrader.setupName);
         cnt['upgrader']++;
     } else if(upgraderCnt === 1) {
-        room.queue.normal.push(Setup.Upgrader);
+        room.queue.normal.push(Setup.Upgrader.setupName);
         cnt['upgrader']++;
     }
     //=== Extended creeps ===
@@ -79,16 +79,16 @@ mod.loop = function(room) {
     // or if there is a controllerContainer, spawn a extra hauler
     if(room.storage) {
         if(cnt['filler'] === 0) {
-            room.queue.urgent.push(Setup.Filler);
+            room.queue.urgent.push(Setup.Filler.setupName);
             cnt['filler']++;
         }
         if(cnt['hauler']-room.sources.length === 0) {
-            room.queue.normal.push(Setup.Hauler);
+            room.queue.normal.push(Setup.Hauler.setupName);
             cnt['hauler']++;
         }
     } else if(room.controller.container) {
         if(cnt['hauler']-room.sources.length === 0) {
-            room.queue.normal.push(Setup.Hauler);
+            room.queue.normal.push(Setup.Hauler.setupName);
             cnt['hauler']++;
         }
     }
@@ -104,16 +104,16 @@ mod.loop = function(room) {
     const needBuilder = (needBuildStructures.length + needRepairStructures.length) > 0;
     if(needBuilder) {
         if(cnt['builder']===0) {
-            room.queue.normal.push(Setup.Builder);
+            room.queue.normal.push(Setup.Builder.setupName);
             cnt['builder']++;
         } else if(cnt['builder']===1 && room.storage && room.storage.store[RESOURCE_ENERGY] > 15000) {
-            room.queue.normal.push(Setup.Builder);
+            room.queue.normal.push(Setup.Builder.setupName);
             cnt['builder']++;
         }
     }
     //If there is tower spawn a guardian -> goto util.defense
     if(cnt['guardian'] === 0 && Util.Defense.shouldSpawnGuardian(room)) {
-        room.queue.urgent.push(Setup.Guardian);
+        room.queue.urgent.push(Setup.Guardian.setupName);
         cnt['guardian']++;
     }
 
@@ -135,7 +135,7 @@ mod.loop = function(room) {
             if(needBuilder && needBuildStructures.length>1 && cnt['builder']<2) {
                 //Add a builder
                 console.log('More builder!');
-                room.queue.normal.push(Setup.Builder);
+                room.queue.normal.push(Setup.Builder.setupName);
                 cnt['builder']++;
                 return;
             }
@@ -143,7 +143,7 @@ mod.loop = function(room) {
             // if and only if controller container can afford
             if(room.controller.container && room.controller.container.store[RESOURCE_ENERGY] > 500) {
                 console.log('More upgrader!');
-                room.queue.normal.push(Setup.Upgrader);
+                room.queue.normal.push(Setup.Upgrader.setupName);
                 cnt['upgrader']++;
             }
         } else if(hasLessEnergy) {

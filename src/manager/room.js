@@ -55,7 +55,7 @@ mod.loopOwnedRoom = function(room) {
     //Spawn queue
     const queue = _.union(room.queue.urgent, room.queue.normal);
     if(queue.length) {
-        room.visual.text(`Next creep role is ${queue[0].setupName}`, 8, 3, {color: 'green', font: 0.8});
+        room.visual.text(`Next creep role is ${queue[0]}`, 8, 3, {color: 'green', font: 0.8});
     } else {
         room.visual.text(`No creep in spawn queue`, 8, 3, {color: 'green', font: 0.8});
     }

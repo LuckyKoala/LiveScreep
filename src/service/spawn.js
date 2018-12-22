@@ -6,11 +6,11 @@ mod.loop = function(room) {
     let spawns = room.spawns;
     for(let spawn of spawns) {
         if(room.queue.urgent.length > 0) {
-            if(this.spawnWithSetup(spawn, true, room.queue.urgent[0])) {
+            if(this.spawnWithSetup(spawn, true, Setup[room.queue.urgent[0]])) {
                 room.queue.urgent.shift();
             }
         } else if(room.queue.normal.length > 0) {
-            if(this.spawnWithSetup(spawn, false, room.queue.normal[0])) {
+            if(this.spawnWithSetup(spawn, false, Setup[room.queue.normal[0]])) {
                 room.queue.normal.shift();
             }
         }

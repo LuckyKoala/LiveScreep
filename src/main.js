@@ -11,7 +11,19 @@ module.exports.loop = function() {
     profiler.wrap(loop0);
 };
 
+const version = 1;
 const loop0 = function () {
+    //Version update
+    const previoudVersion = Memory.version || 0;
+    if(previoudVersion!==version) {
+        _.forEach(Game.rooms, function(room) {
+            room.memory.queue.normal = [];
+            room.memory.queue.urgent = [];
+        });
+        console.log(`Upgraded to version ${version}`);
+        Memory.version = version;
+    }
+
     //Run rooms
     var entry = {};
     _.forEach(Game.rooms, function(room) {
