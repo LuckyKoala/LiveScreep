@@ -13,10 +13,20 @@ mod.word = '➡︎ store';
 
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
-        const result = creep.transfer(target, RESOURCE_ENERGY);
+        // store all resources
+        let result;
+        for(const resourceType in creep.carry) {
+            result = creep.transfer(target, resourceType);
+        }
         if(result == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
-        } else if(result == OK || result == ERR_FULL) {
+        } else if(result == OK) {
+            if(_.sum(creep.carry) > 0) {
+                //So there may be resource remain
+            } else {
+                Util.Mark.unmarkTarget(creep, this.actionName);
+            }
+        } else if(result == ERR_FULL) {
             Util.Mark.unmarkTarget(creep, this.actionName);
         }
     });

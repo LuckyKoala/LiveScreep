@@ -8,6 +8,8 @@ mod.roleConfigWithStorage = {
     outStack: [Action.Store],
 };
 
+//TODO If there is no storage
+// we may choose to abandon mineral resource on creep
 mod.roleConfigWithoutStorage = {
     inStack: [Action.Pickup, Action.Withdraw],
     outStack: [Action.Fill, Action.Fuel, Action.PutForUpgrade],
@@ -21,10 +23,10 @@ mod.loop = function(creep) {
         this.roleConfig = this.roleConfigWithoutStorage;
     }
     
-    if(creep.memory.hauling && creep.carry.energy == 0) {
+    if(creep.memory.hauling &&  _.sum(creep.carry) === 0) {
         creep.memory.hauling = false;
     }
-    if(!creep.memory.hauling && creep.carry.energy == creep.carryCapacity) {
+    if(!creep.memory.hauling && _.sum(creep.carry) === creep.carryCapacity) {
         creep.memory.hauling = true;
     }
 
