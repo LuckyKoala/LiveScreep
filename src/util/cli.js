@@ -23,14 +23,16 @@ function resetCmdHandler(args) {
 }
 
 function roomPlanCmdHandler(args) {
-    //roomPlan on/off
     if(args && args.length===2) {
         const op = args[0];
         const roomName = args[1];
+        //roomPlan on/off
         if(op === 'on') {
             Memory.rooms[roomName].showRoomPlan = true;
         } else if(op === 'off') {
             Memory.rooms[roomName].showRoomPlan = false;
+        } else if(op === 'reinit') {
+            Memory.rooms[roomName].layout.init = false;
         }
     } else {
         wrongAmountOfArgs();
