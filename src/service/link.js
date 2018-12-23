@@ -4,14 +4,18 @@ module.exports = mod;
 
 mod.loop = function(room) {
     const spawnLink = room.spawnLink;
-    const sourceLink = room.sourceLink;
+    const sourceLinks = room.sourceLinks;
     const controllerLink = room.controllerLink;
 
-    if(sourceLink.cooldown==0 && sourceLink.energy==sourceLink.energyCapacity
-        && spawnLink.energy==0) {
-        sourceLink.transferEnergy(spawnLink);
-    } else if(sourceLink.cooldown==0 && sourceLink.energy==sourceLink.energyCapacity
-        && controllerLink.energy==0) {
-        sourceLink.transferEnergy(controllerLink);
+    for(const sourceLink of sourceLinks) {
+        if(sourceLink.cooldown === 0 && sourceLink.energy === sourceLink.energyCapacity) {
+            if(spawnLink.energy==0) {
+                //First we ensure spawnLink have energy remain
+                sourceLink.transferEnergy(spawnLink);
+            } else if(controllerLink.energy==0) {
+                //Then we can transfer energy to controllerLink
+                sourceLink.transferEnergy(controllerLink);
+            }
+        }
     }
-}
+};

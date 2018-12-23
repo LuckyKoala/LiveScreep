@@ -222,25 +222,21 @@ Object.defineProperties(Room.prototype, {
         enumerable: false,
         configurable: true
     },
-    'sourceLink': {
+    'sourceLinks': {
         get: function() {
-            if (!this._sourceLink) {
-                if (this.memory.sourceLinkId) {
-                    const obj = Game.getObjectById(this.memory.sourceLinkId);
-                    if(!obj) {
-                        this.memory.sourceLinkId = false;
-                        return false;
-                    }
-                    this._sourceLink = obj;
+            if (!this._sourceLinks) {
+                const sourceLinkIds = this.memory.sourceLinkIds;
+                if (sourceLinkIds && sourceLinkIds.length > 0) {
+                    this._sourceLinks = _.map(sourceLinkIds, id => Game.getObjectById(id));
                 } else {
-                    return false;
+                    this._sourceLinks = [];
                 }
             }
-            return this._sourceLink;
+            return this._sourceLinks;
         },
-        set: function(sourceLink) {
-            this.memory.sourceLinkId = sourceLink.id;
-            this._sourceLink = sourceLink;
+        set: function(sourceLinks) {
+            this.memory.sourceLinkIds = _.map(sourceLinks, link => link.id);
+            this._sourceLinks = sourceLinks;
         },
         enumerable: false,
         configurable: true
@@ -328,13 +324,18 @@ Room.prototype.saveLinks = function() {
     const spawnsAndExtensions = this.find(FIND_MY_STRUCTURES, {
         filter: o => o.structureType==STRUCTURE_SPAWN || o.structureType==STRUCTURE_EXTENSION
     });
+
+    let sourceLinks = [];
     _.forEach(links, link => {
         if(link.pos.inRangeTo(controller, 3)) {
             self.controllerLink = link;
         } else if(link.pos.findInRange(sources, 2).length) {
-            self.sourceLink = link;
+            sourceLinks.push(link);
         } else if(link.pos.findInRange(spawnsAndExtensions, 3).length) {
             self.spawnLink = link;
         }
     });
+    if(sourceLinks.length > 0) {
+        this.sourceLinks = sourceLinks;
+    }
 };

@@ -1,11 +1,15 @@
-let mod = new ActionObj('Put');
+let mod = new ActionObj('PutToLink');
 module.exports = mod;
 
-//FIXME Warning: if you put more than one container near source,
-//  hauler will be in infinite loop of withdraw/transfer.
 const targetInitFunc = function(creep) {
-    const markSource = Util.SourceMark.getMarkSource(creep);
-    return markSource ? markSource.container : false;
+    const sourceLinks = creep.room.sourceLinks;
+    for(const sourceLink of sourceLinks) {
+        if( creep.pos.getRangeTo(sourceLink)<=2
+            && sourceLink.energy<sourceLink.energyCapacity) {
+            return sourceLink;
+        }
+    }
+    return false;
 };
 
 mod.nextTarget = function() {

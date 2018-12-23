@@ -16,7 +16,7 @@ mod.saveStructure = function(room, pos, type) {
 };
 
 //** Dissi Flower **
-// 60 extensions, 4 towers and 1 link
+// 60 extensions, 6 towers and 1 link
 const dissiFlower = {
     vector: [
         [2,1,1,0,0,0,0,0,1,1,2],
@@ -24,7 +24,7 @@ const dissiFlower = {
         [1,1,0,1,1,0,1,1,0,1,1],
         [0,1,1,0,1,0,1,0,1,1,0],
         [0,0,1,1,0,3,0,1,1,0,0],
-        [0,0,0,1,0,0,0,1,0,0,0],
+        [0,0,0,1,2,0,2,1,0,0,0],
         [0,0,1,1,0,1,0,1,1,0,0],
         [0,1,1,0,1,1,1,0,1,1,0],
         [1,1,0,1,1,0,1,1,0,1,1],
@@ -57,6 +57,7 @@ function wrap2DArray(array) {
 //Calculate a layout for the room and save to memory
 //FIXME Structures may overlapped
 mod.init = function(room) {
+    delete room.layout; //re init
     const terrain = room.getTerrain();
     //== Container ==
     //Firstly, we need a container for upgrader so it won't move
@@ -90,23 +91,30 @@ mod.init = function(room) {
                 }
             }
         }
+    } else {
+        console.log('Failed to find start pos for dissi flower!');
+        //TODO some fallback layout for extensions
     }
     //== Storage ==
     this.saveStructure(room, posNearby(terrain, room.spawns[0], 4), STRUCTURE_STORAGE);
     //== Road ==
     this.initRoad(room, room.sources);
     //== Link ==
-    //Don't place spawn link, it already be placed in dissiFlower
-    /*
-    if(!room.spawnLink) {
+    if(blockStartPos) {
+        //We have dissi flower
+        // so we don't need to place spawnLink
+    } else {
+        //A output link to match output link
         this.saveStructure(room, posNearby(terrain, room.spawns[0], 3), STRUCTURE_LINK);
     }
-    */
+    //Source links first, it is input link
+    this.saveStructure(room, posNearby(terrain, room.sources[0], 2), STRUCTURE_LINK);
+    this.saveStructure(room, posNearby(terrain, room.sources[1], 2), STRUCTURE_LINK);
+    //Controller link is also a output link
+    this.saveStructure(room, posNearby(terrain, room.controller, 3), STRUCTURE_LINK);
+    //TODO 2 links for remote mining or mineral mining
     //====== Wait to be implement ======
     //=== Defense ===
-    //== Tower ==
-    //4 towers at dissi flower
-    //TODO 2 towers reserved for manual operation
     //== Wall & Rampart ==
     //=== Technology ===
     //== Lab ==
@@ -196,6 +204,17 @@ mod.loop = function(room, forceRun=false) {
     //== Storage ==
     if(!room.storage) {
         success = iterateAndPlace(STRUCTURE_STORAGE);
+    }
+    if(success) return;
+    //== Link ==
+    const linkLimit = CONTROLLER_STRUCTURES[STRUCTURE_LINK][room.controller.level];
+    var links = room.find(FIND_MY_STRUCTURES, {
+        filter: (structure) => {
+            return structure.structureType == STRUCTURE_LINK;
+        }
+    });
+    if(links.length<linkLimit) {
+        success = iterateAndPlace(STRUCTURE_LINK);
     }
     if(success) return;
     //== Road ==

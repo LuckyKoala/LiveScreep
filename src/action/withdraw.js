@@ -3,34 +3,11 @@ module.exports = mod;
 
 function findTargetForFiller(creep) {
     const spawnLink = creep.room.spawnLink;
-    const sourceLink = creep.room.sourceLink;
-    if(spawnLink) {
-        //Only target spawnLink when it has enough energy or else abandon this target, try next action
-        if(sourceLink && sourceLink.energy==sourceLink.energyCapacity) {
-            //SourceLink is ready to transfer energy, so filler should move all the remain energy
-            //  in SpawnLink as soon as it can.
-            creep.memory.skipBefore = 0;
-            return spawnLink;
-        } else {
-            if(spawnLink.energy > (creep.carryCapacity-creep.carry.energy)) {
-                creep.memory.skipBefore = 0;
-                return spawnLink;
-            } else {
-                if(_.isUndefined(creep.memory.skipBefore)) creep.memory.skipBefore=0;
-                //If SourceLink is not ready and SpawnLink don't have enough energy, try next action once
-                //Memorize it skip spawnLink
-                const skipBefore = creep.memory.skipBefore;
-                if(skipBefore && spawnLink.energy>0) {
-                    //We have skip spawnLink at least one times, so we will target it as long
-                    //  as it has any energy
-                    creep.memory.skipBefore = 0;
-                    return spawnLink;
-                } else {
-                    creep.memory.skipBefore++;
-                    return false;
-                }
-            }
-        }
+    if(spawnLink && spawnLink.energy > 0) {
+        //SourceLink only transfer energy when no energy remain in spawnLink
+        //  so filler should move all the remain energy in SpawnLink ASAP.
+        //Otherwise it will block link between source-link and spawn-link
+        return spawnLink;
     } else {
         return creep.room.storage;
     }
@@ -62,6 +39,12 @@ const targetInitFunc = function(creep) {
             return findSourceContainers(creep);
         }
     } else if(role === 'Upgrader') {
+        //Prefer controllerLink
+        const link = creep.room.controllerLink;
+        if(link && link.energy > 0) {
+            return link;
+        }
+
         const container = creep.room.controller.container;
         if(container) {
             return container;

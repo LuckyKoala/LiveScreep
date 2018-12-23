@@ -53,6 +53,7 @@ global.Action = {
     Put: require('action_put'),
     Store: require('action_store'),
     PutForUpgrade: require('action_putForUpgrade'),
+    PutToLink: require('action_putToLink'),
     Fuel: require('action_fuel'),
     Guard: require('action_guard'),
     Pickup: require('action_pickup'),

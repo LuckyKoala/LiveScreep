@@ -3,5 +3,6 @@ module.exports = mod;
 
 mod.roleConfig = {
     inStack: [Action.Harvest],
-    outStack: [Action.Put, Action.Drop], 
+    //aka link-mining, container-mining and drop-mining
+    outStack: [Action.PutToLink, Action.Put, Action.Drop],
 };
