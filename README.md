@@ -2,19 +2,18 @@
 
 ![ScreenShot in Simulation](img/dissi_flower.jpg)
 
-Latest Release => `v0.1-StupidHalfAutomated`
+Latest Release => `v0.2-SemiAutomation`
 
-* Automatically place containers, extensions, roads and towers
+* Automatically place containers, extensions, roads, links, storage and towers
 * Keep upgrading controller
 * Towers can select target and then attack, heal or repair
 * Base harvesting, hauling, storage filling and withdrawing
 * Maintain walls and ramparts
-* When tower is present, a guardian will be spawned and help guard the room
+* Guardian will try stay in rampart and fight invaders
 * Automatically active safe mode and send notification to player if the room can't handle the attack
-* Implemented logic of drop-mining, container-mining, link-mining and remote-mining. (Currently remote-mining are not automatically used, so if you want to use it, you have to dig in codebase and manually place some flags)
-* Semi-implemented SK-mining
+* Implemented logic of drop-mining, container-mining and link-mining
 
-NOTE: Currently room plan system is under development, structures may overlapped.
+NOTE: Currently room plan system is under development, structures planned by LiveScreep may overlapped, but it will not dismantle anything for now.
 
 # Getting Started
 
@@ -53,27 +52,62 @@ For convenience, all role/setup/action/util module will be assigned to global sc
 
 ## Actions
 
-### Base Actions
-
 * Harvest: mark source and harvest energy from source, if creep can't reach source, make it move towards source.
-* Fill: fill energy to spawns and extensions. 
+* Fill: fill energy to spawns and extensions.
 * Build: build construction sites on the ground.
 * Drop: just drop energy on the ground.
 * Pickup: pickup energy on the ground, sorted by range.
 * Withdraw: hauler withdraw energy from non-empty containers and storage, and filler do what?(Unknown until I re-read my code written before -.-ll)
-* Put: harvester put energy to container assigned to source, and others put energy to container except those has been assigned to source.
+* Put: harvester put energy to container assigned to source.
+* Store: store resource in storage.
+* PutToLink: harvester put energy to source link.
+* PutForUpgrade: put energy in controller container and it will be used by nearby upgrader.
 * Upgrade: upgrade controller of course.
-
-### Extended Actions
-
 * Dismantle: dismantle flagged structures, the flag associated is described in global.FlagUtil.
 * Fuel: fuel energy in towers.
-* Guard: attack nearest hostile creep, sorted by ThreatValue.
+* Guard: attack hostile creep, sorted by ThreatValue and range.
 * Invade: attack nearest hostile creep, sorted by ThreatValue.
 * Maintain: maintain ramparts so it will not decay to nil.
 * Repair: too complicated, simplify it later -.-;;
 * Travel: travel to destination.
 * Recycle: go to spawn and let spawn recycle self.
+
+## Room planner
+
+Basically, all related 'plan' is stored under Memory.rooms['roomName'].layout.
+
+Layout data format is like:
+
+```
+layout = {};
+layout[STRUCTURE_EXTENSION] = [];
+layout[STRUCTURE_TOWER] = [];
+// etc.
+```
+
+so the key of entry is structure type, the value of it is a array contains positions that should be placed when possible.
+
+positions themselve is a array contain x and y coordinates, e.g [1,1] means x=1, y=1
+
+### Manual plan
+
+> By default, LiveScreep will try to use dissi flower layout automatically, but you can also manual plan some structures if it failed to find a suitable place or you want to try it yourself.
+
+`Game.rooms['sim'].layout[STRUCTURE_EXTENSION].push([1,1])` will schedule a extension to place at 1,1 in room named 'sim'
+
+Also you can check display related commands of room plan in next section.
+
+## Commands
+
+### Room plan
+
+`cli('roomPlan',['on','roomName'])` will turn on room visual to render current room plan
+`cli('roomPlan',['off','roomName'])` will turn off room visual to render current room plan
+`cli('roomPlan',['reinit','roomName'])` will re-run Service.Construction.init();
+
+### Reset
+
+`cli('reset')` will delete all entry in Memory
 
 # TODO
 
