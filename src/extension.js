@@ -159,10 +159,21 @@ Object.defineProperties(Room.prototype, {
                 const value = {
                     'init': false,
                 };
-                value[STRUCTURE_CONTAINER] = [];
+                value[STRUCTURE_SPAWN] = [];
                 value[STRUCTURE_EXTENSION] = [];
-                value[STRUCTURE_STORAGE] = [];
                 value[STRUCTURE_ROAD] = [];
+                value[STRUCTURE_WALL] = [];
+                value[STRUCTURE_RAMPART] = [];
+                value[STRUCTURE_LINK] = [];
+                value[STRUCTURE_STORAGE] = [];
+                value[STRUCTURE_TOWER] = [];
+                value[STRUCTURE_OBSERVER] = [];
+                value[STRUCTURE_POWER_SPAWN] = [];
+                value[STRUCTURE_EXTRACTOR] = [];
+                value[STRUCTURE_LAB] = [];
+                value[STRUCTURE_TERMINAL] = [];
+                value[STRUCTURE_CONTAINER] = [];
+                value[STRUCTURE_NUKER] = [];
                 return value;
             });
         },

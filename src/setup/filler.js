@@ -8,14 +8,14 @@ mod.setupConfig = {
         extraBody: [CARRY, CARRY, MOVE],
         maxExtraAmount: 1,
         prefix: '[LowFiller]',
-        memory: {role: 'filler'},
+        memory: {role: 'Filler'},
     },
     Normal: {
         minEnergy: 300,
-        essBody: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE],
+        essBody: [CARRY, CARRY, MOVE, CARRY, CARRY, MOVE],
         extraBody: [CARRY, CARRY, MOVE],
-        maxExtraAmount: 2,
+        maxExtraAmount: 8,
         prefix: '[Filler]',
-        memory: {role: 'filler'},
+        memory: {role: 'Filler'},
     },
 };

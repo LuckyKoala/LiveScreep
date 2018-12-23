@@ -8,6 +8,6 @@ mod.setupConfig = {
         extraBody: [RANGED_ATTACK, RANGED_ATTACK, MOVE],
         maxExtraAmount: 1,
         prefix: '[Guardian]',
-        memory: {role: 'guardian'},
+        memory: {role: 'Guardian'},
     },
 };

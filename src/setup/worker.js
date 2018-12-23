@@ -6,6 +6,6 @@ mod.setupConfig = {
         essBody: [WORK, CARRY, MOVE],
         extraBody: [WORK, CARRY, MOVE],
         prefix: '[Worker]',
-        memory: {role: 'worker'},
+        memory: {role: 'Worker'},
     },
 };

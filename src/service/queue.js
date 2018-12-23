@@ -7,7 +7,7 @@ mod.loop = function(room) {
     let cnt = {
         total: 0,
     };
-    _.forEach(Role, o => cnt[lowerFirst(o.roleName)] = 0); //Init cnt
+    _.forEach(Role, o => cnt[o.roleName] = 0); //Init cnt
     //All role is required
     for(let creep of roomCreeps) {
         const role = creep.memory.role;
@@ -17,14 +17,14 @@ mod.loop = function(room) {
     //Count role in queue as well
     const queue = _.union(room.queue.urgent, room.queue.normal);
     for(let setupName of queue) {
-        const role = lowerFirst(setupName);
+        const role = setupName;
         cnt[role]++;
         cnt.total++;
     }
     //=== Base creeps ===
     //One pair of harvester-hauler per source
-    let needHarvester = room.sources.length - cnt['harvester'];
-    let needHauler = room.sources.length - cnt['hauler'];
+    let needHarvester = room.sources.length - cnt['Harvester'];
+    let needHauler = room.sources.length - cnt['Hauler'];
     //Adjust queue depends on avg in and out
     const lastHistory = Util.Stat.getLastHistory(room.name);
     const energyIn = lastHistory.lastAvgIn;
@@ -34,31 +34,31 @@ mod.loop = function(room) {
         // That means, we don't need harvester unless no harvester at all,
         //  but pair of hauler is required to match existed harvester
         // But if storage is present, we have store extra energy, so we need to add check on that
-        needHarvester = 1-cnt['harvester'];
-        needHauler = cnt['harvester']-cnt['hauler'];
+        needHarvester = 1-cnt['Harvester'];
+        needHauler = cnt['Harvester']-cnt['Hauler'];
     }
     while(needHarvester-- > 0) {
-        if(cnt['harvester']===0) {
+        if(cnt['Harvester']===0) {
             //No harvester at all, so it's urgent
             room.queue.urgent.push(Setup.Harvester.setupName);
         } else {
             room.queue.normal.push(Setup.Harvester.setupName);
         }
-        cnt['harvester']++;
+        cnt['Harvester']++;
         if(needHauler-- > 0) {
-            if(cnt['hauler']===0) {
+            if(cnt['Hauler']===0) {
                 //No hauler at all, so it's urgent
                 room.queue.urgent.push(Setup.Hauler.setupName);
             } else {
                 room.queue.normal.push(Setup.Hauler.setupName);
             }
-            cnt['hauler']++;
+            cnt['Hauler']++;
         }
     }
     //If harvester is enough and hauler is not enough
     // just spawn it alone
     while(needHauler-- > 0) {
-        if(cnt['hauler']===0) {
+        if(cnt['Hauler']===0) {
             //No hauler at all, so it's urgent
             room.queue.urgent.push(Setup.Hauler.setupName);
         } else {
@@ -66,30 +66,20 @@ mod.loop = function(room) {
         }
     }
     //One upgrader in queue.urgent and one in queue.normal
-    let upgraderCnt = cnt['upgrader'];
+    let upgraderCnt = cnt['Upgrader'];
     if(upgraderCnt === 0) {
         room.queue.urgent.push(Setup.Upgrader.setupName);
-        cnt['upgrader']++;
+        cnt['Upgrader']++;
     } else if(upgraderCnt === 1) {
         room.queue.normal.push(Setup.Upgrader.setupName);
-        cnt['upgrader']++;
+        cnt['Upgrader']++;
     }
     //=== Extended creeps ===
-    //If there is a storage, spawn a filler and a extra hauler
-    // or if there is a controllerContainer, spawn a extra hauler
+    //If there is a storage, spawn a filler
     if(room.storage) {
-        if(cnt['filler'] === 0) {
+        if(cnt['Filler'] === 0) {
             room.queue.urgent.push(Setup.Filler.setupName);
-            cnt['filler']++;
-        }
-        if(cnt['hauler']-room.sources.length === 0) {
-            room.queue.normal.push(Setup.Hauler.setupName);
-            cnt['hauler']++;
-        }
-    } else if(room.controller.container) {
-        if(cnt['hauler']-room.sources.length === 0) {
-            room.queue.normal.push(Setup.Hauler.setupName);
-            cnt['hauler']++;
+            cnt['Filler']++;
         }
     }
     //If there are sites need to be build or structures need to be maintain,
@@ -103,18 +93,18 @@ mod.loop = function(room) {
     });
     const needBuilder = (needBuildStructures.length + needRepairStructures.length) > 0;
     if(needBuilder) {
-        if(cnt['builder']===0) {
+        if(cnt['Builder']===0) {
             room.queue.normal.push(Setup.Builder.setupName);
-            cnt['builder']++;
-        } else if(cnt['builder']===1 && room.storage && room.storage.store[RESOURCE_ENERGY] > 15000) {
+            cnt['Builder']++;
+        } else if(cnt['Builder']===1 && room.storage && room.storage.store[RESOURCE_ENERGY] > 15000) {
             room.queue.normal.push(Setup.Builder.setupName);
-            cnt['builder']++;
+            cnt['Builder']++;
         }
     }
     //If there is tower spawn a guardian -> goto util.defense
-    if(cnt['guardian'] === 0 && Util.Defense.shouldSpawnGuardian(room)) {
+    if(cnt['Guardian'] === 0 && Util.Defense.shouldSpawnGuardian(room)) {
         room.queue.urgent.push(Setup.Guardian.setupName);
-        cnt['guardian']++;
+        cnt['Guardian']++;
     }
 
     //=== Dynamic balance ===
@@ -136,7 +126,7 @@ mod.loop = function(room) {
                 //Add a builder
                 console.log('More builder!');
                 room.queue.normal.push(Setup.Builder.setupName);
-                cnt['builder']++;
+                cnt['Builder']++;
                 return;
             }
             //Secondly, more upgrader is always good
@@ -144,7 +134,7 @@ mod.loop = function(room) {
             if(room.controller.container && room.controller.container.store[RESOURCE_ENERGY] > 500) {
                 console.log('More upgrader!');
                 room.queue.normal.push(Setup.Upgrader.setupName);
-                cnt['upgrader']++;
+                cnt['Upgrader']++;
             }
         } else if(hasLessEnergy) {
             //Can we gain more energy ?

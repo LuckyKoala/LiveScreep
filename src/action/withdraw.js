@@ -49,19 +49,19 @@ const findSourceContainers = function(creep) {
 
 const targetInitFunc = function(creep) {
     const role = creep.memory.role;
-    if(role === 'hauler') {
+    if(role === 'Hauler') {
         //Only find source container
         return findSourceContainers(creep);
-    } else if(role === 'filler') {
+    } else if(role === 'Filler') {
         return findTargetForFiller(creep);
-    } else if(role === 'builder') {
+    } else if(role === 'Builder') {
         const storage = creep.room.storage;
         if(storage) {
             return storage;
         } else {
             return findSourceContainers(creep);
         }
-    } else if(role === 'upgrader') {
+    } else if(role === 'Upgrader') {
         const container = creep.room.controller.container;
         if(container) {
             return container;

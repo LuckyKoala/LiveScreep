@@ -1,7 +1,4 @@
 global.Thousand = 1000; //For readability of number literals in code
-global.lowerFirst = function(string) {
-    return string && (string.charAt(0).toLowerCase() + string.slice(1));
-};
 
 global.tryRequire = (path, silent = false) => {
     let mod;

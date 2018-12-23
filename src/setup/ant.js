@@ -7,6 +7,6 @@ mod.setupConfig = {
 		essBody: [MOVE],
 		extraBody: [],
 		prefix: '[Ant]',
-		memory: {role: 'ant'},
+		memory: {role: 'Ant'},
 	},
 };

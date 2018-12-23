@@ -11,7 +11,7 @@ var mod = function(name) {
             essBody: [CARRY, MOVE],
             extraBody: [],
             prefix: '[Ant]',
-            memory: {role: 'ant'},
+            memory: {role: 'Ant'},
         },
     };
     this.shouldUseHighLevel = function() {

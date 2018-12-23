@@ -7,7 +7,7 @@ mod.setupConfig = {
         essBody: [WORK,WORK,MOVE],
         extraBody: [],
         prefix: '[LowHarvester]',
-        memory: {role: 'harvester'},
+        memory: {role: 'Harvester'},
     },
     Normal: {
         minEnergy: 500,
@@ -15,6 +15,6 @@ mod.setupConfig = {
         extraBody: [WORK,CARRY,MOVE],
         maxExtraAmount: 1,
         prefix: '[Harvester]',
-        memory: {role: 'harvester'},
+        memory: {role: 'Harvester'},
     },
 };

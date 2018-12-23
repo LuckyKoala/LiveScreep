@@ -10,14 +10,14 @@ mod.setupConfig = {
         extraBody: [WORK,CARRY,MOVE],
         maxExtraAmount: 1,
         prefix: '[LowUpgrader]',
-        memory: {role: 'upgrader'},
+        memory: {role: 'Upgrader'},
     },
     Normal: {
         minEnergy: 750,
         essBody: [WORK, WORK, WORK, MOVE, WORK, WORK, WORK, MOVE, CARRY], //6work
         extraBody: [], //Control by amount of creeps not body limitation
         prefix: '[Upgrader]',
-        memory: {role: 'upgrader'},
+        memory: {role: 'Upgrader'},
     },
     High: {
         minEnergy: 300,
@@ -25,7 +25,7 @@ mod.setupConfig = {
         extraBody: [WORK, WORK, MOVE],
         maxExtraAmount: 7, //Up to 15 work parts due to limitation of RCL8
         prefix: '[HighUpgrader]',
-        memory: {role: 'upgrader'},
+        memory: {role: 'Upgrader'},
     },
 };
 

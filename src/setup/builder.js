@@ -7,13 +7,13 @@ mod.setupConfig = {
 		    essBody: [WORK, CARRY, CARRY, MOVE],
 		    extraBody: [],
 		    prefix: '[LowBuilder]',
-		    memory: {role: 'builder'},
+		    memory: {role: 'Builder'},
 	  },
     Normal: {
 		    minEnergy: 550,
 		    essBody: [WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE],
 		    extraBody: [],
 		    prefix: '[Builder]',
-		    memory: {role: 'builder'},
+		    memory: {role: 'Builder'},
 	  },
 };

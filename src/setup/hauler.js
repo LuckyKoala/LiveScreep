@@ -8,13 +8,14 @@ mod.setupConfig = {
         extraBody: [CARRY, CARRY, MOVE],
         maxExtraAmount: 1,
         prefix: '[LowHauler]',
-        memory: {role: 'hauler'},
+        memory: {role: 'Hauler'},
     },
     Normal: {
         minEnergy: 450,
-        essBody: [CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE],
-        extraBody: [],
+        essBody: [CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE],
+        extraBody: [CARRY, CARRY, MOVE],
+        maxExtraAmount: 2,
         prefix: '[Hauler]',
-        memory: {role: 'hauler'},
+        memory: {role: 'Hauler'},
     },
 };
