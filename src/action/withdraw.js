@@ -52,7 +52,7 @@ const targetInitFunc = function(creep) {
             return findSourceContainers(creep);
         }
     } else {
-        console.log(`error while ${creep.name} using withdraw action`);
+        console.log(`Can't find target while ${creep.name} using withdraw action`);
         return false;
     }
 };

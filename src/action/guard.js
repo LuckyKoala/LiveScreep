@@ -13,7 +13,7 @@ mod.word = '🛡 guard';
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         //Respect rampart
-        const rampart = target.pos.findClosestByRange(FIND_MY_STRUCTURES,{
+        const rampart = target.pos.findClosestByRange(creep.room.cachedFind(FIND_MY_STRUCTURES),{
             filter: { structureType: STRUCTURE_RAMPART }
         });
         if(rampart) {
@@ -23,7 +23,7 @@ mod.loop = function(creep) {
         }
 
         if(creep.pos.inRangeTo(target, 3)) {
-            const hostiles = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 2);
+            const hostiles = creep.pos.findInRange(creep.room.cachedFind(FIND_HOSTILE_CREEPS), 2);
             if(hostiles > 3) {
                 creep.rangedMassAttack();
             } else {

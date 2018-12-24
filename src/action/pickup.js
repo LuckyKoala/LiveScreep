@@ -1,10 +1,11 @@
 let mod = new ActionObj('Pickup');
 module.exports = mod;
 
+//TODO handle expensive tombstone
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, creep => {
         const remainCapacity = creep.carryCapacity - _.sum(creep.carry);
-        return creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, o => o.amount >= remainCapacity);
+        return creep.pos.findClosestByRange(creep.room.cachedFind(FIND_DROPPED_RESOURCES), o => o.amount >= remainCapacity);
     }, this.actionName);
 };
 

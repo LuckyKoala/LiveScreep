@@ -7,10 +7,6 @@ mod.nextTarget = function() {
 
 mod.word = '⚙️ Xupgrade';
 
-//=== NOTE ===
-//Only work for controller container exist and it is located at where
-//  creep can do withdraw and upgrade at same tick
-//Updated: Only withdraw energy if energy remain on creep isn't enough for next action
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         const controller = target;
@@ -31,7 +27,7 @@ mod.loop = function(creep) {
                 creep.withdraw(creep.room.controller.container, RESOURCE_ENERGY);
             } else {
                 creep.moveTo(container);
-                moved = true; 
+                moved = true;
             }
         }
 

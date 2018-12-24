@@ -20,17 +20,8 @@ const loop0 = function () {
         console.log(`Upgraded to version ${version}`);
         Memory.version = version;
     }
-
     //Run rooms
-    var entry = {};
-    _.forEach(Game.rooms, function(room) {
-        //Compute threat value
-        Util.Defense.loop(room);
-        RoomManager.dispatch(room);
-        entry[room.name] = room.energyAvailable;
-        Util.Stat.sumEnergyHistory(room.name);
-    });
-    Util.Stat.memorize('last-energyAvailable', entry);
+    _.forEach(Game.rooms, room => RoomManager.dispatch(room));
     //Run creeps
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];

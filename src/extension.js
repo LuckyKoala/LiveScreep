@@ -72,7 +72,7 @@ Object.defineProperties(Source.prototype, {
         get: function() {
             if (!this._container) {
                 if (!this.memory.containerId) {
-                    const targets = this.pos.findInRange(FIND_STRUCTURES, 1, {
+                    const targets = this.pos.findInRange(this.room.cachedFind(FIND_STRUCTURES), 1, {
                         filter: o => o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE
                     });
                     const closestTarget = targets[0]; //Same distance, so pick first one
@@ -106,7 +106,7 @@ Object.defineProperties(StructureController.prototype, {
         get: function() {
             if (!this._container) {
                 if (!this.memory.containerId) {
-                    const targets = this.pos.findInRange(FIND_STRUCTURES, 2, {
+                    const targets = this.pos.findInRange(this.room.cachedFind(FIND_STRUCTURES), 2, {
                         filter: o => o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE
                     });
                     const closestTarget = this.pos.findClosestByRange(targets);
@@ -297,7 +297,7 @@ Object.defineProperties(Room.prototype, {
                     let sources = _.map(sourceIds, id => Game.getObjectById(id));
                     this._sources = sources;
                 } else {
-                    const sources = this.find(FIND_SOURCES);
+                    const sources = this.cachedFind(FIND_SOURCES);
                     this.memory.sourceIds = _.map(sources, source => source.id);
                     this._sources = sources;
                 }
@@ -313,17 +313,22 @@ Object.defineProperties(Room.prototype, {
     },
 });
 
+Room.prototype.cachedFind = function(type) {
+    if(this.Cache === undefined) this.Cache = {};
+    const internal = '_'+type;
+    if(this.Cache[internal]===undefined) {
+        this.Cache[internal] = this.find(type);
+    }
+    return this.Cache[internal];
+};
+
 Room.prototype.saveLinks = function() {
     if(this.sourceLink && this.spawnLink && this.controllerLink) return; //Only do search when links is not valid.
     const self = this;
-    const links = this.find(FIND_MY_STRUCTURES, {
-        filter: { structureType: STRUCTURE_LINK }
-    });
+    const links = _.filter(this.cachedFind(FIND_MY_STRUCTURES), { structureType: STRUCTURE_LINK });
     const controller = this.controller;
-    const sources = this.find(FIND_SOURCES);
-    const spawnsAndExtensions = this.find(FIND_MY_STRUCTURES, {
-        filter: o => o.structureType==STRUCTURE_SPAWN || o.structureType==STRUCTURE_EXTENSION
-    });
+    const sources = this.cachedFind(FIND_SOURCES);
+    const spawnsAndExtensions = _.filter(this.cachedFind(FIND_MY_STRUCTURES), o => o.structureType==STRUCTURE_SPAWN || o.structureType==STRUCTURE_EXTENSION);
 
     let sourceLinks = [];
     _.forEach(links, link => {

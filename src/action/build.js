@@ -1,10 +1,9 @@
 let mod = new ActionObj('Build');
 module.exports = mod;
 
-//TODO Order by priority and range
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, creep => {
-        return creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {
+        return creep.pos.findClosestByRange(creep.room.cachedFind(FIND_CONSTRUCTION_SITES), {
             filter: function(o) {
                 return o.structureType!=STRUCTURE_RAMPART;
             }

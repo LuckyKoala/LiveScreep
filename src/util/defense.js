@@ -14,21 +14,19 @@ const ThreatValue = {
 
 mod.threatValue = {};
 
-mod.loop = function(room) {
+mod.tryActivateSafeMode = function(room) {
     if(room.controller.safeMode) {
         //Safe mode is on already
         return;
     }
     if(room.controller && room.controller.my) {
-        const hostiles = room.find(FIND_HOSTILE_CREEPS);
+        const hostiles = room.cachedFind(FIND_HOSTILE_CREEPS);
         if(hostiles.length > 0) {
             //So there are some invader
             // Do we have towers which can still run for a tick at least?
-            let towers = room.find(FIND_MY_STRUCTURES, {
-                filter: (structure) => {
-                    return (structure.structureType == STRUCTURE_TOWER) &&
-                        structure.energy >= TOWER_ENERGY_COST;
-                }
+            let towers = _.filter(room.cachedFind(FIND_MY_STRUCTURES), (structure) => {
+                return (structure.structureType == STRUCTURE_TOWER) &&
+                    structure.energy >= TOWER_ENERGY_COST;
             });
             if(towers.length > 0) {
                 //Yes, we do have working towers
@@ -57,20 +55,16 @@ mod.loop = function(room) {
 };
 
 mod.getRampartSitesCanBuild = function(room, energyAvailable) {
-    return room.find(FIND_CONSTRUCTION_SITES, {
-        filter: function(o) {
-            //Only build rampart if this builder can maintain it to low bound
-            return o.structureType==STRUCTURE_RAMPART 
-              && energyAvailable >= RampartMaintainThreshold.Lowest/REPAIR_POWER;  //Currently 10K/100=100Energy
-        }
+    return _.filter(room.cachedFind(FIND_CONSTRUCTION_SITES), function(o) {
+        //Only build rampart if this builder can maintain it to low bound
+        return o.structureType==STRUCTURE_RAMPART
+            && energyAvailable >= RampartMaintainThreshold.Lowest/REPAIR_POWER;  //Currently 10K/100=100Energy
     });
 };
 
 mod.getRampartsForMaintain = function(room) {
-    return room.find(FIND_MY_STRUCTURES, {
-        filter: function(o) {
-            return o.structureType==STRUCTURE_RAMPART && o.hits<RampartMaintainThreshold.Low;
-        }
+    return _.filter(room.cachedFind(FIND_MY_STRUCTURES), function(o) {
+        return o.structureType==STRUCTURE_RAMPART && o.hits<RampartMaintainThreshold.Low;
     });
 };
 
@@ -80,10 +74,8 @@ mod.canReleaseRampart = function(hits) {
 
 //Attention: Wall is not OwnedStructure
 mod.getWallsForMaintain = function(room) {
-    return room.find(FIND_STRUCTURES, {
-        filter: function(o) {
-            return o.structureType==STRUCTURE_WALL && o.hits<WallMaintainThreshold;
-        }
+    return _.filter(room.cachedFind(FIND_STRUCTURES), function(o) {
+        return o.structureType==STRUCTURE_WALL && o.hits<WallMaintainThreshold;
     });
 };
 
@@ -101,7 +93,7 @@ mod.getBodypartsCnt = function(creep) {
 
 mod.sortHostilesByRoom = function(room) {
     const self = this;
-    const hostiles = room.find(FIND_HOSTILE_CREEPS);
+    const hostiles = room.cachedFind(FIND_HOSTILE_CREEPS);
     const hostileMap = _.map(hostiles, o => {
         const cnt = self.getBodypartsCnt(o);
         return {
@@ -139,14 +131,13 @@ mod.sumThreatValueByBody = function(body) {
 
 mod.getCurrentThreatValue = function(room) {
     const self = this;
-    const hostiles = room.find(FIND_HOSTILE_CREEPS);
-    
+    const hostiles = room.cachedFind(FIND_HOSTILE_CREEPS);
     return _.sum(_.map(hostiles, o => self.sumThreatValueByBody(o.body))); //sumBy
 };
 
 mod.sortHostilesByPos = function(room, pos) {
     const self = this;
-    const hostiles = room.find(FIND_HOSTILE_CREEPS);
+    const hostiles = room.cachedFind(FIND_HOSTILE_CREEPS);
     const hostileMap = _.map(hostiles, o => {
         const cnt = self.getBodypartsCnt(o);
         return {

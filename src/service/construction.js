@@ -141,9 +141,7 @@ mod.loop = function(room, forceRun=false) {
     if(!forceRun && (Game.time-lastConstruct) < 80) return;
 
     //one site at one time
-    const sites = _.filter(Game.constructionSites, function(site) {
-        return site.room.name === room.name;
-    });
+    const sites = room.cachedFind(FIND_CONSTRUCTION_SITES);
     const noSite = sites.length === 0;
     if(!noSite) {
         // actually not loop room.layout

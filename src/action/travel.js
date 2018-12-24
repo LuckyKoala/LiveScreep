@@ -10,7 +10,7 @@ mod.nextTarget = function() {
         const obj = Game.flags[creep.memory.destinedTarget];
         return obj;
     }
-    return false; 
+    return false;
 };
 
 mod.word = '🕵︎ travel';

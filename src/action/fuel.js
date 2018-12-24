@@ -3,10 +3,10 @@ module.exports = mod;
 
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, creep => {
-        return creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+        return creep.pos.findClosestByRange(creep.room.cachedFind(FIND_MY_STRUCTURES), {
             filter: (structure) => {
                 return (structure.structureType == STRUCTURE_TOWER) &&
-                    structure.energy < Config.EnergyForDefend; 
+                    structure.energy < Config.EnergyForDefend;
             }
         });
     }, this.actionName);

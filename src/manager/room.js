@@ -22,15 +22,13 @@ mod.dispatch = function(room) {
         }
     } else {
         //Room without controller
-        const sources = room.find(FIND_SOURCES);
+        const sources = room.sources;
         if(sources.length === 0) {
             //Highway
             this.loopHighway(room);
         } else {
             //Center nine rooms
-            const lairs = room.find(FIND_STRUCTURES, {
-                filter: { structureType: STRUCTURE_KEEPER_LAIR }
-            });
+            const lairs = _.filter(room.cachedFind(FIND_STRUCTURES), { structureType: STRUCTURE_KEEPER_LAIR });
             if(lairs.length === 0) {
                 this.loopCenterRoom(room);
             } else {
@@ -43,12 +41,15 @@ mod.dispatch = function(room) {
 mod.loopOwnedRoom = function(room) {
     room.saveLinks();
 
+    Util.Defense.tryActivateSafeMode(room);
     TowerService.loop(room);
     LinkService.loop(room);
     ConstructionService.loop(room);
     //Init queue before spawn
     QueueService.loop(room);
     SpawnService.loop(room);
+    //Energy history
+    Util.Stat.sumEnergyHistory(room.name);
     //=== Stat Display ===
     //Game time
     room.visual.text(`Time: ${Game.time}`, 8, 2, {color: 'white', font: 0.8});
