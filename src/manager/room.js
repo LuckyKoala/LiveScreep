@@ -82,7 +82,10 @@ mod.loopOwnedRoom = function(room) {
     //Game time
     room.visual.text(`Time: ${Game.time}`, 8, 2, {color: 'white', font: 0.8});
     //Spawn queue
-    const queue = _.union(room.queue.urgent, room.queue.normal);
+    const queue = room.queue.urgent.concat(room.queue.normal);
+    for(const arr of room.queue.extern) {
+        queue.push(arr[0]);
+    }
     if(queue.length) {
         room.visual.text(`Next creep role is ${queue[0]}`, 8, 3, {color: 'green', font: 0.8});
     } else {
