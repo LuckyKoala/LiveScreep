@@ -11,7 +11,7 @@ Latest Release => `v0.2-SemiAutomation`
 * Maintain walls and ramparts
 * Guardian will try stay in rampart and fight invaders
 * Automatically active safe mode and send notification to player if the room can't handle the attack
-* Implemented logic of drop-mining, container-mining and link-mining
+* Implemented drop-mining, container-mining, link-mining and remote-mining.
 
 NOTE: Currently room plan system is under development, structures planned by LiveScreep may overlapped, but it will not dismantle anything for now.
 
@@ -71,6 +71,14 @@ For convenience, all role/setup/action/util module will be assigned to global sc
 * Repair: too complicated, simplify it later -.-;;
 * Travel: travel to destination.
 * Recycle: go to spawn and let spawn recycle self.
+
+## Remote mining
+
+place a white-white flag at target room, LiveScreep will handle it as remote-mining room.
+
+Normally, send a scout first if no vision of that room. Then send reserver if reservation.tickToEnd is lower than 1000.
+
+A pair of harvester-hauler will be sent for per source in target room.
 
 ## Room planner
 
