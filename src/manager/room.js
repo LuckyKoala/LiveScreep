@@ -8,34 +8,62 @@ var mod = {};
 module.exports = mod;
 
 mod.dispatch = function(room) {
-    //TODO Cache room type
-    const controller = room.controller;
-    if(controller) {
-        //Room with controller
-        // Then Who owned it?
-        if(controller.my) {
-            //I owned it!
-            this.loopOwnedRoom(room);
-        } else {
-            //Others owned it
-            this.loopExternalRoom(room);
-        }
-    } else {
-        //Room without controller
-        const sources = room.sources;
-        if(sources.length === 0) {
-            //Highway
-            this.loopHighway(room);
-        } else {
-            //Center nine rooms
-            const lairs = _.filter(room.cachedFind(FIND_STRUCTURES), { structureType: STRUCTURE_KEEPER_LAIR });
-            if(lairs.length === 0) {
-                this.loopCenterRoom(room);
+    let roomType = room.memory.roomType;
+    if(!roomType) {
+        const controller = room.controller;
+        if(controller) {
+            //Room with controller
+            // Then Who owned it?
+            if(controller.my) {
+                //I owned it!
+                roomType = CONSTANTS.OWNED_ROOM;
+                room.memory.roomType = roomType;
             } else {
-                this.loopKeeperRoom(room);
+                //Others owned it
+                roomType = CONSTANTS.EXTERNAL_ROOM;
+                room.memory.roomType = roomType;
+            }
+        } else {
+            //Room without controller
+            const sources = room.sources;
+            if(sources.length === 0) {
+                //Highway
+                roomType = CONSTANTS.HIGH_WAY;
+                room.memory.roomType = roomType;
+            } else {
+                //Center nine rooms
+                const lairs = _.filter(room.cachedFind(FIND_STRUCTURES), { structureType: STRUCTURE_KEEPER_LAIR });
+                if(lairs.length === 0) {
+                    roomType = CONSTANTS.CENTER_ROOM;
+                    room.memory.roomType = roomType;
+                } else {
+                    roomType = CONSTANTS.KEEPER_ROOM;
+                    room.memory.roomType = roomType;
+                }
             }
         }
     }
+
+    switch(roomType) {
+    case CONSTANTS.OWNED_ROOM:
+        this.loopOwnedRoom(room);
+        break;
+    case CONSTANTS.EXTERNAL_ROOM:
+        this.loopExternalRoom(room);
+        break;
+    case CONSTANTS.HIGH_WAY:
+        this.loopHighway(room);
+        break;
+    case CONSTANTS.CENTER_ROOM:
+        this.loopCenterRoom(room);
+        break;
+    case CONSTANTS.KEEPER_ROOM:
+        this.loopKeeperRoom(room);
+        break;
+    default:
+        console.log('Undefined room type');
+    }
+
 };
 
 mod.loopOwnedRoom = function(room) {

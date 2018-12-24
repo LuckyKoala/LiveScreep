@@ -15,6 +15,15 @@ global.tryRequire = (path, silent = false) => {
     return mod;
 };
 
+global.CONSTANTS = {
+    USERNAME: 'Lucky777777',
+    OWNED_ROOM: 'owned room',
+    EXTERNAL_ROOM: 'external room',
+    HIGH_WAY: 'high way',
+    CENTER_ROOM: 'center room',
+    KEEPER_ROOM: 'keeper room'
+};
+
 global.cli = require('util_cli');
 
 const DefaultConfig = require('config_default');
@@ -32,6 +41,10 @@ global.FlagUtil = {
     guard: {
         color: COLOR_BLUE,
         secondaryColor: COLOR_BLUE,
+    },
+    remoteMining: {
+        color: COLOR_WHITE,
+        secondaryColor: COLOR_WHITE,
     },
 };
 function makeExamineFunction(constant) {
@@ -62,8 +75,10 @@ global.Action = {
     Repair: require('action_repair'),
     Recycle: require('action_recycle'),
     Dismantle: require('action_dismantle'),
-    Travel: require('action_travel'),
     Invade: require('action_invade'),
+    Travel: require('action_travel'),
+    Back: require('action_back'),
+    Reserve: require('action_reserve'),
 };
 global.Setup = {
     Worker: require('setup_worker'),
@@ -73,19 +88,33 @@ global.Setup = {
     Hauler: require('setup_hauler'),
     Guardian: require('setup_guardian'),
     Ant: require('setup_ant'),
+    Scout: require('setup_scout'),
     Filler: require('setup_filler'),
     Task: require('setup_task'),
+    RemoteHarvester: require('setup_remoteHarvester'),
+    RemoteHauler: require('setup_remoteHauler'),
+    Reserver: require('setup_reserver'),
 };
 global.Role = {
+    //Not used
     Worker: require('role_worker'),
+    //Base roles
     Harvester: require('role_harvester'),
     Upgrader: require('role_upgrader'),
     Builder: require('role_builder'),
     Hauler: require('role_hauler'),
     Guardian: require('role_guardian'),
+    //Not used
     Ant: require('role_ant'),
+    //Recycle creep assigned
     Recycler: require('role_recycler'),
+    //Redistribute energy in storage
     Filler: require('role_filler'),
+    //Remote mining
+    Scout: require('role_scout'),
+    RemoteHarvester: require('role_remoteHarvester'),
+    RemoteHauler: require('role_remoteHauler'),
+    Reserver: require('role_reserver'),
 };
 global.Util = {
     Defense: require('util_defense'),

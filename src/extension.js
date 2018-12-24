@@ -189,6 +189,7 @@ Object.defineProperties(Room.prototype, {
                 return {
                     urgent: [],
                     normal: [],
+                    extern: [],
                     lastBalanceTick: 0,
                 };
             });

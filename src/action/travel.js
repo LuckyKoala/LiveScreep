@@ -2,13 +2,20 @@ let mod = new ActionObj('Travel');
 module.exports = mod;
 
 mod.nextTarget = function() {
-    if(creep.room.name === target.room.name) {
-        return false;
-    }
+    const creep = this.creep;
     //Only support flag.
     if(creep.memory.destinedTarget) {
-        const obj = Game.flags[creep.memory.destinedTarget];
-        return obj;
+        const flag = Game.flags[creep.memory.destinedTarget];
+        if(creep.room.name === flag.pos.roomName) {
+            const pos = creep.pos;
+            if(pos.x === 0 || pos.x === 49 || pos.y === 0 || pos.y === 49) {
+                //Don't stay at exit, creep will loop between room
+                return flag;
+            } else {
+                return false;
+            }
+        }
+        return flag;
     }
     return false;
 };

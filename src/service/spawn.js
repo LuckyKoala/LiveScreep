@@ -13,6 +13,16 @@ mod.loop = function(room) {
             if(this.spawnWithSetup(spawn, false, Setup[room.queue.normal[0]])) {
                 room.queue.normal.shift();
             }
+        } else if(room.queue.extern.length > 0) {
+            //Different setup format
+            // [setupName, {destinedTarget: 'sim'}]
+            //  aka a array of setupName and extra memory
+            const setupArr = room.queue.extern[0];
+            const setup = Setup[setupArr[0]];
+            let extraMemory = setupArr[1];
+            if(this.spawnWithSetup(spawn, false, setup, extraMemory)) {
+                room.queue.extern.shift();
+            }
         }
     }
 };
@@ -20,7 +30,7 @@ mod.loop = function(room) {
 // Return true indicates that creep can be created
 //When incoming energy of spawn is low, then spawn of worker/harvester-hauler
 //  is urgent, otherwise it is not urgent, we can wait for it to be bigger.
-mod.spawnWithSetup = function(spawn, urgent, {setupConfig, shouldUseHighLevel}) {
+mod.spawnWithSetup = function(spawn, urgent, {setupConfig, shouldUseHighLevel}, extraMemory) {
     if(spawn.spawning) return false;
 
     const energyAvailable = spawn.room.energyAvailable;
@@ -44,7 +54,13 @@ mod.spawnWithSetup = function(spawn, urgent, {setupConfig, shouldUseHighLevel}) 
     if(energyAvailable < bodyCost) return false;
     //Calculate name
     const name = prefix+spawn.name+'->'+Game.time;
+    //Inject memory
     memory['homeRoom'] = spawn.room.name;
+    if(extraMemory) {
+        for(const key in extraMemory) {
+            memory[key] = extraMemory[key];
+        }
+    }
     const result = spawn.spawnCreep(body, name, {
         memory: memory,
     });

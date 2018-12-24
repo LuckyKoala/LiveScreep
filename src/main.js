@@ -1,6 +1,7 @@
 var _global = require('global');
 var _extension = require('extension');
 const RoomManager = require('manager_room');
+const TaskManager = require('manager_task');
 const profiler = require('lib_screeps-profiler');
 const _roomvisual = require('lib_RoomVisual');
 
@@ -11,15 +12,18 @@ module.exports.loop = function() {
     profiler.wrap(loop0);
 };
 
-const version = 4;
+const version = 5;
 const loop0 = function () {
     //Version update
     const previoudVersion = Memory.version || 0;
     if(previoudVersion!==version) {
         //Do something for breaking change between versions
+        _.forEach(Game.rooms, room => room.queue.extern=[]);
         console.log(`Upgraded to version ${version}`);
         Memory.version = version;
     }
+    //Run tasks
+    TaskManager.loop();
     //Run rooms
     _.forEach(Game.rooms, room => RoomManager.dispatch(room));
     //Run creeps

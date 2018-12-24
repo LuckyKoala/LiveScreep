@@ -26,7 +26,7 @@ const findSourceContainers = function(creep) {
 
 const targetInitFunc = function(creep) {
     const role = creep.memory.role;
-    if(role === 'Hauler') {
+    if(role === 'Hauler' || role==='RemoteHauler') {
         //Only find source container
         return findSourceContainers(creep);
     } else if(role === 'Filler') {
