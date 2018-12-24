@@ -80,7 +80,7 @@ mod.loop = function(room) {
         if(cnt['Builder']===0) {
             room.queue.normal.push(Setup.Builder.setupName);
             cnt['Builder']++;
-        } else if(cnt['Builder']===1 && room.storage && room.storage.store[RESOURCE_ENERGY] > 20000) {
+        } else if(cnt['Builder']===1 && needBuildStructures.length>0 && room.storage && room.storage.store[RESOURCE_ENERGY] > 20000) {
             room.queue.normal.push(Setup.Builder.setupName);
             cnt['Builder']++;
         }
