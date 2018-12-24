@@ -15,7 +15,7 @@ mod.loop = function(room) {
         cnt.total++;
     }
     //Count role in queue as well
-    const queue = _.union(room.queue.urgent, room.queue.normal);
+    const queue = room.queue.urgent.concat(room.queue.normal);
     for(let setupName of queue) {
         const role = setupName;
         cnt[role]++;

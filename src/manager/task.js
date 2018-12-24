@@ -52,7 +52,7 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     }
     //Count role in queue as well
     const queueRoom = Game.rooms[roomName];
-    const queue = _.union(queueRoom.queue.extern);
+    const queue = queueRoom.queue.extern;
     for(const setupArr of queue) {
         const setupName = setupArr[0];
         const role = setupName;
