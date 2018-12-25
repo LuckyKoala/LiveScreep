@@ -32,7 +32,7 @@ mod.loop = function(creep) {
                 let result = creep.harvest(source);
                 if(result===OK) {
                     let amount = creep.getActiveBodyparts(WORK)*HARVEST_POWER;
-                    Util.Stat.incEnergyIn(creep.room.name, amount);
+                    Util.Stat.incEnergyIn(creep.memory.homeRoom, amount);
                 }
             } else {
                 creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
@@ -42,7 +42,7 @@ mod.loop = function(creep) {
                 let result = creep.harvest(source);
                 if(result===OK) {
                     let amount = creep.getActiveBodyparts(WORK)*HARVEST_POWER;
-                    Util.Stat.incEnergyIn(creep.room.name, amount);
+                    Util.Stat.incEnergyIn(creep.memory.homeRoom, amount);
                 }
             } else {
                 creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
