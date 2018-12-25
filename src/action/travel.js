@@ -1,10 +1,11 @@
 let mod = new ActionObj('Travel');
 module.exports = mod;
 
+//Return false to mean creep is on the right room
 mod.nextTarget = function() {
     const creep = this.creep;
-    //Only support flag.
     if(creep.memory.destinedTarget) {
+        //we have a target
         const flag = Game.flags[creep.memory.destinedTarget];
         if(!flag) {
             console.log('Detect flag removed');
@@ -21,8 +22,30 @@ mod.nextTarget = function() {
             }
         }
         return flag;
+    } else {
+        //we have no target
+        // so we may be wrong room
+        if(creep.room.name === creep.memory.homeRoom) {
+            delete creep.memory.wrongRoomCounter;
+            return false;
+        }
+        const home = Game.rooms[creep.memory.homeRoom];
+        if(home) {
+            const wrongRoomCounter = creep.memory.wrongRoomCounter || 0;
+            //Creep can stay in wrong room at most 6 ticks in case it is finding path
+            if(wrongRoomCounter > 6) {
+                //Go home boy!
+                console.log(`Creep ${creep.name} is going home!`);
+                return home.controller;
+            } else {
+                creep.memory.wrongRoomCounter = wrongRoomCounter+1;
+                return false;
+            }
+        } else {
+            console.log('no home!');
+            return false; // let creep stay at this room since it has no home!
+        }
     }
-    return false;
 };
 
 mod.word = '🕵︎ travel';
