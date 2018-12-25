@@ -14,14 +14,6 @@ module.exports = {
                 return true;
             }
         }
-        //No exactly matched source
-        //Try again to only match source with available spots
-        for(let source of sources) {
-            if(source && isSourceAvailable(0, source)) {
-                markSource(creep, source);
-                return true;
-            }
-        }
 
         return false;
     },
@@ -79,9 +71,17 @@ function initSourceMark(source) {
 
 function isSourceAvailable(workParts, source) {
     ensureSourceMarkInitialize(source);
+
+    //One harvester per source
+    const takenCnt = _.keys(source.memory.mark.status).length;
+    return takenCnt === 0;
+
+    /*
+    //Dynamic mark
     const available = source.memory.mark.available;
     const needParts = workParts;
     return available.spots>=1 && available.parts>needParts;
+    */
 }
 
 function markSource(creep, source) {
