@@ -6,6 +6,11 @@ mod.nextTarget = function() {
     //Only support flag.
     if(creep.memory.destinedTarget) {
         const flag = Game.flags[creep.memory.destinedTarget];
+        if(!flag) {
+            console.log('Detect flag removed');
+            creep.memory.role='Recycler';
+            return false;
+        }
         if(creep.room.name === flag.pos.roomName) {
             const pos = creep.pos;
             if(pos.x === 0 || pos.x === 49 || pos.y === 0 || pos.y === 49) {
