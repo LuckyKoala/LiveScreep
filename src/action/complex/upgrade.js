@@ -17,7 +17,16 @@ mod.loop = function(creep) {
         const energyEnoughForAction = energyRemainNextTick >= 0;
         const energyNotEnoughForNextAction = (energyRemainNextTick-energyPerAction) < 0;
         let moved = false;
+        let worked = false;
 
+        if(creep.pos.isNearTo(container)) {
+            //Maintain container
+            if(container.hits < container.hitsMax) {
+                creep.repair(container);
+                Util.Stat.incEnergyOut(creep.room.name, creep.getActiveBodyparts(WORK)*REPAIR_POWER*REPAIR_COST);
+                worked = true;
+            }
+        }
         //We need more energy!
         if(energyNotEnoughForNextAction) {
             if(creep.pos.isNearTo(container)) {
@@ -33,7 +42,7 @@ mod.loop = function(creep) {
 
         //First we need to be there
         if(creep.pos.inRangeTo(controller, 3)) {
-            if(energyEnoughForAction) {
+            if(!worked && energyEnoughForAction) {
                 if(creep.upgradeController(controller) === OK) {
                     Util.Stat.incEnergyOut(creep.room.name, creep.getActiveBodyparts(WORK)*UPGRADE_CONTROLLER_POWER);
                 }

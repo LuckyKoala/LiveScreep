@@ -15,8 +15,7 @@ mod.nextTarget = function() {
         if(!target) {
             target = creep.pos.findClosestByRange(creep.room.structures, {
                 filter: function(o) {
-                    return (o.structureType==STRUCTURE_ROAD || o.structureType==STRUCTURE_CONTAINER) 
-                       && o.hits<o.hitsMax;
+                    return o.structureType==STRUCTURE_ROAD && o.hits<o.hitsMax;
                 }
             });
             if(target) return target;
