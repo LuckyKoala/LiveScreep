@@ -40,7 +40,7 @@ mod.loop = function(room) {
     //If there is a storage, spawn a filler to redistribute
     //  resources in storage
     if(room.storage && cnt['Filler'] === 0) {
-        room.queue.urgent.push(Setup.Filler.setupName);
+        room.queue.urgent.unshift(Setup.Filler.setupName);
         cnt['Filler']++;
     }
 
