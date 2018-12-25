@@ -4,15 +4,15 @@ module.exports = mod;
 //If storage is present, then filler and builder will handle energy in storage
 // so hauler only haul energy to storage now
 mod.roleConfigWithStorage = {
-    inStack: [Action.Pickup, Action.Withdraw],
-    outStack: [Action.Store],
+    inStack: [Action.Travel, Action.Pickup, Action.Withdraw],
+    outStack: [Action.Travel, Action.Fuel, Action.Store],
 };
 
 //TODO If there is no storage
 // we may choose to abandon mineral resource on creep
 mod.roleConfigWithoutStorage = {
-    inStack: [Action.Pickup, Action.Withdraw],
-    outStack: [Action.Fill, Action.Fuel, Action.PutForUpgrade],
+    inStack: [Action.Travel, Action.Pickup, Action.Withdraw],
+    outStack: [Action.Travel, Action.Fill, Action.Fuel, Action.PutForUpgrade],
 };
 
 mod.loop = function(creep) {
