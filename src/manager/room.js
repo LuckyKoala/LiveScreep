@@ -80,31 +80,31 @@ mod.loopOwnedRoom = function(room) {
     Util.Stat.sumEnergyHistory(room.name);
     //=== Stat Display ===
     //Game time
-    room.visual.text(`Time: ${Game.time}`, 8, 2, {color: 'white', font: 0.8});
+    room.visual.text(`Time: ${Game.time}`, 8, 2, {color: 'white', font: 1});
     //Spawn queue
     const queue = room.queue.urgent.concat(room.queue.normal);
     for(const arr of room.queue.extern) {
         queue.push(arr[0]);
     }
     if(queue.length) {
-        room.visual.text(`Next creep role is ${queue[0]}`, 8, 3, {color: 'green', font: 0.8});
+        room.visual.text(`Next role is ${queue[0]}, remain ${queue.length}`, 8, 3, {color: 'green', font: 1});
     } else {
-        room.visual.text(`No creep in spawn queue`, 8, 3, {color: 'green', font: 0.8});
+        room.visual.text(`No creep in spawn queue`, 8, 3, {color: 'green', font: 1});
     }
     //Energy in and out
     const lastHistory = Util.Stat.getLastHistory(room.name);
     const energyIn = lastHistory.lastAvgIn;
     const energyOut = lastHistory.lastAvgOut;
     const energyDiff = energyIn-energyOut;
-    room.visual.text(`AvgEnergy +${energyIn.toFixed(2)} -${energyOut.toFixed(2)} = ${energyDiff.toFixed(2)}`, 8, 4, {color: 'green', font: 0.8});
+    room.visual.text(`AvgEnergy +${energyIn.toFixed(2)} -${energyOut.toFixed(2)} = ${energyDiff.toFixed(2)}`, 8, 4, {color: 'green', font: 1});
     //Controller progress
     const progress = room.controller.progress;
     const progressTotal = room.controller.progressTotal;
     const percent = (progress/progressTotal).toFixed(2);
-    room.visual.text(`Progress: ${progress}/${progressTotal}(${percent})`, 8, 5, {color: 'gold', font: 0.8});
+    room.visual.text(`Progress: ${progress}/${progressTotal}(${percent})`, 8, 5, {color: 'gold', font: 1});
     //Energy in storage
     if(room.storage) {
-        room.visual.text(`Energy in storage: ${room.storage.store[RESOURCE_ENERGY]}`, 8, 6, {color: 'gold', font: 0.8});
+        room.visual.text(`Energy in storage: ${room.storage.store[RESOURCE_ENERGY]}`, 8, 6, {color: 'gold', font: 1});
     }
 };
 
@@ -128,6 +128,14 @@ mod.expireRoom = function(roomName) {
 
 mod.loopExternalRoom = function(room) {
     this.recordLastSeen(room.name);
+    const reservation = room.controller.reservation;
+    if(reservation && reservation.username === CONSTANTS.USERNAME) {
+        //=== Stat Display ===
+        //Game time
+        room.visual.text(`Time: ${Game.time}`, 8, 1, {color: 'white', font: 1.5});
+        //Reservation
+        room.visual.text(`TicksToEnd: ${reservation.ticksToEnd}`, 8, 3, {color: 'green', font: 1.5});
+    }
     //Do a task
     //1. Remote Mining
     //2. Invading
