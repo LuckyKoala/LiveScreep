@@ -79,6 +79,7 @@ global.Action = {
     Travel: require('action_travel'),
     Back: require('action_back'),
     Reserve: require('action_reserve'),
+    Heal: require('action_heal'),
 };
 global.Setup = {
     Worker: require('setup_worker'),
@@ -93,6 +94,7 @@ global.Setup = {
     Task: require('setup_task'),
     RemoteHarvester: require('setup_remoteHarvester'),
     RemoteHauler: require('setup_remoteHauler'),
+    RemoteGuardian: require('setup_remoteGuardian'),
     Reserver: require('setup_reserver'),
 };
 global.Role = {
@@ -114,6 +116,7 @@ global.Role = {
     Scout: require('role_scout'),
     RemoteHarvester: require('role_remoteHarvester'),
     RemoteHauler: require('role_remoteHauler'),
+    RemoteGuardian: require('role_remoteGuardian'),
     Reserver: require('role_reserver'),
 };
 global.Util = {

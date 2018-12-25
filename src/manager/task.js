@@ -64,15 +64,24 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     const extraMemory = {
         destinedTarget: destinedTarget
     };
+    //Do we need to spawn guardian ?
+    //Guardian provide vision too
+    if(cnt['RemoteGuardian']===0) {
+        queueRoom.queue.extern.unshift([Setup.RemoteGuardian.setupName, extraMemory]);
+        cnt['RemoteGuardian']++;
+        return;
+    }
     //Do we have vision of that room?
     let room = Game.rooms[Game.flags[destinedTarget].pos.roomName];
     if(room === undefined) {
         //No vision
         //Spawn a scout first
+        /*
         if(cnt['Scout']===0) {
             queueRoom.queue.extern.push([Setup.Scout.setupName, extraMemory]);
             cnt['Scout']++;
         }
+        */
         return;
     }
 

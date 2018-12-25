@@ -12,7 +12,7 @@ module.exports.loop = function() {
     profiler.wrap(loop0);
 };
 
-const version = 6;
+const version = 1;
 const loop0 = function () {
     //Version update
     const previoudVersion = Memory.version || 0;
@@ -26,10 +26,11 @@ const loop0 = function () {
     //Run rooms
     _.forEach(Game.rooms, room => RoomManager.dispatch(room));
     //Run creeps
-    for(var name in Game.creeps) {
-        var creep = Game.creeps[name];
-        var role = creep.memory.role;
-        var roleModule = Role[role];
+    for(const name in Game.creeps) {
+        const creep = Game.creeps[name];
+        if(creep.spawning) return;
+        const role = creep.memory.role;
+        const roleModule = Role[role];
         
         if(roleModule) {
             roleModule.loop(creep);
