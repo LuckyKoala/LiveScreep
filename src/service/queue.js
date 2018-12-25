@@ -25,11 +25,11 @@ mod.loop = function(room) {
     //=== Minimal group of creeps to keep room running ===
     // At least one harvester,one hauler and one upgrader
     if(cnt['Harvester'] < 1) {
-        room.queue.urgent.push(Setup.Harvester.setupName);
+        room.queue.normal.push(Setup.Harvester.setupName);
         cnt['Harvester']++;
     }
     if(cnt['Hauler'] < 1) {
-        room.queue.urgent.push(Setup.Hauler.setupName);
+        room.queue.normal.push(Setup.Hauler.setupName);
         cnt['Hauler']++;
     }
     if(cnt['Upgrader'] < 1) {
