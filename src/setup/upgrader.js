@@ -12,6 +12,7 @@ mod.setupConfig = {
         prefix: '[LowUpgrader]',
         memory: {role: 'Upgrader'},
     },
+    //TODO adjust maxExtraAmount according to energy of storage
     Normal: {
         minEnergy: 750,
         essBody: [WORK, WORK, WORK, MOVE, WORK, WORK, WORK, MOVE, CARRY], //6work

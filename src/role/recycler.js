@@ -1,11 +1,9 @@
 var mod = new RoleObj('Recycler');
 module.exports = mod;
 
+//Put remain resources to storage
+// and then go to spawn and recycle self
 mod.roleConfig = {
-    inStack: [],
-    outStack: [Action.Recycle],
-};
-
-mod.loop = function(creep) {
-    this.loop0(creep, true); //Always use action in outStack
+    inStack: [Action.Recycle],
+    outStack: [Action.Store],
 };
