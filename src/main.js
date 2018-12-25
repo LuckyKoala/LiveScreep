@@ -14,6 +14,7 @@ module.exports.loop = function() {
 
 const version = 1;
 const loop0 = function () {
+    Util.SourceMark.loop();
     //Version update
     const previoudVersion = Memory.version || 0;
     if(previoudVersion!==version) {
@@ -40,7 +41,6 @@ const loop0 = function () {
     }
     //Validate and clear data
     GC();
-    Util.SourceMark.loop();
     Util.Stat.loop();
 };
 

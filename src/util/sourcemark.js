@@ -1,7 +1,7 @@
 //SourceMark logic goes there
 module.exports = {
     loop: function() {
-        for(var id in Memory.sources) {
+        for(const id in Memory.sources) {
             var source = Game.getObjectById(id);
             if(source) validateSourceMark(source);
         }
@@ -113,6 +113,7 @@ function clearSourceMark(creep) {
 
 function validateSourceMark(source) {
     ensureSourceMarkInitialize(source);
+
     //Get status
     var available = source.memory.mark.available;
     var status = source.memory.mark.status;
