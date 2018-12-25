@@ -3,10 +3,10 @@ module.exports = mod;
 
 mod.setupConfig = {
     Normal: {
-        minEnergy: 600,
-        essBody: [CLAIM, MOVE],
+        minEnergy: 700,
+        essBody: [CLAIM, MOVE, MOVE],
         extraBody: [CLAIM],
-        maxExtraAmount: 1,
+        maxExtraAmount: 2,
         prefix: '[Reserver]',
         memory: {role: 'Reserver'},
     },
