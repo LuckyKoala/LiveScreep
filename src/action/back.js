@@ -15,6 +15,9 @@ mod.word = '🕵︎ Back';
 
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
-        creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+        creep.moveTo(target, {
+            reusePath: 15,
+            visualizePathStyle: {stroke: '#ffffff'}
+        });
     });
 };
