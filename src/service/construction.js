@@ -139,7 +139,7 @@ mod.loop = function(room, forceRun=false) {
     if(show) this.showRoomPlan(room);
     //Do not loop room.layout every tick
     const lastConstruct = room.memory.lastConstruct || 0;
-    if(!forceRun && (Game.time-lastConstruct) < 80) return;
+    if(!forceRun && (Game.time-lastConstruct) < 40) return;
 
     //one site at one time
     const sites = room.cachedFind(FIND_CONSTRUCTION_SITES);

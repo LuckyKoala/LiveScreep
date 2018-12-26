@@ -35,7 +35,6 @@ mod.loop = function(room) {
             }
         }
 
-        if(tower.energy <= Config.EnergyForDefend) return; //Save energy for defend
         //Heal creep
         var closestInjuredCreep = tower.pos.findClosestByRange(FIND_MY_CREEPS, {
             filter: (creep) => creep.hits < creep.hitsMax
@@ -46,6 +45,9 @@ mod.loop = function(room) {
             }
             return;
         }
+
+        if(tower.energy <= Config.EnergyForDefend) return; //Save energy for defend
+
         //Repair structure
         var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (structure) => {
