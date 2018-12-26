@@ -1,4 +1,4 @@
-var mod = new SetupObj('Reserver');
+var mod = new SetupObj(C.RESERVER);
 module.exports = mod;
 
 mod.setupConfig = {
@@ -7,7 +7,7 @@ mod.setupConfig = {
         essBody: [CLAIM, MOVE, MOVE],
         extraBody: [CLAIM],
         maxExtraAmount: 2,
-        prefix: '[Reserver]',
-        memory: {role: 'Reserver'},
+        prefix: `[C.RESERVER]`,
+        memory: {role: C.RESERVER},
     },
 };

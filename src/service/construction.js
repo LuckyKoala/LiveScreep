@@ -104,12 +104,13 @@ mod.init = function(room) {
         //We have dissi flower
         // so we don't need to place spawnLink
     } else {
-        //A output link to match output link
+        //A output link to match input link
         this.saveStructure(room, posNearby(terrain, room.spawns[0], 3), STRUCTURE_LINK);
     }
     //Source links first, it is input link
-    this.saveStructure(room, posNearby(terrain, room.sources[0], 2), STRUCTURE_LINK);
-    this.saveStructure(room, posNearby(terrain, room.sources[1], 2), STRUCTURE_LINK);
+    for(let source of room.sources) {
+        this.saveStructure(room, posNearby(terrain, source, 2), STRUCTURE_LINK);
+    }
     //Controller link is also a output link
     this.saveStructure(room, posNearby(terrain, room.controller, 3), STRUCTURE_LINK);
     //TODO 2 links for remote mining or mineral mining

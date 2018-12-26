@@ -5,6 +5,9 @@
 
 var mod = function(name) {
     this.setupName = name;
+    //K: road 0.5 ; plain 1 ; swamp 5
+    //Fatigue = 2*(Weight * K - Move)
+    // each move part decease fatigue by 2 per tick
     this.setupConfig = {
         Normal: {
             minEnergy: 100,
@@ -17,6 +20,7 @@ var mod = function(name) {
     this.shouldUseHighLevel = function() {
         return false;
     };
+    //this.dynamicExtraAmount = function() {};
 };
 
 module.exports = mod;

@@ -17,7 +17,7 @@ mod.loop = function() {
                 console.log(roomName);
                 const room = Game.rooms[roomName];
                 const roomType = room.memory.roomType;
-                if(roomType && roomType === CONSTANTS.OWNED_ROOM && room.controller.level>=3) {
+                if(roomType && roomType === C.OWNED_ROOM && room.controller.level>=3) {
                     const r = Game.map.getRoomLinearDistance(flag.pos.roomName, roomName);
                     if(r < range) {
                         range = r;
@@ -66,9 +66,9 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     };
     //Do we need to spawn guardian ?
     //Guardian provide vision too
-    if(cnt['RemoteGuardian']===0) {
-        queueRoom.queue.extern.unshift([Setup.RemoteGuardian.setupName, extraMemory]);
-        cnt['RemoteGuardian']++;
+    if(cnt[C.REMOTE_GUARDIAN]===0) {
+        queueRoom.queue.extern.unshift([C.REMOTE_GUARDIAN, extraMemory]);
+        cnt[C.REMOTE_GUARDIAN]++;
         return;
     }
     //Do we have vision of that room?
@@ -77,9 +77,9 @@ mod.queueCreeps = function(roomName, destinedTarget) {
         //No vision
         //Spawn a scout first
         /*
-        if(cnt['Scout']===0) {
-            queueRoom.queue.extern.push([Setup.Scout.setupName, extraMemory]);
-            cnt['Scout']++;
+        if(cnt[C.SCOUT]===0) {
+            queueRoom.queue.extern.push([C.SCOUT, extraMemory]);
+            cnt[C.SCOUT]++;
         }
         */
         return;
@@ -89,32 +89,32 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     const controller = room.controller;
     if(controller) {
         const reservation = controller.reservation;
-        if(reservation && reservation.username===CONSTANTS.USERNAME && reservation.ticksToEnd>1000) {
+        if(reservation && reservation.username===C.USERNAME && reservation.ticksToEnd>1000) {
             //No need to spawn reserver
-        } else if(cnt['Reserver']===0) {
-            queueRoom.queue.extern.push([Setup.Reserver.setupName, extraMemory]);
-            cnt['Reserver']++;
+        } else if(cnt[C.RESERVER]===0) {
+            queueRoom.queue.extern.push([C.RESERVER, extraMemory]);
+            cnt[C.RESERVER]++;
         }
     }
 
     //=== Harvest all sources and spawn dedicated hauler ===
     //That is one pair of harvester-hauler per source
-    let needHarvester = room.sources.length - cnt['RemoteHarvester'];
-    let needHauler = room.sources.length - cnt['RemoteHauler'];
+    let needHarvester = room.sources.length - cnt[C.REMOTE_HARVESTER];
+    let needHauler = room.sources.length - cnt[C.REMOTE_HAULER];
     //Actually enqueue harvesters and haulers
     while(needHarvester-- > 0) {
-        queueRoom.queue.extern.push([Setup.RemoteHarvester.setupName, extraMemory]);
-        cnt['RemoteHarvester']++;
+        queueRoom.queue.extern.push([C.REMOTE_HARVESTER, extraMemory]);
+        cnt[C.REMOTE_HARVESTER]++;
         //Spawn matched hauler
         if(needHauler-- > 0) {
-            queueRoom.queue.extern.push([Setup.RemoteHauler.setupName, extraMemory]);
-            cnt['RemoteHauler']++;
+            queueRoom.queue.extern.push([C.REMOTE_HAULER, extraMemory]);
+            cnt[C.REMOTE_HAULER]++;
         }
     }
     //If harvester is enough and hauler is not enough
     // just spawn it alone
     while(needHauler-- > 0) {
-        queueRoom.queue.extern.push([Setup.RemoteHauler.setupName, extraMemory]);
-        cnt['RemoteHauler']++;
+        queueRoom.queue.extern.push([C.REMOTE_HAULER, extraMemory]);
+        cnt[C.REMOTE_HAULER]++;
     }
 };

@@ -9,13 +9,13 @@ var mod = function(name) {
         if(useOut) {
             const stack = this.roleConfig.outStack;
             //If can't process previous action then invoke next
-            for(var i=0; i<stack.length; i++) {
+            for(let i=0; i<stack.length; i++) {
                 if(stack[i].loop(creep)) break;
             }
         }
         else {
             const stack = this.roleConfig.inStack;
-            for(var i=0; i<stack.length; i++) {
+            for(let i=0; i<stack.length; i++) {
                 if(stack[i].loop(creep)) break;
             }
         }

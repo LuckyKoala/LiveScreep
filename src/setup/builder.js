@@ -1,4 +1,4 @@
-var mod = new SetupObj('Builder');
+var mod = new SetupObj(C.BUILDER);
 module.exports = mod;
 
 mod.setupConfig = {
@@ -6,14 +6,14 @@ mod.setupConfig = {
 		    minEnergy: 250,
 		    essBody: [WORK, CARRY, CARRY, MOVE],
 		    extraBody: [],
-		    prefix: '[LowBuilder]',
-		    memory: {role: 'Builder'},
+		    prefix: `[Low-${C.BUILDER}]`,
+		    memory: {role: C.BUILDER},
 	  },
     Normal: {
 		    minEnergy: 550,
 		    essBody: [WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE],
 		    extraBody: [],
-		    prefix: '[Builder]',
-		    memory: {role: 'Builder'},
+		    prefix: `[${C.BUILDER}]`,
+		    memory: {role: C.BUILDER},
 	  },
 };

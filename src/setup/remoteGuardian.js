@@ -1,4 +1,4 @@
-var mod = new SetupObj('RemoteGuardian');
+var mod = new SetupObj(C.REMOTE_GUARDIAN);
 module.exports = mod;
 
 mod.setupConfig = {
@@ -7,7 +7,7 @@ mod.setupConfig = {
         essBody: [TOUGH, TOUGH, MOVE, TOUGH, TOUGH, MOVE, ATTACK, ATTACK, MOVE],
         extraBody: [TOUGH, RANGED_ATTACK, MOVE],
         maxExtraAmount: 1,
-        prefix: '[RGuardian]',
-        memory: {role: 'RemoteGuardian'},
+        prefix: `[${C.REMOTE_GUARDIAN}]`,
+        memory: {role: C.REMOTE_GUARDIAN},
     },
 };

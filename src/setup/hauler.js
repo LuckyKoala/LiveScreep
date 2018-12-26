@@ -1,4 +1,4 @@
-var mod = new SetupObj('Hauler');
+var mod = new SetupObj(C.HAULER);
 module.exports = mod;
 
 mod.setupConfig = {
@@ -7,15 +7,15 @@ mod.setupConfig = {
         essBody: [CARRY, CARRY, MOVE],
         extraBody: [CARRY, CARRY, MOVE],
         maxExtraAmount: 1,
-        prefix: '[LowHauler]',
-        memory: {role: 'Hauler'},
+        prefix: `[Low-${C.HAULER}]`,
+        memory: {role: C.HAULER},
     },
     Normal: {
         minEnergy: 450,
         essBody: [CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE],
         extraBody: [CARRY, CARRY, MOVE],
         maxExtraAmount: 2,
-        prefix: '[Hauler]',
-        memory: {role: 'Hauler'},
+        prefix: `[${C.HAULER}]`,
+        memory: {role: C.HAULER},
     },
 };

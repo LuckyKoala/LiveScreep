@@ -1,4 +1,4 @@
-var mod = new SetupObj('RemoteHarvester');
+var mod = new SetupObj(C.REMOTE_HARVESTER);
 module.exports = mod;
 
 mod.setupConfig = {
@@ -6,15 +6,15 @@ mod.setupConfig = {
         minEnergy: 250,
         essBody: [WORK,WORK,MOVE],
         extraBody: [],
-        prefix: '[LowRHarvester]',
-        memory: {role: 'RemoteHarvester'},
+        prefix: `[Low-${C.REMOTE_HARVESTER}]`,
+        memory: {role: C.REMOTE_HARVESTER},
     },
     Normal: {
         minEnergy: 500,
         essBody: [WORK,WORK,WORK,WORK,MOVE,MOVE],
         extraBody: [WORK,CARRY,MOVE],
         maxExtraAmount: 1,
-        prefix: '[RHarvester]',
-        memory: {role: 'RemoteHarvester'},
+        prefix: `[${C.REMOTE_HARVESTER}]`,
+        memory: {role: C.REMOTE_HARVESTER},
     },
 };

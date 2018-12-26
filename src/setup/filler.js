@@ -1,4 +1,4 @@
-var mod = new SetupObj('Filler');
+var mod = new SetupObj(C.FILLER);
 module.exports = mod;
 
 mod.setupConfig = {
@@ -7,15 +7,15 @@ mod.setupConfig = {
         essBody: [CARRY, CARRY, MOVE],
         extraBody: [CARRY, CARRY, MOVE],
         maxExtraAmount: 1,
-        prefix: '[LowFiller]',
-        memory: {role: 'Filler'},
+        prefix: `[Low${C.FILLER}]`,
+        memory: {role: C.FILLER},
     },
     Normal: {
         minEnergy: 300,
         essBody: [CARRY, CARRY, MOVE, CARRY, CARRY, MOVE],
         extraBody: [CARRY, CARRY, MOVE],
-        maxExtraAmount: 8,
-        prefix: '[Filler]',
-        memory: {role: 'Filler'},
+        maxExtraAmount: 4,
+        prefix: `[${C.FILLER}]`,
+        memory: {role: C.FILLER},
     },
 };

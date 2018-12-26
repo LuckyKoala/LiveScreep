@@ -2,7 +2,16 @@ let mod = new ActionObj('Store');
 module.exports = mod;
 
 const targetInitFunc = function(creep) {
-    return creep.room.storage || false;
+    if(creep.room.storage) {
+        return creep.room.storage;
+    } else {
+        const keepers = _.filter(creep.room.cachedFind(FIND_MY_CREEPS), c => c.memory.role === C.KEEPER);
+        if(keepers.length>0) {
+            return keepers[0];
+        } else {
+            return false;
+        }
+    }
 };
 
 mod.nextTarget = function() {

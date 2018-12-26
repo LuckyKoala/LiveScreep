@@ -1,4 +1,4 @@
-var mod = new RoleObj('Recycler');
+var mod = new RoleObj(C.RECYCLER);
 module.exports = mod;
 
 //Put remain resources to storage

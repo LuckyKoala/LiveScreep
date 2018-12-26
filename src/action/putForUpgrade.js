@@ -2,7 +2,13 @@ let mod = new ActionObj('PutForUpgrade');
 module.exports = mod;
 
 const targetInitFunc = function(creep) {
-    return creep.room.controller.container || false;
+    const container = creep.room.controller.container;
+    if(container) {
+        return container;
+    } else {
+        const upgraders = _.filter(creep.room.cachedFind(FIND_MY_CREEPS), c => c.memory.role === C.UPGRADER && _.sum(c.carry)<c.carryCapacity);
+        return upgraders.length>0 ? upgraders[0] : false;
+    }
 };
 
 mod.nextTarget = function() {

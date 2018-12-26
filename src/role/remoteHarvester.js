@@ -1,4 +1,4 @@
-var mod = new RoleObj('RemoteHarvester');
+var mod = new RoleObj(C.REMOTE_HARVESTER);
 module.exports = mod;
 
 mod.roleConfig = {

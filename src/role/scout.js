@@ -1,4 +1,4 @@
-var mod = new RoleObj('Scout');
+var mod = new RoleObj(C.SCOUT);
 module.exports = mod;
 
 mod.roleConfig = {

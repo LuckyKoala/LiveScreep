@@ -14,6 +14,12 @@ module.exports.loop = function() {
 
 const version = 1;
 const loop0 = function () {
+    const baseFlags = _.filter(Game.flags, flag => FlagUtil.base.examine(flag));
+    if(baseFlags.length === 0) {
+        console.log(`Can't find base flag (${FlagUtil.base.color}, ${FlagUtil.base.secondaryColor}), main loop paused.`);
+        return;
+    }
+
     Util.SourceMark.loop();
     //Version update
     const previoudVersion = Memory.version || 0;

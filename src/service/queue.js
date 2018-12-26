@@ -8,11 +8,17 @@ mod.loop = function(room) {
         total: 0,
     };
     _.forEach(Role, o => cnt[o.roleName] = 0); //Init cnt
-    //All role is required
+    //Count role existed
     for(let creep of roomCreeps) {
         const role = creep.memory.role;
         cnt[role]++;
         cnt.total++;
+    }
+    let canKeepSpawning = false;
+    if(room.storage && room.storage.store[RESOURCE_ENERGY] > 20000) {
+        //We still have energy in storage
+        // Do we have a filler to transfer energy from storage to spawns/extensions?
+        if(cnt[C.FILLER]>=1) canKeepSpawning = true;
     }
     //Count role in queue as well
     const queue = room.queue.urgent.concat(room.queue.normal);
@@ -23,47 +29,52 @@ mod.loop = function(room) {
     }
 
     //=== Minimal group of creeps to keep room running ===
-    // At least one harvester,one hauler and one upgrader
-    if(cnt['Harvester'] < 1) {
-        room.queue.normal.push(Setup.Harvester.setupName);
-        cnt['Harvester']++;
+    // At least one harvester,one hauler and one filler
+    if(cnt[C.HARVESTER] < 1) {
+        if(canKeepSpawning) room.queue.normal.push(C.HARVESTER);
+        else room.queue.urgent.push(C.HARVESTER);
+        cnt[C.HARVESTER]++;
     }
-    if(cnt['Hauler'] < 1) {
-        room.queue.normal.push(Setup.Hauler.setupName);
-        cnt['Hauler']++;
+    if(cnt[C.HAULER] < 1) {
+        if(canKeepSpawning) room.queue.normal.push(C.HAULER);
+        else room.queue.urgent.push(C.HAULER);
+        cnt[C.HAULER]++;
     }
-    if(cnt['Upgrader'] < 1) {
-        //No need to hurry
-        room.queue.normal.push(Setup.Upgrader.setupName);
-        cnt['Upgrader']++;
+    if(room.storage && cnt[C.FILLER] < 1) {
+        if(canKeepSpawning) room.queue.normal.push(C.FILLER);
+        else room.queue.urgent.push(C.FILLER);
+        cnt[C.FILLER]++;
     }
-    //If there is a storage, spawn a filler to redistribute
-    //  resources in storage
-    if(room.storage && cnt['Filler'] === 0) {
-        room.queue.urgent.unshift(Setup.Filler.setupName);
-        cnt['Filler']++;
+
+    //=== A keeper to redistribute neccessary energy ===
+    if(room.storage) {
+        if(cnt[C.KEEPER] < 1) {
+            //No need to hurry
+            room.queue.normal.push(C.KEEPER);
+            cnt[C.KEEPER]++;
+        }
     }
 
     //=== Harvest all sources and spawn dedicated hauler if no associated source link present
     //That is one pair of harvester-hauler per source
     // or one pair of harvester-link per source
-    let needHarvester = room.sources.length - cnt['Harvester'];
-    let needHauler = room.sources.length - room.sourceLinks.length - cnt['Hauler'];
+    let needHarvester = room.sources.length - cnt[C.HARVESTER];
+    let needHauler = room.sources.length - room.sourceLinks.length - cnt[C.HAULER];
     //Actually enqueue harvesters and haulers
     while(needHarvester-- > 0) {
-        room.queue.normal.push(Setup.Harvester.setupName);
-        cnt['Harvester']++;
+        room.queue.normal.push(C.HARVESTER);
+        cnt[C.HARVESTER]++;
         //Spawn matched hauler
         if(needHauler-- > 0) {
-            room.queue.normal.push(Setup.Hauler.setupName);
-            cnt['Hauler']++;
+            room.queue.normal.push(C.HAULER);
+            cnt[C.HAULER]++;
         }
     }
     //If harvester is enough and hauler is not enough
     // just spawn it alone
     while(needHauler-- > 0) {
-        room.queue.normal.push(Setup.Hauler.setupName);
-        cnt['Hauler']++;
+        room.queue.normal.push(C.HAULER);
+        cnt[C.HAULER]++;
     }
 
     //=== Others ===
@@ -76,13 +87,34 @@ mod.loop = function(room) {
         }
     });
     const needBuilder = (needBuildStructures.length + needRepairStructures.length) > 0;
-    if(needBuilder && cnt['Builder']===0) {
-            room.queue.normal.push(Setup.Builder.setupName);
-            cnt['Builder']++;
+    if(needBuilder && cnt[C.BUILDER]<1) {
+            room.queue.normal.push(C.BUILDER);
+            cnt[C.BUILDER]++;
     }
+
+    //We need upgrader
+    if(cnt[C.UPGRADER] < 1) {
+        room.queue.normal.push(C.UPGRADER);
+        cnt[C.UPGRADER]++;
+    }
+
     //Spawn a guardian if it is neccessary -> goto util.defense
-    if(cnt['Guardian'] === 0 && Util.Defense.shouldSpawnGuardian(room)) {
-        room.queue.urgent.push(Setup.Guardian.setupName);
-        cnt['Guardian']++;
+    if(cnt[C.GUARDIAN] === 0 && Util.Defense.shouldSpawnGuardian(room)) {
+        room.queue.normal.push(C.GUARDIAN);
+        cnt[C.GUARDIAN]++;
     }
+
+    //If no storage, push keeper in queue in the last
+    // because it will wait for hauler to give it energy
+    //  and hauler won't do that unless no creep in spawn queue
+    //  if we spawn it before other creeps, keepers may stuck at door of spawn
+    if(!room.storage) {
+        //No storage, so keeper is a kind of storage
+        if(cnt[C.KEEPER] < 1) {
+            //No need to hurry
+            room.queue.normal.push(C.KEEPER);
+            cnt[C.KEEPER]++;
+        }
+    }
+
 };

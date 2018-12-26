@@ -5,10 +5,8 @@ mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, creep => {
         //First repair structure except rampart(which will be handled in maintain action)
         //  and wall(whose priority is low)
-        var target = creep.pos.findClosestByRange(creep.room.myStructures, {
+        let target = creep.pos.findClosestByRange(creep.room.myStructures, {
             filter: function(o) {
-                //return o.structureType!=STRUCTURE_WALL && o.structureType!=STRUCTURE_RAMPART
-                // && o.structureType!=STRUCTURE_CONTAINER;
                 return o.structureType!=STRUCTURE_RAMPART && o.hits<o.hitsMax;
             }
         });

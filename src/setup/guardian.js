@@ -1,4 +1,4 @@
-var mod = new SetupObj('Guardian');
+var mod = new SetupObj(C.GUARDIAN);
 module.exports = mod;
 
 mod.setupConfig = {
@@ -7,7 +7,7 @@ mod.setupConfig = {
         essBody: [ATTACK, ATTACK, MOVE],
         extraBody: [RANGED_ATTACK, RANGED_ATTACK, MOVE],
         maxExtraAmount: 1,
-        prefix: '[Guardian]',
-        memory: {role: 'Guardian'},
+        prefix: `[${C.GUARDIAN}]`,
+        memory: {role: C.GUARDIAN},
     },
 };

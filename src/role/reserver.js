@@ -1,4 +1,4 @@
-var mod = new RoleObj('Reserver');
+var mod = new RoleObj(C.RESERVER);
 module.exports = mod;
 
 mod.roleConfig = {

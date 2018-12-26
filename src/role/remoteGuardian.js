@@ -1,4 +1,4 @@
-var mod = new RoleObj('RemoteGuardian');
+var mod = new RoleObj(C.REMOTE_GUARDIAN);
 module.exports = mod;
 
 mod.roleConfig = {

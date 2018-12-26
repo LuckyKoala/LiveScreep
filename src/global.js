@@ -15,13 +15,71 @@ global.tryRequire = (path, silent = false) => {
     return mod;
 };
 
-global.CONSTANTS = {
+global.C = {
     USERNAME: 'Lucky777777',
     OWNED_ROOM: 'owned room',
     EXTERNAL_ROOM: 'external room',
     HIGH_WAY: 'high way',
     CENTER_ROOM: 'center room',
-    KEEPER_ROOM: 'keeper room'
+    KEEPER_ROOM: 'keeper room',
+    /*
+    ========================================
+    harvest energy from source and haul it
+    ========================================
+
+    source ----------> container/ground --------> storage
+            harvester                    hauler
+                                        ----------------------> spawns/extensions
+                                         hauler(if no storage)
+                                         ----------------------> keeper
+                                         hauler(if no storage)
+                       link --------> spawns/extensions
+                             filler
+                            --------> StructureController
+                             upgrader
+
+    ========================================
+    if storage present, do this pattern
+    ========================================
+    storage --------> structures
+             builder
+            --------> spawns/extensions ------------> Creeps
+             filler                      spawnCreep
+            --------> towers -------------> RoomObjects
+             keeper           towerAction
+            --------> controllerContainer/upgrader ---------> StructureController
+             keeper                                 upgrader
+
+    ========================================
+    if no storage, fall back to this pattern
+    ========================================
+
+    keeper ----------> structures
+             builder
+           --------> towers -------------> RoomObjects
+                              towerAction
+           --------> controllerContainer/upgrader ---------> StructureController
+                                                    upgrader
+
+    so keeper redistribute energy from storage or self(if no storage yet, this creep will carry it directly) to towers/upgraders(its container if present)
+    */
+    //=== Base role ===
+    HARVESTER: 'harvester',
+    HAULER: 'hauler',
+    UPGRADER: 'upgrader',
+    BUILDER: 'builder',
+    FILLER: 'filler',
+    KEEPER: 'keeper',
+    //=== Defense role ===
+    GUARDIAN: 'guardian', //honour rampart and fight invaders
+    //=== Special role ===
+    RECYCLER: 'recycler', //drive creep to put resources into storage and let spawn recycle self
+    //=== Multiroom role ===
+    SCOUT: 'scout', //travel between rooms and provide vision of the room it stayed
+    RESERVER: 'reserver', //go to target room and reserve controller in that room
+    REMOTE_HARVESTER: 'Rharvester', //go to target room and be a miner in that room
+    REMOTE_HAULER: 'Rhauler', //travel and haul energy between rooms
+    REMOTE_GUARDIAN: 'Rguardian', //go to target room and be a guardian in that room
 };
 
 global.cli = require('util_cli');
@@ -34,6 +92,10 @@ global.RoleObj = require('role_obj');
 global.ActionObj = require('action_obj');
 global.SetupObj = require('setup_obj');
 global.FlagUtil = {
+    base: {
+        color: COLOR_YELLOW,
+        secondaryColor: COLOR_RED,
+    },
     dismantle: {
         color: COLOR_RED,
         secondaryColor: COLOR_RED,
@@ -64,6 +126,7 @@ global.Action = {
     Build: require('action_build'),
     Withdraw: require('action_withdraw'),
     Put: require('action_put'),
+    Help: require('action_help'),
     Store: require('action_store'),
     PutForUpgrade: require('action_putForUpgrade'),
     PutToLink: require('action_putToLink'),
@@ -82,42 +145,33 @@ global.Action = {
     Heal: require('action_heal'),
 };
 global.Setup = {
-    Worker: require('setup_worker'),
-    Harvester: require('setup_harvester'),
-    Upgrader: require('setup_upgrader'),
-    Builder: require('setup_builder'),
-    Hauler: require('setup_hauler'),
-    Guardian: require('setup_guardian'),
-    Ant: require('setup_ant'),
-    Scout: require('setup_scout'),
-    Filler: require('setup_filler'),
-    Task: require('setup_task'),
-    RemoteHarvester: require('setup_remoteHarvester'),
-    RemoteHauler: require('setup_remoteHauler'),
-    RemoteGuardian: require('setup_remoteGuardian'),
-    Reserver: require('setup_reserver'),
+    [C.HARVESTER]: require('setup_harvester'),
+    [C.UPGRADER]: require('setup_upgrader'),
+    [C.BUILDER]: require('setup_builder'),
+    [C.HAULER]: require('setup_hauler'),
+    [C.GUARDIAN]: require('setup_guardian'),
+    [C.FILLER]: require('setup_filler'),
+    [C.KEEPER]: require('setup_keeper'),
+    [C.SCOUT]: require('setup_scout'),
+    [C.REMOTE_HARVESTER]: require('setup_remoteHarvester'),
+    [C.REMOTE_HAULER]: require('setup_remoteHauler'),
+    [C.REMOTE_GUARDIAN]: require('setup_remoteGuardian'),
 };
+
 global.Role = {
-    //Not used
-    Worker: require('role_worker'),
-    //Base roles
-    Harvester: require('role_harvester'),
-    Upgrader: require('role_upgrader'),
-    Builder: require('role_builder'),
-    Hauler: require('role_hauler'),
-    Guardian: require('role_guardian'),
-    //Not used
-    Ant: require('role_ant'),
-    //Recycle creep assigned
-    Recycler: require('role_recycler'),
-    //Redistribute energy in storage
-    Filler: require('role_filler'),
-    //Remote mining
-    Scout: require('role_scout'),
-    RemoteHarvester: require('role_remoteHarvester'),
-    RemoteHauler: require('role_remoteHauler'),
-    RemoteGuardian: require('role_remoteGuardian'),
-    Reserver: require('role_reserver'),
+    [C.HARVESTER]: require('role_harvester'),
+    [C.UPGRADER]: require('role_upgrader'),
+    [C.BUILDER]: require('role_builder'),
+    [C.HAULER]: require('role_hauler'),
+    [C.GUARDIAN]: require('role_guardian'),
+    [C.RECYCLER]: require('role_recycler'),
+    [C.FILLER]: require('role_filler'),
+    [C.KEEPER]: require('role_keeper'),
+    [C.SCOUT]: require('role_scout'),
+    [C.REMOTE_HARVESTER]: require('role_remoteHarvester'),
+    [C.REMOTE_HAULER]: require('role_remoteHauler'),
+    [C.REMOTE_GUARDIAN]: require('role_remoteGuardian'),
+    [C.RESERVER]: require('role_reserver'),
 };
 global.Util = {
     Defense: require('util_defense'),

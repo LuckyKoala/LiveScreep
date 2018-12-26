@@ -1,4 +1,4 @@
-var mod = new RoleObj('Guardian');
+var mod = new RoleObj(C.GUARDIAN);
 module.exports = mod;
 
 mod.roleConfig = {

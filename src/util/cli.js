@@ -1,5 +1,7 @@
-module.exports = function(cmd, args) {
-    //console.log(`$(cmd) $(args)`);
+module.exports = function(cmdStr) {
+    const parse = cmdStr.split(' ');
+    const cmd = parse[0];
+    const args = parse.slice(1);
     if(cmd === 'roomPlan') {
         roomPlanCmdHandler(args);
     } else if(cmd === 'reset') {

@@ -1,4 +1,4 @@
-var mod = new SetupObj('Harvester');
+var mod = new SetupObj(C.HARVESTER);
 module.exports = mod;
 
 mod.setupConfig = {
@@ -6,15 +6,15 @@ mod.setupConfig = {
         minEnergy: 250,
         essBody: [WORK,WORK,MOVE],
         extraBody: [],
-        prefix: '[LowHarvester]',
-        memory: {role: 'Harvester'},
+        prefix: `[Low-${C.HARVESTER}]`,
+        memory: {role: C.HARVESTER},
     },
     Normal: {
         minEnergy: 500,
         essBody: [WORK,WORK,WORK,WORK,MOVE,MOVE],
         extraBody: [WORK,CARRY,MOVE],
         maxExtraAmount: 1,
-        prefix: '[Harvester]',
-        memory: {role: 'Harvester'},
+        prefix: `[${C.HARVESTER}]`,
+        memory: {role: C.HARVESTER},
     },
 };

@@ -1,4 +1,4 @@
-var mod = new RoleObj('RemoteHauler');
+var mod = new RoleObj(C.REMOTE_HAULER);
 module.exports = mod;
 
 //If storage is present, then filler and builder will handle energy in storage

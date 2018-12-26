@@ -5,7 +5,7 @@ module.exports = mod;
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, creep => {
         //Maintain first
-        var target = creep.pos.findClosestByRange(Util.Defense.getRampartsForMaintain(creep.room));
+        const target = creep.pos.findClosestByRange(Util.Defense.getRampartsForMaintain(creep.room));
         if(!target) {
             return creep.pos.findClosestByRange(Util.Defense.getRampartSitesCanBuild(creep.room, creep.carry.energy));
         } else {

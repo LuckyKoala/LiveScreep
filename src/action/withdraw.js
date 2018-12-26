@@ -1,44 +1,36 @@
 let mod = new ActionObj('Withdraw');
 module.exports = mod;
 
-function findTargetForFiller(creep) {
-    const spawnLink = creep.room.spawnLink;
-    if(spawnLink && spawnLink.energy > 0) {
-        //SourceLink only transfer energy when no energy remain in spawnLink
-        //  so filler should move all the remain energy in SpawnLink ASAP.
-        //Otherwise it will block link between source-link and spawn-link
-        return spawnLink;
-    } else {
-        return creep.room.storage;
-    }
-}
-
-const findSourceContainers = function(creep) {
-    for(let source of creep.room.sources) {
-        const need = creep.carryCapacity - creep.carry.energy;
-        const container = source.container || false;
-        if(container && container.store[RESOURCE_ENERGY] > need) {
-            return container;
-        }
-    }
-    return false;
-};
-
 const targetInitFunc = function(creep) {
     const role = creep.memory.role;
-    if(role === 'Hauler' || role==='RemoteHauler') {
+    if(role === C.HAULER || role === C.REMOTE_HAULER) {
         //Only find source container
-        return findSourceContainers(creep);
-    } else if(role === 'Filler') {
-        return findTargetForFiller(creep);
-    } else if(role === 'Builder') {
+        for(let source of creep.room.sources) {
+            const need = creep.carryCapacity - creep.carry.energy;
+            const container = source.container || false;
+            if(container && container.store[RESOURCE_ENERGY] > need) {
+                return container;
+            }
+        }
+        return false;
+    } else if(role === C.FILLER) {
+        const spawnLink = creep.room.spawnLink;
+        if(spawnLink && spawnLink.energy > 0) {
+            //SourceLink only transfer energy when no energy remain in spawnLink
+            //  so filler should move all the remain energy in SpawnLink ASAP.
+            //Otherwise it will block link between source-link and spawn-link
+            return spawnLink;
+        } else {
+            return creep.room.storage;
+        }
+    } else if(role === C.BUILDER || role === C.KEEPER) {
         const storage = creep.room.storage;
         if(storage) {
             return storage;
         } else {
-            return findSourceContainers(creep);
+            return false;
         }
-    } else if(role === 'Upgrader') {
+    } else if(role === C.UPGRADER) {
         //Prefer controllerLink
         const link = creep.room.controllerLink;
         if(link && link.energy > 0) {
@@ -49,7 +41,7 @@ const targetInitFunc = function(creep) {
         if(container) {
             return container;
         } else {
-            return findSourceContainers(creep);
+            return false;
         }
     } else {
         console.log(`Can't find target while ${creep.name} using withdraw action`);

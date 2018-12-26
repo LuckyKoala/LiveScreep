@@ -30,8 +30,13 @@ mod.loop = function(room) {
 // Return true indicates that creep can be created
 //When incoming energy of spawn is low, then spawn of worker/harvester-hauler
 //  is urgent, otherwise it is not urgent, we can wait for it to be bigger.
-mod.spawnWithSetup = function(spawn, urgent, {setupConfig, shouldUseHighLevel}, extraMemory) {
+mod.spawnWithSetup = function(spawn, urgent, {dynamicExtraAmount, setupConfig, shouldUseHighLevel}, extraMemory) {
     if(spawn.spawning) return false;
+
+    let dynamicMaxExtraAmount = false;
+    if(dynamicExtraAmount) {
+         dynamicMaxExtraAmount = dynamicExtraAmount(spawn.room);
+    }
 
     const energyAvailable = spawn.room.energyAvailable;
     let energyForSpawnCapacity = spawn.room.energyAvailable;
@@ -42,13 +47,18 @@ mod.spawnWithSetup = function(spawn, urgent, {setupConfig, shouldUseHighLevel}, 
     if(energyAvailable < setupConfig.Normal.minEnergy && !!setupConfig.Low) {
         setup = setupConfig.Low;
     }
-    var {minEnergy, essBody, extraBody, prefix, memory, maxExtraAmount} = setup;
+    const {minEnergy, essBody, extraBody, prefix, memory, maxExtraAmount} = setup;
 
     //Calculate body and examine whether energyAvailable is enough
     //If it is not urgent, then use energyCapacityAvailable to calculate
     //  maxiumBody, throught this we achieved "Wait For Bigger Single Creep"
     if(!urgent) energyForSpawnCapacity = spawn.room.energyCapacityAvailable;
-    const body = this.getMaxiumBody(essBody, extraBody, maxExtraAmount, energyForSpawnCapacity);
+    let body;
+    if(dynamicMaxExtraAmount) {
+        body = this.getMaxiumBody(essBody, extraBody, dynamicMaxExtraAmount, energyForSpawnCapacity);
+    } else {
+        body = this.getMaxiumBody(essBody, extraBody, maxExtraAmount, energyForSpawnCapacity);
+    }
     const bodyCost = this.getBodyCost(body);
     //Check energyAvailable is enough for this spawn action
     if(energyAvailable < bodyCost) return false;

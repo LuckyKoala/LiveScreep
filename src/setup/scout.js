@@ -1,4 +1,4 @@
-var mod = new SetupObj('Scout');
+var mod = new SetupObj(C.SCOUT);
 module.exports = mod;
 
 mod.setupConfig = {
@@ -6,7 +6,7 @@ mod.setupConfig = {
 		minEnergy: 50,
 		essBody: [MOVE],
 		extraBody: [],
-		prefix: '[Scout]',
-		memory: {role: 'Scout'},
+		prefix: `[${C.SCOUT}]`,
+		memory: {role: C.SCOUT},
 	},
 };

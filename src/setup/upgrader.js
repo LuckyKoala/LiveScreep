@@ -1,7 +1,5 @@
-var mod = new SetupObj('Upgrader');
+var mod = new SetupObj(C.UPGRADER);
 module.exports = mod;
-
-const StorageBoundForAddUpgrader = Config.StorageBoundForAddUpgrader;
 
 mod.setupConfig = {
     Low: {
@@ -9,26 +7,35 @@ mod.setupConfig = {
         essBody: [WORK,CARRY,MOVE],
         extraBody: [WORK,CARRY,MOVE],
         maxExtraAmount: 1,
-        prefix: '[LowUpgrader]',
-        memory: {role: 'Upgrader'},
+        prefix: `[Low-${C.UPGRADER}]`,
+        memory: {role: C.UPGRADER},
     },
-    //TODO adjust maxExtraAmount according to energy of storage
+    //Let hauler pull upgrader
     Normal: {
-        minEnergy: 750,
-        essBody: [WORK, WORK, WORK, MOVE, WORK, WORK, WORK, MOVE, CARRY], //6work
-        extraBody: [WORK, WORK, WORK, MOVE],
-        maxExtraAmount: 2,
-        prefix: '[Upgrader]',
-        memory: {role: 'Upgrader'},
+        minEnergy: 650,
+        essBody: [WORK, WORK, WORK, MOVE, WORK, WORK, CARRY, MOVE], //5work
+        extraBody: [WORK, WORK, WORK, MOVE, WORK, WORK, WORK, MOVE], //6work
+        maxExtraAmount: 0,
+        prefix: `[${C.UPGRADER}]`,
+        memory: {role: C.UPGRADER},
     },
     High: {
         minEnergy: 300,
-        essBody: [WORK, CARRY, MOVE],
-        extraBody: [WORK, WORK, MOVE],
+        essBody: [WORK, CARRY],
+        extraBody: [WORK, WORK],
         maxExtraAmount: 7, //Up to 15 work parts due to limitation of RCL8
-        prefix: '[HighUpgrader]',
-        memory: {role: 'Upgrader'},
+        prefix: `[High-${C.UPGRADER}]`,
+        memory: {role: C.UPGRADER},
     },
+};
+
+mod.dynamicExtraAmount = function(room) {
+    if(room.storage) {
+        //Add 6 work will consume 6energy*1400tick = 8400energy
+        return Math.floor((room.storage.store[RESOURCE_ENERGY] - Config.StorageBoundForAddUpgrader)/8400);
+    } else {
+        return 1; //aka 10 work
+    }
 };
 
 mod.shouldUseHighLevel = function(room) {

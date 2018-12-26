@@ -16,11 +16,11 @@ mod.dispatch = function(room) {
             // Then Who owned it?
             if(controller.my) {
                 //I owned it!
-                roomType = CONSTANTS.OWNED_ROOM;
+                roomType = C.OWNED_ROOM;
                 room.memory.roomType = roomType;
             } else {
                 //Others owned it
-                roomType = CONSTANTS.EXTERNAL_ROOM;
+                roomType = C.EXTERNAL_ROOM;
                 room.memory.roomType = roomType;
             }
         } else {
@@ -28,16 +28,16 @@ mod.dispatch = function(room) {
             const sources = room.sources;
             if(sources.length === 0) {
                 //Highway
-                roomType = CONSTANTS.HIGH_WAY;
+                roomType = C.HIGH_WAY;
                 room.memory.roomType = roomType;
             } else {
                 //Center nine rooms
                 const lairs = _.filter(room.cachedFind(FIND_STRUCTURES), { structureType: STRUCTURE_KEEPER_LAIR });
                 if(lairs.length === 0) {
-                    roomType = CONSTANTS.CENTER_ROOM;
+                    roomType = C.CENTER_ROOM;
                     room.memory.roomType = roomType;
                 } else {
-                    roomType = CONSTANTS.KEEPER_ROOM;
+                    roomType = C.KEEPER_ROOM;
                     room.memory.roomType = roomType;
                 }
             }
@@ -45,19 +45,19 @@ mod.dispatch = function(room) {
     }
 
     switch(roomType) {
-    case CONSTANTS.OWNED_ROOM:
+    case C.OWNED_ROOM:
         this.loopOwnedRoom(room);
         break;
-    case CONSTANTS.EXTERNAL_ROOM:
+    case C.EXTERNAL_ROOM:
         this.loopExternalRoom(room);
         break;
-    case CONSTANTS.HIGH_WAY:
+    case C.HIGH_WAY:
         this.loopHighway(room);
         break;
-    case CONSTANTS.CENTER_ROOM:
+    case C.CENTER_ROOM:
         this.loopCenterRoom(room);
         break;
-    case CONSTANTS.KEEPER_ROOM:
+    case C.KEEPER_ROOM:
         this.loopKeeperRoom(room);
         break;
     default:
@@ -129,7 +129,7 @@ mod.expireRoom = function(roomName) {
 mod.loopExternalRoom = function(room) {
     this.recordLastSeen(room.name);
     const reservation = room.controller.reservation;
-    if(reservation && reservation.username === CONSTANTS.USERNAME) {
+    if(reservation && reservation.username === C.USERNAME) {
         //=== Stat Display ===
         //Game time
         room.visual.text(`Time: ${Game.time}`, 8, 1, {color: 'white', font: 1.5});
