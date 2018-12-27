@@ -156,6 +156,7 @@ global.Setup = {
     [C.REMOTE_HARVESTER]: require('setup_remoteHarvester'),
     [C.REMOTE_HAULER]: require('setup_remoteHauler'),
     [C.REMOTE_GUARDIAN]: require('setup_remoteGuardian'),
+    [C.RESERVER]: require('setup_reserver'),
 };
 
 global.Role = {
