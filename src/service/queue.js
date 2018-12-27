@@ -92,12 +92,6 @@ mod.loop = function(room) {
             cnt[C.BUILDER]++;
     }
 
-    //We need upgrader
-    if(cnt[C.UPGRADER] < 1) {
-        room.queue.normal.push(C.UPGRADER);
-        cnt[C.UPGRADER]++;
-    }
-
     //Spawn a guardian if it is neccessary -> goto util.defense
     if(cnt[C.GUARDIAN] === 0 && Util.Defense.shouldSpawnGuardian(room)) {
         room.queue.normal.push(C.GUARDIAN);
@@ -117,4 +111,15 @@ mod.loop = function(room) {
         }
     }
 
+    const energyForSpawnCapacity = room.energyCapacityAvailable;
+    const dynamicMaxExtraAmount = Setup[C.UPGRADER].dynamicExtraAmount(room);
+    const totalEnergyNeed = 650+dynamicMaxExtraAmount*700;
+    //Currently energy capacity can't afford single bigger creep
+    // so let's add amount of upgraders
+    let upgraderAmount = Math.floor(totalEnergyNeed/energyForSpawnCapacity);
+    upgraderAmount = Math.min(3, upgraderAmount); // 3 at most, more creep more cpu and more crowded
+    if(needBuildStructures.length>0 && cnt[C.UPGRADER] < upgraderAmount) {
+        room.queue.normal.push(C.UPGRADER);
+        cnt[C.UPGRADER]++;
+    }
 };
