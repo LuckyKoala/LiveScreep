@@ -36,6 +36,8 @@ mod.nextTarget = function() {
             if(wrongRoomCounter > 6) {
                 //Go home boy!
                 console.log(`Creep ${creep.name} is going home!`);
+                //Remove targets which may be in wrong room
+                delete creep.memory.targetMark;
                 return home.controller;
             } else {
                 creep.memory.wrongRoomCounter = wrongRoomCounter+1;

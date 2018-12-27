@@ -118,7 +118,7 @@ mod.loop = function(room) {
     // so let's add amount of upgraders
     let upgraderAmount = Math.floor(totalEnergyNeed/energyForSpawnCapacity);
     upgraderAmount = Math.min(3, upgraderAmount); // 3 at most, more creep more cpu and more crowded
-    if(needBuildStructures.length>0 && cnt[C.UPGRADER] < upgraderAmount) {
+    if(needBuildStructures.length === 0 && cnt[C.UPGRADER] < upgraderAmount) {
         room.queue.normal.push(C.UPGRADER);
         cnt[C.UPGRADER]++;
     }

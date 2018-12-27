@@ -7,7 +7,7 @@ mod.setupConfig = {
         essBody: [CLAIM, MOVE, MOVE],
         extraBody: [CLAIM],
         maxExtraAmount: 2,
-        prefix: `[C.RESERVER]`,
+        prefix: `[${C.RESERVER}]`,
         memory: {role: C.RESERVER},
     },
 };
