@@ -12,6 +12,12 @@ mod.nextTarget = function() {
             creep.memory.role=C.RECYCLER;
             return false;
         }
+        //If target room is under attack, do not go in
+        const room = flag.room;
+        if(room && room.memory.underAttack && creep.room.name!==creep.memory.homeRoom) {
+            return Game.rooms[creep.memory.homeRoom].controller;
+        }
+        //We have reached target room, let's do some check
         if(creep.room.name === flag.pos.roomName) {
             const pos = creep.pos;
             if(pos.x === 0 || pos.x === 49 || pos.y === 0 || pos.y === 49) {
@@ -21,6 +27,7 @@ mod.nextTarget = function() {
                 return false;
             }
         }
+        //Otherwise, go to target room
         return flag;
     } else {
         //we have no target
