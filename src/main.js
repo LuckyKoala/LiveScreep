@@ -1,9 +1,13 @@
-var _global = require('global');
-var _extension = require('extension');
-const RoomManager = require('manager_room');
-const TaskManager = require('manager_task');
+//Library
 const profiler = require('lib_screeps-profiler');
 const _roomvisual = require('lib_RoomVisual');
+//Global and prototypes
+const _global = require('global');
+const _extension = require('extension');
+//Managers
+const RoomManager = require('manager_room');
+const TaskManager = require('manager_task');
+const CreepManager = require('manager_creep');
 
 // This line monkey patches the global prototypes.
 const EnableProfiler = Config.EnableProfiler;
@@ -16,10 +20,11 @@ const version = 1;
 const loop0 = function () {
     const baseFlags = _.filter(Game.flags, flag => FlagUtil.base.examine(flag));
     if(baseFlags.length === 0) {
-        console.log(`Can't find base flag (${FlagUtil.base.color}, ${FlagUtil.base.secondaryColor}), main loop paused.`);
+        console.log(`Can't find base flag (${FlagUtil.base.describe()}), main loop paused.`);
         return;
     }
 
+    //console.log('=======Main Loop Start====>>>');
     Util.SourceMark.loop();
     //Version update
     const previoudVersion = Memory.version || 0;
@@ -28,26 +33,20 @@ const loop0 = function () {
         console.log(`Upgraded to version ${version}`);
         Memory.version = version;
     }
-    //Run tasks
+    //Run tasks to get creep spawn queue
+    //console.log('1. Running task manager');
     TaskManager.loop();
-    //Run rooms
-    _.forEach(Game.rooms, room => RoomManager.dispatch(room));
+    //Run rooms to get metadata and run structures
+    //console.log('2. Running room manager');
+    RoomManager.loop();
     //Run creeps
-    for(const name in Game.creeps) {
-        const creep = Game.creeps[name];
-        if(creep.spawning) return;
-        const role = creep.memory.role;
-        const roleModule = Role[role];
-        
-        if(roleModule) {
-            roleModule.loop(creep);
-        } else {
-            console.log('[Error] Undefined role module is in memory of creep -> '+name);
-        }
-    }
+    //console.log('3. Running creep manager');
+    CreepManager.loop();
     //Validate and clear data
+    //console.log('4. Running garbage collection');
     GC();
     Util.Stat.loop();
+    //console.log('<<<====Main Loop End=======');
 };
 
 function GC() {

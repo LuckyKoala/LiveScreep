@@ -158,22 +158,22 @@ Object.defineProperties(Room.prototype, {
             return genericGetter(this, 'layout', '_layout', () => {
                 const value = {
                     'init': false,
+                    [STRUCTURE_SPAWN]: [],
+                    [STRUCTURE_EXTENSION]: [],
+                    [STRUCTURE_ROAD]: [],
+                    [STRUCTURE_WALL]: [],
+                    [STRUCTURE_RAMPART]: [],
+                    [STRUCTURE_LINK]: [],
+                    [STRUCTURE_STORAGE]: [],
+                    [STRUCTURE_TOWER]: [],
+                    [STRUCTURE_OBSERVER]: [],
+                    [STRUCTURE_POWER_SPAWN]: [],
+                    [STRUCTURE_EXTRACTOR]: [],
+                    [STRUCTURE_LAB]: [],
+                    [STRUCTURE_TERMINAL]: [],
+                    [STRUCTURE_CONTAINER]: [],
+                    [STRUCTURE_NUKER]: []
                 };
-                value[STRUCTURE_SPAWN] = [];
-                value[STRUCTURE_EXTENSION] = [];
-                value[STRUCTURE_ROAD] = [];
-                value[STRUCTURE_WALL] = [];
-                value[STRUCTURE_RAMPART] = [];
-                value[STRUCTURE_LINK] = [];
-                value[STRUCTURE_STORAGE] = [];
-                value[STRUCTURE_TOWER] = [];
-                value[STRUCTURE_OBSERVER] = [];
-                value[STRUCTURE_POWER_SPAWN] = [];
-                value[STRUCTURE_EXTRACTOR] = [];
-                value[STRUCTURE_LAB] = [];
-                value[STRUCTURE_TERMINAL] = [];
-                value[STRUCTURE_CONTAINER] = [];
-                value[STRUCTURE_NUKER] = [];
                 return value;
             });
         },
@@ -313,6 +313,42 @@ Object.defineProperties(Room.prototype, {
         configurable: true
     },
 });
+
+Room.prototype.cachedRoleCount = function() {
+    if(this.Cache === undefined) this.Cache = {};
+    const internal = '$roleCount';
+    if(this.Cache[internal]===undefined) {
+        //=== Role count ===
+        const self = this;
+        const roomCreeps = _.filter(Game.creeps, function(creep) { return creep.memory.homeRoom == self.name; });
+        let cnt = {
+            existed: {},
+            queue: {},
+            total: {},
+        };
+        _.forEach(Role, o => {
+            cnt.existed[o.roleName] = 0;
+            cnt.queue[o.roleName] = 0;
+            cnt.total[o.roleName] = 0;
+        }); //Init cnt
+        //Count role existed
+        for(let creep of roomCreeps) {
+            const role = creep.memory.role;
+            cnt.existed[role]++;
+            cnt.total[role]++;
+        }
+        //Count role in queue as well
+        const queue = this.queue.urgent.concat(this.queue.normal);
+        for(let setupName of queue) {
+            const role = setupName;
+            cnt.queue[role]++;
+            cnt.total[role]++;
+        }
+
+        this.Cache[internal] = cnt;
+    };
+    return this.Cache[internal];
+};
 
 Room.prototype.cachedFind = function(type) {
     if(this.Cache === undefined) this.Cache = {};

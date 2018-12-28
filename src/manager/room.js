@@ -1,4 +1,3 @@
-const QueueService = require('service_queue');
 const SpawnService = require('service_spawn');
 const LinkService = require('service_link');
 const ConstructionService = require('service_construction');
@@ -6,6 +5,11 @@ const TowerService = require('service_tower');
 
 var mod = {};
 module.exports = mod;
+
+mod.loop = function() {
+    const self = this;
+    _.forEach(Game.rooms, room => self.dispatch(room));
+};
 
 mod.dispatch = function(room) {
     let roomType = room.memory.roomType;
@@ -74,7 +78,6 @@ mod.loopOwnedRoom = function(room) {
     LinkService.loop(room);
     ConstructionService.loop(room);
     //Init queue before spawn
-    QueueService.loop(room);
     SpawnService.loop(room);
     //Energy history
     Util.Stat.sumEnergyHistory(room.name);

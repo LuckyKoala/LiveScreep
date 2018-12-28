@@ -91,10 +91,45 @@ global.Config = _.defaultsDeep(OverrideConfig, DefaultConfig);
 global.RoleObj = require('role_obj');
 global.ActionObj = require('action_obj');
 global.SetupObj = require('setup_obj');
+global.ColorMapper = ['NONE',
+                      'COLOR_RED', 'COLOR_PURPLE', 'COLOR_BLUE', 'COLOR_CYAN',
+                      'COLOR_GREEN', 'COLOR_YELLOW', 'COLOR_ORANGE', 'COLOR_BROWN',
+                      'COLOR_GREY', 'COLOR_WHITE'];
 global.FlagUtil = {
     base: {
         color: COLOR_YELLOW,
         secondaryColor: COLOR_RED,
+    },
+    //=============================
+    // base means combine these task
+    spawning: {
+        color: COLOR_ORANGE,
+        secondaryColor: COLOR_RED,
+        parent: 'base',
+    },
+    mining: {
+        color: COLOR_ORANGE,
+        secondaryColor: COLOR_PURPLE,
+        parent: 'base',
+    },
+    building: {
+        color: COLOR_ORANGE,
+        secondaryColor: COLOR_BLUE,
+        parent: 'base',
+    },
+    upgrading: {
+        color: COLOR_ORANGE,
+        secondaryColor: COLOR_CYAN,
+        parent: 'base',
+    },
+    //=============================
+    defending: {
+        color: COLOR_ORANGE,
+        secondaryColor: COLOR_GREEN,
+    },
+    remoteMining: {
+        color: COLOR_WHITE,
+        secondaryColor: COLOR_WHITE,
     },
     dismantle: {
         color: COLOR_RED,
@@ -104,18 +139,31 @@ global.FlagUtil = {
         color: COLOR_BLUE,
         secondaryColor: COLOR_BLUE,
     },
-    remoteMining: {
-        color: COLOR_WHITE,
-        secondaryColor: COLOR_WHITE,
-    },
 };
-function makeExamineFunction(constant) {
-    return o => o.color==constant.color && o.secondaryColor==constant.secondaryColor;
-};
-function addExamineToFlagUtil() {
-    _.forEach(FlagUtil, o => o.examine = makeExamineFunction(o));
-}
-addExamineToFlagUtil();
+(function() {
+    function makeExamineFunc(constant) {
+        return o => {
+            //Check parent
+            const parent= constant.parent;
+            if(parent) {
+                const parentFlag = FlagUtil[parent];
+                if(parentFlag) {
+                    return o.color===parentFlag.color && o.secondaryColor===parentFlag.secondaryColor;
+                } else {
+                    console.log('Undefined parentFlag!');
+                }
+            }
+            return o.color==constant.color && o.secondaryColor==constant.secondaryColor;
+        };
+    };
+    function makeDescribeFunc(constant) {
+        return () => [ColorMapper[constant.color], ColorMapper[constant.secondaryColor]];
+    };
+    _.forEach(FlagUtil, o => {
+        o.examine = makeExamineFunc(o);
+        o.describe = makeDescribeFunc(o);
+    });
+})();
 
 global.Action = {
     Harvest: require('action_harvest'),
