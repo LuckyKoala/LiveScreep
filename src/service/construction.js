@@ -57,7 +57,8 @@ function wrap2DArray(array) {
 //Calculate a layout for the room and save to memory
 //FIXME Structures may overlapped
 mod.init = function(room) {
-    delete room.layout; //re init
+    delete room._layout; //re init
+    delete room.memory.layout; //re init
     const terrain = room.getTerrain();
     //== Container ==
     //Firstly, we need a container for upgrader so it won't move
