@@ -10,20 +10,27 @@ mod.nextTarget = function() {
                 return o.structureType!=STRUCTURE_RAMPART && o.hits<o.hitsMax;
             }
         });
-        if(!target) {
-            target = creep.pos.findClosestByRange(creep.room.cachedFind(FIND_STRUCTURES), {
-                filter: function(o) {
-                    return o.structureType==STRUCTURE_ROAD && o.hits<o.hitsMax;
-                }
-            });
-            if(target) return target;
-            else {
-                //Now we can find low hits wall
-                return creep.pos.findClosestByRange(Util.Defense.getWallsForMaintain(creep.room));
+        if(target) return target;
+
+        //Then repair container
+        target = creep.pos.findClosestByRange(creep.room.cachedFind(FIND_STRUCTURES), {
+            filter: function(o) {
+                //Normally container will be maintain by user, but if it drop down to 1/2 hitsMax, then we builders should help
+                return o.structureType===STRUCTURE_CONTAINER && o.hits<o.hitsMax/2;
             }
-        } else {
-            return target;
-        }
+        });
+        if(target) return target;
+
+        //Then road
+        target = creep.pos.findClosestByRange(creep.room.cachedFind(FIND_STRUCTURES), {
+            filter: function(o) {
+                return o.structureType===STRUCTURE_ROAD && o.hits<o.hitsMax;
+            }
+        });
+        if(target) return target;
+
+        //Now we can find low hits wall
+        return creep.pos.findClosestByRange(Util.Defense.getWallsForMaintain(creep.room));
     }, this.actionName);
 };
 
