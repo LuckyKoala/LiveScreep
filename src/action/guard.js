@@ -10,7 +10,7 @@ mod.nextTarget = function() {
     //Move to target flag
     if(creep.memory.destinedTarget) {
         const flag = Game.flags[creep.memory.destinedTarget];
-        if(flag) return flag;
+        if(flag && !flag.pos.isEqualTo(creep.pos)) return flag;
     }
     return false;
 };
