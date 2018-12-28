@@ -9,7 +9,7 @@ mod.nextTarget = function() {
         const flag = Game.flags[creep.memory.destinedTarget];
         if(!flag) {
             console.log('Detect flag removed');
-            creep.memory.role='Recycler';
+            creep.memory.role=C.RECYCLER;
             return false;
         }
         if(creep.room.name === flag.pos.roomName) {
