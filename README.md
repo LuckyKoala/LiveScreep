@@ -2,7 +2,7 @@
 
 ![ScreenShot in Simulation](img/dissi_flower.jpg)
 
-Latest Release => `v0.2-SemiAutomation`
+Latest Release => `v0.3-Tasks`
 
 * Automatically place containers, extensions, roads, links, storage and towers
 * Keep upgrading controller
