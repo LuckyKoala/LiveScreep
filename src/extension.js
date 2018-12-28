@@ -381,3 +381,79 @@ Room.prototype.saveLinks = function() {
         this.sourceLinks = sourceLinks;
     }
 };
+
+Creep.prototype._moveTo = Creep.prototype.moveTo;
+
+/**
+ * [NOTE] Copied from https://github.com/bonzaiferroni/bonzAI/blob/master/src/prototypes/initPrototypes.ts
+ * Forgive me for copy and use this function directly
+ * General-purpose cpu-efficient movement function that uses ignoreCreeps: true, a high reusePath value and stuck-detection
+ * @param destination
+ * @param ops - pathfinding ops, ignoreCreeps and reusePath will be overwritten
+ * @param dareDevil
+ * @returns {number} - Error code
+ */
+Creep.prototype.moveTo = function(destination, ops, dareDevil = false) {
+
+    if (this.spawning) {
+        return 0;
+    }
+
+    if (this.fatigue > 0) {
+        return ERR_TIRED;
+    }
+
+    if (!this.memory.position) {
+        this.memory.position = this.pos;
+    }
+
+    if (!ops) {
+        ops = {};
+    }
+
+    // check if trying to move last tick
+    let movingLastTick = true;
+    if (!this.memory.lastTickMoving) this.memory.lastTickMoving = 0;
+    if (Game.time - this.memory.lastTickMoving > 1) {
+        movingLastTick = false;
+    }
+    this.memory.lastTickMoving = Game.time;
+
+    // check if stuck
+    let stuck = this.pos.inRangeTo(this.memory.position.x, this.memory.position.y, 0);
+    this.memory.position = this.pos;
+    if (stuck && movingLastTick) {
+        if (!this.memory.stuckCount) this.memory.stuckCount = 0;
+        this.memory.stuckCount++;
+        if (dareDevil && this.memory.stuckCount > 0) {
+            this.memory.detourTicks = 5;
+        }
+        else if (this.memory.stuckCount >= 2) {
+            this.memory.detourTicks = 5;
+            // this.say("excuse me", true);
+        }
+        if (this.memory.stuckCount > 500 && !this.memory.stuckNoted) {
+            console.log(this.name, "is stuck at", this.pos, "stuckCount:", this.memory.stuckCount);
+            this.memory.stuckNoted = true;
+        }
+    }
+    else {
+        this.memory.stuckCount = 0;
+    }
+
+    if (this.memory.detourTicks > 0) {
+        this.memory.detourTicks--;
+        if (dareDevil) {
+            ops.reusePath = 0;
+        }
+        else {
+            ops.reusePath = 5;
+        }
+        return this._moveTo(destination, ops);
+    }
+    else {
+        ops.reusePath = 50;
+        ops.ignoreCreeps = true;
+        return this._moveTo(destination, ops);
+    }
+};
