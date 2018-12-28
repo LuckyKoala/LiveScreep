@@ -4,8 +4,15 @@ module.exports = mod;
 mod.nextTarget = function() {
     const creep = this.creep;
     const sortHostiles = Util.Defense.sortHostilesByPos(creep.room, creep.pos);
-    return sortHostiles.length ?
-    　　Game.getObjectById(_.last(sortHostiles).id) : false;
+    if(sortHostiles.length > 0) {
+        return Game.getObjectById(_.last(sortHostiles).id);
+    }
+    //Move to target flag
+    if(creep.memory.destinedTarget) {
+        const flag = Game.flags[creep.memory.destinedTarget];
+        if(flag) return flag;
+    }
+    return false;
 };
 
 mod.word = '🛡 guard';
