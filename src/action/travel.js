@@ -13,13 +13,19 @@ mod.nextTarget = function() {
             return false;
         }
         //If target room is under attack, do not go in
-        const room = flag.room;
-        if(creep.memory.role!==C.REMOTE_GUARDIAN && room && room.memory.underAttack && creep.room.name!==creep.memory.homeRoom) {
+        const roomName = flag.pos.roomName;
+        //Flee without vision is possible since we have memory!
+        if(creep.memory.role!==C.REMOTE_GUARDIAN && Memory.rooms[roomName].underAttack) {
             return Game.rooms[creep.memory.homeRoom].controller;
         }
         //We have reached target room, let's do some check
         if(creep.room.name === flag.pos.roomName) {
             const pos = creep.pos;
+            //RemoteGuardian have a fixed target which is task flag,
+            // so there is no need to let guardian away from exit.
+            //What if we treat it as same as other creeps?
+            // when invaders is near exit, it will stuck between exits of two rooms.
+            if(creep.memory.role===C.REMOTE_GUARDIAN) return false;
             if(pos.x === 0 || pos.x === 49 || pos.y === 0 || pos.y === 49) {
                 //Don't stay at exit, creep will loop between room
                 return flag;
