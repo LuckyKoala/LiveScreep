@@ -385,8 +385,7 @@ Room.prototype.saveLinks = function() {
 Creep.prototype._moveTo = Creep.prototype.moveTo;
 
 /**
- * [NOTE] Copied from https://github.com/bonzaiferroni/bonzAI/blob/master/src/prototypes/initPrototypes.ts
- * Forgive me for copy and use this function directly
+ * Modified from https://github.com/bonzaiferroni/bonzAI/blob/master/src/prototypes/initPrototypes.ts
  * General-purpose cpu-efficient movement function that uses ignoreCreeps: true, a high reusePath value and stuck-detection
  * @param destination
  * @param ops - pathfinding ops, ignoreCreeps and reusePath will be overwritten
@@ -419,7 +418,7 @@ Creep.prototype.moveTo = function(destination, ops, dareDevil = false) {
     }
     this.memory.lastTickMoving = Game.time;
 
-    // check if stuck
+    //Edge check!
     const pos = this.pos;
     const lastPos = this.memory.position;
     if(pos.x === 0 || pos.x === 49 || pos.y === 0 || pos.y === 49) {
@@ -432,6 +431,7 @@ Creep.prototype.moveTo = function(destination, ops, dareDevil = false) {
             }
         }
     }
+    // check if stuck
     let stuck = pos.inRangeTo(lastPos.x, lastPos.y, 0) || this.memory.edgeCounter>=2;
     this.memory.position = this.pos;
     if (stuck && movingLastTick) {
