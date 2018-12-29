@@ -420,10 +420,23 @@ Creep.prototype.moveTo = function(destination, ops, dareDevil = false) {
     this.memory.lastTickMoving = Game.time;
 
     // check if stuck
-    let stuck = this.pos.inRangeTo(this.memory.position.x, this.memory.position.y, 0);
+    const pos = this.pos;
+    const lastPos = this.memory.position;
+    if(pos.x === 0 || pos.x === 49 || pos.y === 0 || pos.y === 49) {
+        //edge check
+        if(lastPos.x === 0 || lastPos.x === 49 || lastPos.y === 0 || lastPos.y === 49) {
+            if(this.memory.edgeCounter) {
+                this.memory.edgeCounter++;
+            } else {
+                this.memory.edgeCounter = 0;
+            }
+        }
+    }
+    let stuck = pos.inRangeTo(lastPos.x, lastPos.y, 0) || this.memory.edgeCounter>=2;
     this.memory.position = this.pos;
     if (stuck && movingLastTick) {
         if (!this.memory.stuckCount) this.memory.stuckCount = 0;
+        if (!this.memory.edgeCounter) this.memory.edgeCounter = 0;
         this.memory.stuckCount++;
         if (dareDevil && this.memory.stuckCount > 0) {
             this.memory.detourTicks = 5;
