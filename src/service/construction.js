@@ -115,6 +115,12 @@ mod.init = function(room) {
     //Controller link is also a output link
     this.saveStructure(room, posNearby(terrain, room.controller, 3), STRUCTURE_LINK);
     //TODO 2 links for remote mining or mineral mining
+    //== Extractor ==
+    const minerals = room.cachedFind(FIND_MINERALS);
+    if(minerals.length>0) {
+        const mineral = minerals[0];
+        this.saveStructure(room, mineral.pos, STRUCTURE_EXTRACTOR);
+    }
     //====== Wait to be implement ======
     //=== Defense ===
     //== Wall & Rampart ==
@@ -208,13 +214,24 @@ mod.loop = function(room, forceRun=false) {
     if(success) return;
     //== Link ==
     const linkLimit = CONTROLLER_STRUCTURES[STRUCTURE_LINK][room.controller.level];
-    var links = room.find(FIND_MY_STRUCTURES, {
+    const links = room.find(FIND_MY_STRUCTURES, {
         filter: (structure) => {
             return structure.structureType == STRUCTURE_LINK;
         }
     });
     if(links.length<linkLimit) {
         success = iterateAndPlace(STRUCTURE_LINK);
+    }
+    if(success) return;
+    //== Extractor ==
+    const extractorLimit = CONTROLLER_STRUCTURES[STRUCTURE_EXTRACTOR][room.controller.level];
+    const extractors = room.find(FIND_MY_STRUCTURES, {
+        filter: (structure) => {
+            return structure.structureType == STRUCTURE_EXTRACTOR;
+        }
+    });
+    if(extractors.length<extractorLimit) {
+        success = iterateAndPlace(STRUCTURE_EXTRACTOR);
     }
     if(success) return;
     //== Road ==
