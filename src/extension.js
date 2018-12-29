@@ -42,6 +42,28 @@ Object.defineProperty(Source.prototype, 'memory', {
         Memory.sources[this.id] = value;
     }
 });
+
+Object.defineProperty(Mineral.prototype, 'memory', {
+    configurable: true,
+    get: function() {
+        if(_.isUndefined(Memory.minerals)) {
+            Memory.minerals = {};
+        }
+        if(!_.isObject(Memory.minerals)) {
+            return undefined;
+        }
+        return Memory.minerals[this.id] = Memory.minerals[this.id] || {};
+    },
+    set: function(value) {
+        if(_.isUndefined(Memory.minerals)) {
+            Memory.minerals = {};
+        }
+        if(!_.isObject(Memory.minerals)) {
+            throw new Error('Could not set memory extension for minerals');
+        }
+        Memory.minerals[this.id] = value;
+    }
+});
 //======Define Other Property======
 Object.defineProperties(Source.prototype, {
     'accessibleFields': {
@@ -99,6 +121,70 @@ Object.defineProperties(Source.prototype, {
         enumerable: false,
         configurable: true
     },
+});
+
+Object.defineProperties(Mineral.prototype, {
+    'container': {
+        get: function() {
+            if (!this._container) {
+                if (!this.memory.containerId) {
+                    const targets = this.pos.findInRange(this.room.cachedFind(FIND_STRUCTURES), 1, {
+                        filter: o => o.structureType == STRUCTURE_CONTAINER || o.structureType == STRUCTURE_STORAGE
+                    });
+                    const closestTarget = targets[0]; //Same distance, so pick first one
+                    if(closestTarget) {
+                        this.memory.containerId = closestTarget.id;
+                    } else {
+                        return false;
+                    }
+                }
+                const obj = Game.getObjectById(this.memory.containerId);
+                if(!obj) {
+                    //Then we need to reset containerId since it is invalid.
+                    this.memory.containerId = false;
+                    return false;
+                }
+                this._container = obj;
+            }
+            return this._container;
+        },
+        set: function(container) {
+            this.memory.containerId = container.id;
+            this._container = container;
+        },
+        enumerable: false,
+        configurable: true
+    },
+    'extractor': {
+        get: function() {
+            if (!this._extractor) {
+                if (!this.memory.extractorId) {
+                    if(this.room.controller && this.room.controller.my && this.room.controller.level<6) return false;
+                    const structures = _.filter(this.pos.lookFor(LOOK_STRUCTURES), s => s.structureType===STRUCTURE_EXTRACTOR);
+                    if(structures.length>0) {
+                        const extractorStructure = structures[0];
+                        this.memory.extractorId = extractorStructure.id;
+                    } else {
+                        return false;
+                    }
+                }
+                const obj = Game.getObjectById(this.memory.extractorId);
+                if(!obj) {
+                    //Then we need to reset containerId since it is invalid.
+                    this.memory.extractorId = false;
+                    return false;
+                }
+                this._extractor = obj;
+            }
+            return this._extractor;
+        },
+        set: function(extractor) {
+            this.memory.extractorId = extractor.id;
+            this._extractor = extractor;
+        },
+        enumerable: false,
+        configurable: true
+    }
 });
 
 Object.defineProperties(StructureController.prototype, {
@@ -312,6 +398,29 @@ Object.defineProperties(Room.prototype, {
         enumerable: false,
         configurable: true
     },
+    'mineral': {
+        get: function() {
+            if (!this._mineral) {
+                const mineralId = this.memory.mineralId;
+                if (mineralId) {
+                    this._mineral = Game.getObjectById(mineralId);
+                } else {
+                    const minerals = this.cachedFind(FIND_MINERALS);
+                    if(minerals.length>0) {
+                        this.memory.mineralId = minerals[0].id;
+                        this._mineral = minerals[0];
+                    }
+                }
+            }
+            return this._mineral;
+        },
+        set: function(mineral) {
+            this.memory.mineralId = mineral.id;
+            this._mineral = mineral;
+        },
+        enumerable: false,
+        configurable: true
+    },
 });
 
 Room.prototype.cachedRoleCount = function() {
@@ -382,7 +491,9 @@ Room.prototype.saveLinks = function() {
     }
 };
 
-Creep.prototype._moveTo = Creep.prototype.moveTo;
+if(!Creep.prototype._moveTo) {
+    Creep.prototype._moveTo = Creep.prototype.moveTo;
+}
 
 /**
  * Modified from https://github.com/bonzaiferroni/bonzAI/blob/master/src/prototypes/initPrototypes.ts

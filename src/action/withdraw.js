@@ -6,13 +6,19 @@ const targetInitFunc = function(creep) {
     if(role === C.HAULER || role === C.REMOTE_HAULER) {
         const tombstones = _.filter(creep.room.cachedFind(FIND_TOMBSTONES), t => _.sum(t.store)>0);
         if(tombstones.length>0) return tombstones[0];
-        //Only find source container
+
+        const need = creep.carryCapacity - creep.carry.energy;
+        //Find source container
         for(let source of creep.room.sources) {
-            const need = creep.carryCapacity - creep.carry.energy;
             const container = source.container || false;
-            if(container && container.store[RESOURCE_ENERGY] > need) {
+            if(container && container.store[RESOURCE_ENERGY] >= need) {
                 return container;
             }
+        }
+        //Find mineral container
+        const mineral = creep.room.mineral;
+        if(mineral && mineral.container && _.sum(mineral.container.store)>=need) {
+            return mineral.container;
         }
         return false;
     } else if(role === C.FILLER) {
@@ -61,7 +67,15 @@ mod.word = '⬅︎ withdraw';
 
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
-        const result = creep.withdraw(target, RESOURCE_ENERGY);
+        let result = OK;
+        if(creep.memory.role===C.HAULER || creep.memory.role===C.REMOTE_HAULER) {
+            //Only haulers are allowed to get resources other than energy
+            for(const resourceType in target.store) {
+                result = creep.withdraw(target, resourceType);
+            }
+        } else {
+            result = creep.withdraw(target, RESOURCE_ENERGY);
+        }
         if(result == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
         } else if(result == OK || result == ERR_NOT_ENOUGH_RESOURCES) {

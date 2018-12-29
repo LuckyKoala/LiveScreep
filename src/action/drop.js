@@ -9,6 +9,8 @@ mod.word = '⬇︎ drop';
 
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
-        creep.drop(RESOURCE_ENERGY);
+        for(const resourceType in creep.carry) {
+            creep.drop(resourceType);
+        }
     });
 };

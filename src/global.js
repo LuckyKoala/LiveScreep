@@ -70,6 +70,7 @@ global.C = {
     BUILDER: 'builder',
     FILLER: 'filler',
     KEEPER: 'keeper',
+    MINER: 'miner',
     //=== Defense role ===
     GUARDIAN: 'guardian', //honour rampart and fight invaders
     //=== Special role ===
@@ -167,6 +168,7 @@ global.FlagUtil = {
 
 global.Action = {
     Harvest: require('action_harvest'),
+    Mine: require('action_mine'),
     Fill: require('action_fill'),
     Idle: require('action_idle'),
     Upgrade: require('action_upgrade'),
@@ -194,6 +196,7 @@ global.Action = {
 };
 global.Setup = {
     [C.HARVESTER]: require('setup_harvester'),
+    [C.MINER]: require('setup_miner'),
     [C.UPGRADER]: require('setup_upgrader'),
     [C.BUILDER]: require('setup_builder'),
     [C.HAULER]: require('setup_hauler'),
@@ -209,6 +212,7 @@ global.Setup = {
 
 global.Role = {
     [C.HARVESTER]: require('role_harvester'),
+    [C.MINER]: require('role_miner'),
     [C.UPGRADER]: require('role_upgrader'),
     [C.BUILDER]: require('role_builder'),
     [C.HAULER]: require('role_hauler'),

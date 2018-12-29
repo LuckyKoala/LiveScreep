@@ -69,4 +69,19 @@ mod.queueCreeps = function(room) {
         cnt.queue[C.HAULER]++;
         cnt.total[C.HAULER]++;
     }
+
+    //=== Harvest mineral if possible ===
+    if(cnt.total[C.MINER]===0 && room.mineral && room.mineral.extractor && room.mineral.mineralAmount>0) {
+        room.queue.normal.push(C.MINER);
+        cnt.queue[C.MINER]++;
+        cnt.total[C.MINER]++;
+    }
+    //Does miner has dedicated hauler?
+    const needExtraHaulerCnt = cnt.total[C.HAULER] - cnt.total[C.MINER] - (room.sources.length - room.sourceLinks.length);
+    if(needExtraHaulerCnt<0) {
+        //Haulers is matched with harvesters
+        room.queue.normal.push(C.HAULER);
+        cnt.queue[C.HAULER]++;
+        cnt.total[C.HAULER]++;
+    }
 };
