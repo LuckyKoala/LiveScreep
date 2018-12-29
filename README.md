@@ -12,6 +12,7 @@ Latest Release => `v0.3-Tasks`
 * Guardian will try stay in rampart and fight invaders
 * Automatically active safe mode and send notification to player if the room can't handle the attack
 * Implemented drop-mining, container-mining, link-mining and remote-mining.
+* Harvest minerals and store them in storage.
 
 NOTE: Currently room plan system is under development, structures planned by LiveScreep may overlapped, but it will not dismantle anything for now.
 
