@@ -4,6 +4,8 @@ module.exports = mod;
 const targetInitFunc = function(creep) {
     const role = creep.memory.role;
     if(role === C.HAULER || role === C.REMOTE_HAULER) {
+        const tombstones = _.filter(creep.room.cachedFind(FIND_TOMBSTONES), t => _.sum(t.store)>0);
+        if(tombstones.length>0) return tombstones[0];
         //Only find source container
         for(let source of creep.room.sources) {
             const need = creep.carryCapacity - creep.carry.energy;
@@ -14,6 +16,8 @@ const targetInitFunc = function(creep) {
         }
         return false;
     } else if(role === C.FILLER) {
+        const tombstones = _.filter(creep.room.cachedFind(FIND_TOMBSTONES), t => t.store[RESOURCE_ENERGY]>0);
+        if(tombstones.length>0) return tombstones[0];
         const spawnLink = creep.room.spawnLink;
         if(spawnLink && spawnLink.energy > 0) {
             //SourceLink only transfer energy when no energy remain in spawnLink
