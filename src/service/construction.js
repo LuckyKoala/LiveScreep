@@ -120,6 +120,7 @@ mod.init = function(room) {
     if(minerals.length>0) {
         const mineral = minerals[0];
         this.saveStructure(room, mineral.pos, STRUCTURE_EXTRACTOR);
+        this.saveStructure(room, posNearby(terrain, mineral, 1), STRUCTURE_CONTAINER);
     }
     //====== Wait to be implement ======
     //=== Defense ===
