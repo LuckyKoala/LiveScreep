@@ -14,7 +14,7 @@ mod.nextTarget = function() {
         }
         //If target room is under attack, do not go in
         const room = flag.room;
-        if(room && room.memory.underAttack && creep.room.name!==creep.memory.homeRoom) {
+        if(creep.memory.role!==C.REMOTE_GUARDIAN && room && room.memory.underAttack && creep.room.name!==creep.memory.homeRoom) {
             return Game.rooms[creep.memory.homeRoom].controller;
         }
         //We have reached target room, let's do some check
