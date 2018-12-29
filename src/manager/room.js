@@ -71,6 +71,8 @@ mod.dispatch = function(room) {
 };
 
 mod.loopOwnedRoom = function(room) {
+    const baseFlag = _.filter(room.cachedFind(FIND_FLAGS), f => FlagUtil.base.examine(f));
+    if(baseFlag.length === 0) return;
     room.saveLinks();
 
     Util.Defense.tryActivateSafeMode(room);

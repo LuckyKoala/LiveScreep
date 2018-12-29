@@ -2,6 +2,7 @@ const MiningTask = require('task_mining');
 const SpawningTask = require('task_spawning');
 const BuildingTask = require('task_building');
 const UpgradingTask = require('task_upgrading');
+const OutpostTask = require('task_outpost');
 const RemoteMiningTask = require('task_remoteMining');
 
 var mod = {};
@@ -13,5 +14,6 @@ mod.loop = function() {
     SpawningTask.loop();
     BuildingTask.loop();
     UpgradingTask.loop();
+    OutpostTask.loop();
     RemoteMiningTask.loop();
 };

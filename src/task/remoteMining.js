@@ -55,9 +55,12 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     const queue = queueRoom.queue.extern;
     for(const setupArr of queue) {
         const setupName = setupArr[0];
-        const role = setupName;
-        cnt[role]++;
-        cnt.total++;
+        const extraMemory = setupArr[1];
+        if(extraMemory.destinedTarget === destinedTarget) {
+            const role = setupName;
+            cnt[role]++;
+            cnt.total++;
+        }
     }
     
     //Prepare objects needed

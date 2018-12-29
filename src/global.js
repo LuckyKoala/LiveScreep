@@ -81,6 +81,8 @@ global.C = {
     REMOTE_HARVESTER: 'Rharvester', //go to target room and be a miner in that room
     REMOTE_HAULER: 'Rhauler', //travel and haul energy between rooms
     REMOTE_GUARDIAN: 'Rguardian', //go to target room and be a guardian in that room
+    CLAIMER: 'claimer', //go to target room and claim controller in that room
+    PIONEER: 'pioneer', //go to target room, build a spawn and upgrade controller until RCL 3
 };
 
 global.cli = require('util_cli');
@@ -97,12 +99,18 @@ global.ColorMapper = ['NONE',
                       'COLOR_GREEN', 'COLOR_YELLOW', 'COLOR_ORANGE', 'COLOR_BROWN',
                       'COLOR_GREY', 'COLOR_WHITE'];
 global.FlagUtil = {
+    // base is a combination of spawning, mining, building and upgrading
     base: {
         color: COLOR_YELLOW,
         secondaryColor: COLOR_RED,
     },
+    // outpost is a combination of spawning, mining
+    //  once this task is finished, it will be convert to a base task
+    outpost: {
+        color: COLOR_YELLOW,
+        secondaryColor: COLOR_PURPLE,
+    },
     //=============================
-    // base means combine these task
     spawning: {
         color: COLOR_ORANGE,
         secondaryColor: COLOR_RED,
@@ -193,6 +201,8 @@ global.Action = {
     Back: require('action_back'),
     Reserve: require('action_reserve'),
     Heal: require('action_heal'),
+    Claim: require('action_claim'),
+    Renew: require('action_renew'),
 };
 global.Setup = {
     [C.HARVESTER]: require('setup_harvester'),
@@ -208,6 +218,8 @@ global.Setup = {
     [C.REMOTE_HAULER]: require('setup_remoteHauler'),
     [C.REMOTE_GUARDIAN]: require('setup_remoteGuardian'),
     [C.RESERVER]: require('setup_reserver'),
+    [C.CLAIMER]: require('setup_claimer'),
+    [C.PIONEER]: require('setup_pioneer'),
 };
 
 global.Role = {
@@ -225,6 +237,8 @@ global.Role = {
     [C.REMOTE_HAULER]: require('role_remoteHauler'),
     [C.REMOTE_GUARDIAN]: require('role_remoteGuardian'),
     [C.RESERVER]: require('role_reserver'),
+    [C.CLAIMER]: require('role_claimer'),
+    [C.PIONEER]: require('role_pioneer'),
 };
 global.Util = {
     Defense: require('util_defense'),
