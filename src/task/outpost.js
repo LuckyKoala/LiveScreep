@@ -126,7 +126,6 @@ mod.queueCreeps = function(roomName, destinedTarget) {
                     harvesterHeadCount--;
                 } else {
                     creep.memory.role = C.HAULER;
-                    haulerHeadCount--;
                 }
                 break;
             }
