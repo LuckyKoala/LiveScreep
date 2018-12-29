@@ -4,11 +4,17 @@ module.exports = mod;
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, creep => {
         const remainCapacity = creep.carryCapacity - _.sum(creep.carry);
-        return creep.pos.findClosestByRange(creep.room.cachedFind(FIND_DROPPED_RESOURCES), {
+        let target = creep.pos.findClosestByRange(creep.room.cachedFind(FIND_DROPPED_RESOURCES), {
             filter: function(o) {
                 return o.amount >= remainCapacity;
             }
         });
+        if(target) return target;
+        else {
+            //no match, then find any dropped resource
+            target = creep.pos.findClosestByRange(creep.room.cachedFind(FIND_DROPPED_RESOURCES));
+            return target;
+        }
     }, this.actionName);
 };
 
