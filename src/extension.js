@@ -532,8 +532,8 @@ Creep.prototype.moveTo = function(destination, ops, dareDevil = false) {
     //Edge check!
     const pos = this.pos;
     const lastPos = this.memory.position;
+    //edge check
     if(pos.x === 0 || pos.x === 49 || pos.y === 0 || pos.y === 49) {
-        //edge check
         if(lastPos.x === 0 || lastPos.x === 49 || lastPos.y === 0 || lastPos.y === 49) {
             if(this.memory.edgeCounter) {
                 this.memory.edgeCounter++;
@@ -541,6 +541,8 @@ Creep.prototype.moveTo = function(destination, ops, dareDevil = false) {
                 this.memory.edgeCounter = 1;
             }
         }
+    } else {
+        this.memory.edgeCounter = 0;
     }
     // check if stuck
     let stuck = pos.inRangeTo(lastPos.x, lastPos.y, 0) || this.memory.edgeCounter>=2;
@@ -563,7 +565,6 @@ Creep.prototype.moveTo = function(destination, ops, dareDevil = false) {
     }
     else {
         this.memory.stuckCount = 0;
-        this.memory.edgeCounter = 0;
     }
 
     if (this.memory.detourTicks > 0) {
