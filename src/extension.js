@@ -427,7 +427,7 @@ Creep.prototype.moveTo = function(destination, ops, dareDevil = false) {
             if(this.memory.edgeCounter) {
                 this.memory.edgeCounter++;
             } else {
-                this.memory.edgeCounter = 0;
+                this.memory.edgeCounter = 1;
             }
         }
     }
@@ -452,6 +452,7 @@ Creep.prototype.moveTo = function(destination, ops, dareDevil = false) {
     }
     else {
         this.memory.stuckCount = 0;
+        this.memory.edgeCounter = 0;
     }
 
     if (this.memory.detourTicks > 0) {
