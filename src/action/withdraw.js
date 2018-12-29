@@ -3,7 +3,7 @@ module.exports = mod;
 
 const targetInitFunc = function(creep) {
     const role = creep.memory.role;
-    if(role === C.HAULER || role === C.REMOTE_HAULER) {
+    if(role === C.HAULER || role === C.REMOTE_HAULER || role === C.PIONEER) {
         const tombstones = _.filter(creep.room.cachedFind(FIND_TOMBSTONES), t => _.sum(t.store)>0);
         if(tombstones.length>0) return tombstones[0];
 
