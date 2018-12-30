@@ -26,6 +26,7 @@ mod.loop = function(creep) {
     }
     if(!creep.memory.hauling && _.sum(creep.carry) === creep.carryCapacity) {
         creep.memory.hauling = true;
+        delete creep.memory.sourceMark;
     }
 
     this.loop0(creep, creep.memory.hauling);

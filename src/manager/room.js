@@ -142,15 +142,15 @@ mod.expireRoom = function(roomName) {
 
 mod.loopExternalRoom = function(room) {
     this.recordLastSeen(room.name);
+    //Detect hostile creeps
+    const hostiles = room.cachedFind(FIND_HOSTILE_CREEPS);
+    if(hostiles.length>0) {
+        room.memory.underAttack = true;
+    } else {
+        room.memory.underAttack = false;
+    }
     const reservation = room.controller.reservation;
     if(reservation && reservation.username === C.USERNAME) {
-        //Detect hostile creeps
-        const hostiles = room.cachedFind(FIND_HOSTILE_CREEPS);
-        if(hostiles.length>0) {
-            room.memory.underAttack = true;
-        } else {
-            room.memory.underAttack = false;
-        }
         //=== Stat Display ===
         //Game time
         room.visual.text(`Time: ${Game.time}`, 8, 1, {color: 'white', font: 1.5});
