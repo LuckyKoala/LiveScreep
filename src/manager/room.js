@@ -73,6 +73,15 @@ mod.dispatch = function(room) {
 mod.loopOwnedRoom = function(room) {
     const baseFlag = _.filter(room.cachedFind(FIND_FLAGS), f => FlagUtil.base.examine(f));
     if(baseFlag.length === 0) return;
+
+    //Detect hostile creeps
+    const hostiles = room.cachedFind(FIND_HOSTILE_CREEPS);
+    if(hostiles.length>0) {
+        room.memory.underAttack = true;
+    } else {
+        room.memory.underAttack = false;
+    }
+
     room.saveLinks();
 
     Util.Defense.tryActivateSafeMode(room);
