@@ -6,10 +6,10 @@ module.exports = {
             if(source) validateSourceMark(source);
         }
     },
-    findAndMarkSource: function(creep) {
+    findAndMarkSource: function(creep, dynamic=false) {
         const sources = creep.room.sources;
         for(let source of sources) {
-            if(source && isSourceAvailable(creep.getActiveBodyparts(WORK), source)) {
+            if(source && isSourceAvailable(creep.getActiveBodyparts(WORK), source, dynamic)) {
                 markSource(creep, source);
                 return true;
             }
@@ -69,19 +69,19 @@ function initSourceMark(source) {
     };
 }
 
-function isSourceAvailable(workParts, source) {
+function isSourceAvailable(workParts, source, dynamic=false) {
     ensureSourceMarkInitialize(source);
 
-    //One harvester per source
-    const takenCnt = _.keys(source.memory.mark.status).length;
-    return takenCnt === 0;
-
-    /*
-    //Dynamic mark
-    const available = source.memory.mark.available;
-    const needParts = workParts;
-    return available.spots>=1 && available.parts>needParts;
-    */
+    if(dynamic) {
+        //Dynamic mark
+        const available = source.memory.mark.available;
+        const needParts = workParts;
+        return available.spots>=1 && available.parts>needParts;
+    } else {
+        //One harvester per source
+        const takenCnt = _.keys(source.memory.mark.status).length;
+        return takenCnt === 0;
+    }
 }
 
 function markSource(creep, source) {

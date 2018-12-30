@@ -3,16 +3,16 @@ module.exports = mod;
 
 mod.nextTarget = function() {
     const creep = this.creep;
-    if(creep.memory.role===C.PIONEER) {
-        //TODO this is a hotfix for a room with single source
-        return creep.room.sources[0];
+    let dynamic = false;
+    if(creep.memory.role===C.PIONEER || creep.memory.role===C.REMOTE_WORKER) {
+        dynamic = true;
     }
     let markSource = Util.SourceMark.getMarkSource(creep);
 
     if(!markSource) {
         //Not found
         console.log("Finding unmark source => "+creep.name);
-        const found = Util.SourceMark.findAndMarkSource(creep);
+        const found = Util.SourceMark.findAndMarkSource(creep, dynamic);
         if(found) {
             markSource = Util.SourceMark.getMarkSource(creep);
         }
