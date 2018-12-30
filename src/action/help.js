@@ -4,9 +4,9 @@ module.exports = mod;
 const targetInitFunc = function(creep) {
     if(creep.room.storage) return false;
     const needBuildStructures = creep.room.cachedFind(FIND_CONSTRUCTION_SITES);
-    const builders = _.filter(creep.room.cachedFind(FIND_MY_CREEPS), c => c.memory.role === C.BUILDER && _.sum(c.carry)<c.carryCapacity);
     if(needBuildStructures.length===0) return false;
-    else return builders.length>0 ? builders[0] : false;
+    const builders = _.filter(creep.room.cachedFind(FIND_MY_CREEPS), c => c.memory.role === C.BUILDER && _.sum(c.carry)<1/2*c.carryCapacity);
+    return builders.length>0 ? creep.pos.findClosestByRange(builders) : false;
 };
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, targetInitFunc, this.actionName);

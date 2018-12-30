@@ -31,9 +31,17 @@ mod.queueCreeps = function(room) {
         }
     });
     const needBuilder = (needBuildStructures.length + needRepairStructures.length) > 0;
-    if(needBuilder && cnt.total[C.BUILDER]<1) {
-        room.queue.normal.push(C.BUILDER);
-        cnt.queue[C.BUILDER]++;
-        cnt.total[C.BUILDER]++;
+    if(needBuilder) {
+        let limit;
+        if(needBuildStructures.length>0 && room.controller.level<3) {
+            limit = 2;
+        } else {
+            limit = 1;
+        }
+        if(cnt.total[C.BUILDER]<limit) {
+            room.queue.normal.push(C.BUILDER);
+            cnt.queue[C.BUILDER]++;
+            cnt.total[C.BUILDER]++;
+        }
     }
 };

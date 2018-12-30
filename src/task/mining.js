@@ -51,7 +51,7 @@ mod.queueCreeps = function(room) {
     let needHarvester = room.sources.length - cnt.total[C.HARVESTER];
     let needHauler;
     if(room.controller.level < 3) {
-        needHauler = room.sources.length*3 - cnt.total[C.HAULER];
+        needHauler = room.sources.length*2 - cnt.total[C.HAULER];
     } else {
         needHauler = room.sources.length - room.sourceLinks.length - cnt.total[C.HAULER];
     }
