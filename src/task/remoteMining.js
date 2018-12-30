@@ -8,16 +8,14 @@ mod.loop = function() {
         const destinedTarget = flag.name;
         let assignedRoom = flag.memory.assignedRoom;
         if(assignedRoom === undefined) {
-            console.log(`Detect new remote mining flag => ${flag.name}`);
             //Find suitable room to do this task
             //NOTE: Currently we only calculate range
             let range = Infinity;
             let selectedRoomName;
             for(const roomName in Game.rooms) {
-                console.log(roomName);
                 const room = Game.rooms[roomName];
                 const roomType = room.memory.roomType;
-                if(roomType && roomType === C.OWNED_ROOM && room.controller.level>=3) {
+                if(roomType && roomType === C.OWNED_ROOM && room.controller.level>=2) {
                     const r = Game.map.getRoomLinearDistance(flag.pos.roomName, roomName);
                     if(r < range) {
                         range = r;
@@ -26,6 +24,7 @@ mod.loop = function() {
                 }
             }
             assignedRoom = selectedRoomName;
+            console.log(`Detect new remote mining flag => ${flag.name} and assigned to [${assignedRoom}]`);
         }
         //Do we have a assignedRoom now?
         if(assignedRoom) {
@@ -67,6 +66,32 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     const extraMemory = {
         destinedTarget: destinedTarget
     };
+
+    if(queueRoom.controller.level < 4 || !queueRoom.storage) {
+        //Can't afford too many creeps
+        // sent remoteWorkers
+        let room = Game.rooms[Game.flags[destinedTarget].pos.roomName];
+        if(room === undefined) {
+            //No vision
+            //Spawn a scout first
+            
+            if(cnt[C.SCOUT]===0) {
+                queueRoom.queue.extern.push([C.SCOUT, extraMemory]);
+                cnt[C.SCOUT]++;
+            }
+        } else {
+            //=== Harvest all sources and spawn dedicated hauler ===
+            let needWorker = room.sources.length*2 - cnt[C.REMOTE_WORKER];
+            //Actually enqueue harvesters and haulers
+            while(needWorker-- > 0) {
+                queueRoom.queue.extern.push([C.REMOTE_WORKER, extraMemory]);
+                cnt[C.REMOTE_WORKER]++;
+            }
+        }
+
+        return;
+    }
+
     //Do we need to spawn guardian ?
     //Guardian provide vision too
     if(cnt[C.REMOTE_GUARDIAN]===0) {
@@ -75,7 +100,7 @@ mod.queueCreeps = function(roomName, destinedTarget) {
         return;
     }
     //TODO normally send scout to provide vision
-    //   only sent defense when 
+    //   only sent defense when
     //Do we have vision of that room?
     let room = Game.rooms[Game.flags[destinedTarget].pos.roomName];
     if(room === undefined) {

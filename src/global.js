@@ -76,6 +76,7 @@ global.C = {
     //=== Multiroom role ===
     SCOUT: 'scout', //travel between rooms and provide vision of the room it stayed
     RESERVER: 'reserver', //go to target room and reserve controller in that room
+    REMOTE_WORKER: 'Rworker', //go to target room, get energy and haul it back
     REMOTE_HARVESTER: 'Rharvester', //go to target room and be a miner in that room
     REMOTE_HAULER: 'Rhauler', //travel and haul energy between rooms
     REMOTE_GUARDIAN: 'Rguardian', //go to target room and be a guardian in that room
@@ -107,6 +108,11 @@ global.FlagUtil = {
     outpost: {
         color: COLOR_YELLOW,
         secondaryColor: COLOR_PURPLE,
+    },
+    // create this, set its memory and convert it to useful task flag
+    empty: {
+        color: COLOR_BROWN,
+        secondaryColor: COLOR_BROWN,
     },
     //=============================
     spawning: {
@@ -212,6 +218,7 @@ global.Setup = {
     [C.FILLER]: require('setup_filler'),
     [C.KEEPER]: require('setup_keeper'),
     [C.SCOUT]: require('setup_scout'),
+    [C.REMOTE_WORKER]: require('setup_remoteWorker'),
     [C.REMOTE_HARVESTER]: require('setup_remoteHarvester'),
     [C.REMOTE_HAULER]: require('setup_remoteHauler'),
     [C.REMOTE_GUARDIAN]: require('setup_remoteGuardian'),
@@ -231,6 +238,7 @@ global.Role = {
     [C.FILLER]: require('role_filler'),
     [C.KEEPER]: require('role_keeper'),
     [C.SCOUT]: require('role_scout'),
+    [C.REMOTE_WORKER]: require('role_remoteWorker'),
     [C.REMOTE_HARVESTER]: require('role_remoteHarvester'),
     [C.REMOTE_HAULER]: require('role_remoteHauler'),
     [C.REMOTE_GUARDIAN]: require('role_remoteGuardian'),
