@@ -29,15 +29,18 @@ mod.queueCreeps = function(room) {
         cnt.total[C.KEEPER]++;
     }
 
-    //Only spawn upgrader if there is no structures need to be build
-    const energyForSpawnCapacity = room.energyCapacityAvailable;
-    const dynamicMaxExtraAmount = Setup[C.UPGRADER].dynamicExtraAmount(room);
-    const totalEnergyNeed = 650+dynamicMaxExtraAmount*700;
-    //Currently energy capacity can't afford single bigger creep
-    // so let's add amount of upgraders
-    let upgraderAmount = Math.floor(totalEnergyNeed/energyForSpawnCapacity);
-    upgraderAmount = Math.min(3, upgraderAmount); // 3 at most, more creep more cpu and more crowded
+    let upgraderAmount = 1;
+    if(room.storage) {
+        const energyForSpawnCapacity = room.energyCapacityAvailable;
+        const dynamicMaxExtraAmount = Setup[C.UPGRADER].dynamicExtraAmount(room);
+        const totalEnergyNeed = 650+dynamicMaxExtraAmount*700;
+        //Currently energy capacity can't afford single bigger creep
+        // so let's add amount of upgraders
+        upgraderAmount = Math.floor(totalEnergyNeed/energyForSpawnCapacity);
+        upgraderAmount = Math.min(3, upgraderAmount); // 3 at most, more creep more cpu and more crowded
+    }
     const needBuildStructures = room.cachedFind(FIND_CONSTRUCTION_SITES);
+    //Only spawn upgrader if there is no structures need to be build
     if(needBuildStructures.length === 0 && room.controller.container) {
         if(cnt.total[C.UPGRADER] < upgraderAmount) {
             room.queue.normal.push(C.UPGRADER);
