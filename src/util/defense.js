@@ -37,7 +37,7 @@ mod.tryActivateSafeMode = function(room) {
                 //No, no working towers
                 // Then we have to assume this room may not survive
                 //  Try active safe mode.
-                if(room.controller.safeModeAvailable > 1) {
+                if(room.controller.safeModeAvailable > 0) {
                     if(room.controller.safeModeCooldown) {
                         //Safe mode is still cool down, dangerous!
                         Game.notify(`[${time}]Threat coming,safe mode is cooling down!!!`);
