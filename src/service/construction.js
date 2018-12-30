@@ -228,7 +228,10 @@ mod.loop = function(room, forceRun=false) {
     if(success) return;
     //== Storage ==
     if(!room.storage) {
-        success = iterateAndPlace(STRUCTURE_STORAGE);
+        const storageAvailable = CONTROLLER_STRUCTURES[STRUCTURE_STORAGE][room.controller.level];
+        if(storageAvailable>=1) {
+            success = iterateAndPlace(STRUCTURE_STORAGE);
+        }
     }
     if(success) return;
     //== Link ==
@@ -253,9 +256,10 @@ mod.loop = function(room, forceRun=false) {
         success = iterateAndPlace(STRUCTURE_EXTRACTOR);
     }
     if(success) return;
-    room.memory.lastFullyConstructionCheck = Game.time;
     //== Road ==
     iterateAndPlace(STRUCTURE_ROAD);
+
+    room.memory.lastFullyConstructionCheck = Game.time;
 };
 
 mod.initRoad = function(room, sources) {
