@@ -8,7 +8,7 @@ mod.nextTarget = function() {
         return Game.getObjectById(_.last(sortHostiles).id);
     }
     //Move to target flag
-    if(creep.memory.destinedTarget) {
+    if(creep.memory.destinedTarget && creep.hits===creep.hitsMax) {
         const flag = Game.flags[creep.memory.destinedTarget];
         if(flag && !flag.pos.isEqualTo(creep.pos)) return flag;
     }
