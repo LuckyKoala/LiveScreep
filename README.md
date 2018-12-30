@@ -4,15 +4,16 @@
 
 Latest Release => `v0.3-Tasks`
 
-* Automatically place containers, extensions, roads, links, storage and towers
-* Keep upgrading controller
-* Towers can select target and then attack, heal or repair
 * Base harvesting, hauling, storage filling and withdrawing
+* Implemented drop-mining, container-mining, link-mining and remote-mining.
+* Keep upgrading controller
+* Automatically place containers, extensions, roads, links, storage and towers
+* Towers can select target and then attack, heal or repair
 * Maintain walls and ramparts
 * Guardian will try stay in rampart and fight invaders
 * Automatically active safe mode and send notification to player if the room can't handle the attack
-* Implemented drop-mining, container-mining, link-mining and remote-mining.
 * Harvest minerals and store them in storage.
+* Auto claim and build up outpost
 
 NOTE: Currently room plan system is under development, structures planned by LiveScreep may overlapped, but it will not dismantle anything for now.
 
