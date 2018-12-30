@@ -33,7 +33,17 @@ const targetInitFunc = function(creep) {
         } else {
             return creep.room.storage;
         }
-    } else if(role === C.BUILDER || role === C.KEEPER) {
+    } else if(role === C.BUILDER) {
+        const storage = creep.room.storage;
+        if(storage) {
+            return storage;
+        } else if(creep.room.controller.level<3 && creep.room.controller.container) {
+            //If low rcl, we treat controller container as storage
+            return creep.room.controller.container;
+        } else {
+            return false;
+        }
+    } else if(role === C.KEEPER) {
         const storage = creep.room.storage;
         if(storage) {
             return storage;

@@ -3,7 +3,7 @@ module.exports = mod;
 
 mod.roleConfig = {
     inStack: [Action.Withdraw],
-    outStack: [Action.Fuel, Action.Help, Action.PutForUpgrade],
+    outStack: [Action.Fuel, Action.PutForUpgrade, Action.Help],
 };
 
 mod.loop = function(creep) {

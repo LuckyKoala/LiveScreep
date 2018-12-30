@@ -37,9 +37,19 @@ mod.queueCreeps = function(room) {
     let upgraderAmount = Math.floor(totalEnergyNeed/energyForSpawnCapacity);
     upgraderAmount = Math.min(3, upgraderAmount); // 3 at most, more creep more cpu and more crowded
     const needBuildStructures = room.cachedFind(FIND_CONSTRUCTION_SITES);
-    if(needBuildStructures.length === 0 && cnt.total[C.UPGRADER] < upgraderAmount) {
-        room.queue.normal.push(C.UPGRADER);
-        cnt.queue[C.UPGRADER]++;
-        cnt.total[C.UPGRADER]++;
+    if(needBuildStructures.length === 0) {
+        if(cnt.total[C.UPGRADER] < upgraderAmount) {
+            room.queue.normal.push(C.UPGRADER);
+            cnt.queue[C.UPGRADER]++;
+            cnt.total[C.UPGRADER]++;
+        }
+    } else {
+        //If there are sites need to be build
+        // then we only spawn 1 upgrader to keep controller way from downgrade
+        if(cnt.total[C.UPGRADER] < 1) {
+            room.queue.normal.push(C.UPGRADER);
+            cnt.queue[C.UPGRADER]++;
+            cnt.total[C.UPGRADER]++;
+        }
     }
 };
