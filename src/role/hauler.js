@@ -10,7 +10,7 @@ mod.roleConfigWithStorage= {
 
 mod.roleConfigWithoutStorage= {
     inStack: [Action.Travel, Action.Pickup, Action.Withdraw],
-    outStack: [Action.Travel, Action.Fill, Action.Store],
+    outStack: [Action.Travel, Action.Fill, Action.PutForUpgrade],
 };
 
 mod.loop = function(creep) {

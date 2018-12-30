@@ -21,8 +21,9 @@ mod.queueCreeps = function(room) {
     //=== Role count ===
     const cnt = room.cachedRoleCount();
 
+    //Only spawn keeper if storage present
     //spawn keeper first, so there will be energy source for upgrader
-    if(cnt.total[C.KEEPER] === 0) {
+    if(room.storage && cnt.total[C.KEEPER] === 0) {
         room.queue.normal.push(C.KEEPER);
         cnt.queue[C.KEEPER]++;
         cnt.total[C.KEEPER]++;

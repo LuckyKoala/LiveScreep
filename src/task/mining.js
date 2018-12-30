@@ -49,7 +49,12 @@ mod.queueCreeps = function(room) {
     //That is one pair of harvester-hauler per source
     // or one pair of harvester-link per source
     let needHarvester = room.sources.length - cnt.total[C.HARVESTER];
-    let needHauler = room.sources.length - room.sourceLinks.length - cnt.total[C.HAULER];
+    let needHauler;
+    if(room.controller.level < 3) {
+        needHauler = room.sources.length*3 - cnt.total[C.HAULER];
+    } else {
+        needHauler = room.sources.length - room.sourceLinks.length - cnt.total[C.HAULER];
+    }
     //Actually enqueue harvesters and haulers
     while(needHarvester-- > 0) {
         room.queue.normal.push(C.HARVESTER);

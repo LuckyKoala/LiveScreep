@@ -33,6 +33,8 @@ global.C = {
                                          hauler(if no storage)
                                          ----------------------> keeper
                                          hauler(if no storage)
+                                         ----------------------> controllerContainer
+                                         hauler(if no storage)
                        link --------> spawns/extensions
                              filler
                             --------> StructureController
@@ -54,14 +56,10 @@ global.C = {
     if no storage, fall back to this pattern
     ========================================
 
-    keeper ----------> structures
-             builder
-           --------> towers -------------> RoomObjects
-                              towerAction
-           --------> controllerContainer/upgrader ---------> StructureController
-                                                    upgrader
+    controllerContainer ----------> structures
+                         builder
 
-    so keeper redistribute energy from storage or self(if no storage yet, this creep will carry it directly) to towers/upgraders(its container if present)
+    so keeper redistribute energy from storage or self to towers/upgraders(its container if present)
     */
     //=== Base role ===
     HARVESTER: 'harvester',
