@@ -182,8 +182,26 @@ mod.loop = function(room, forceRun=false) {
     };
 
     //=== Container ===
-    success = iterateAndPlace(STRUCTURE_CONTAINER);
-    if(success) return;
+    if(!room.controller.container) {
+        success = iterateAndPlace(STRUCTURE_CONTAINER);
+        if(success) return;
+    }
+    //Only build source container at RCL 3
+    if(room.controller.level >= 3) {
+        for(let source of room.sources) {
+            if(!source.container) {
+                success = iterateAndPlace(STRUCTURE_CONTAINER);
+                if(success) return;
+            }
+        }
+    }
+    //Only build mineral container at RCL 6
+    if(room.controller.level >= 6) {
+        if(!room.mineral.container) {
+            success = iterateAndPlace(STRUCTURE_CONTAINER);
+            if(success) return;
+        }
+    }
     //=== Extension ===
     //Build extension if we can
     const extensionLimit = CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][room.controller.level];
