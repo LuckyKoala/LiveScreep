@@ -66,11 +66,20 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     const extraMemory = {
         destinedTarget: destinedTarget
     };
+    const targetRoomName = Game.flags[destinedTarget].pos.roomName;
+    const room = Game.rooms[targetRoomName];
+
+    if(Memory.rooms[targetRoomName].underAttack) {
+        if(cnt[C.REMOTE_GUARDIAN]===0) {
+            queueRoom.queue.extern.unshift([C.REMOTE_GUARDIAN, extraMemory]);
+            cnt[C.REMOTE_GUARDIAN]++;
+        }
+        return;
+    }
 
     if(queueRoom.controller.level < 4 || !queueRoom.storage) {
         //Can't afford too many creeps
         // sent remoteWorkers
-        let room = Game.rooms[Game.flags[destinedTarget].pos.roomName];
         if(room === undefined) {
             //No vision
             //Spawn a scout first
@@ -92,17 +101,7 @@ mod.queueCreeps = function(roomName, destinedTarget) {
         return;
     }
 
-    //Do we need to spawn guardian ?
-    //Guardian provide vision too
-    if(cnt[C.REMOTE_GUARDIAN]===0) {
-        queueRoom.queue.extern.unshift([C.REMOTE_GUARDIAN, extraMemory]);
-        cnt[C.REMOTE_GUARDIAN]++;
-        return;
-    }
-    //TODO normally send scout to provide vision
-    //   only sent defense when
     //Do we have vision of that room?
-    let room = Game.rooms[Game.flags[destinedTarget].pos.roomName];
     if(room === undefined) {
         //No vision
         //Spawn a scout first
