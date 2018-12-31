@@ -1,6 +1,14 @@
 var mod = {};
 module.exports = mod;
 
+mod.getBodyCost = function(bodyParts) {
+    let cost = 0;
+    for(let i=0; i<bodyParts.length; i++) {
+        cost += BODYPART_COST[bodyParts[i]];
+    }
+    return cost;
+};
+
 mod.getTerrain = function(roomName) {
     //create 50x50 array
     let arr = new Array(50);

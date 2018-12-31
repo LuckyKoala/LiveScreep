@@ -59,7 +59,7 @@ mod.spawnWithSetup = function(spawn, urgent, {dynamicExtraAmount, setupConfig, s
     } else {
         body = this.getMaxiumBody(essBody, extraBody, maxExtraAmount, energyForSpawnCapacity);
     }
-    const bodyCost = this.getBodyCost(body);
+    const bodyCost = Util.Helper.getBodyCost(body);
     //Check energyAvailable is enough for this spawn action
     if(energyAvailable < bodyCost) return false;
     //Calculate name
@@ -84,8 +84,8 @@ mod.spawnWithSetup = function(spawn, urgent, {dynamicExtraAmount, setupConfig, s
 
 const bodyMaxium = 50; //Creep Body Part Maxium Amount
 mod.getMaxiumBody = function(essBody, extraBody, maxExtraAmount, energyAvailable) {
-    const essCost = this.getBodyCost(essBody);
-    const extraCost = this.getBodyCost(extraBody);
+    const essCost = Util.Helper.getBodyCost(essBody);
+    const extraCost = Util.Helper.getBodyCost(extraBody);
     if(extraCost===0) return essBody;
 
     let extraAmount = _.floor((energyAvailable - essCost) / extraCost);
@@ -98,12 +98,4 @@ mod.getMaxiumBody = function(essBody, extraBody, maxExtraAmount, energyAvailable
         body.push(extraBody);
     }
     return _.flattenDeep(body);
-};
-
-mod.getBodyCost = function(bodyParts) {
-    let cost = 0;
-    for(let i=0; i<bodyParts.length; i++) {
-        cost += BODYPART_COST[bodyParts[i]];
-    }
-    return cost;
 };
