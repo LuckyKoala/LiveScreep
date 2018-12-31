@@ -1,4 +1,4 @@
-var mod = {};
+let mod = {};
 module.exports = mod;
 
 mod.loop = function(room) {
@@ -40,7 +40,7 @@ mod.spawnWithSetup = function(spawn, urgent, {dynamicExtraAmount, setupConfig, s
 
     const energyAvailable = spawn.room.energyAvailable;
     let energyForSpawnCapacity = spawn.room.energyAvailable;
-    var setup;
+    let setup;
     if(shouldUseHighLevel === undefined) setup = setupConfig.Normal;
     else setup = shouldUseHighLevel(spawn.room) ? setupConfig.High : setupConfig.Normal;
     //For low energy available, use SetupConfig.Low
@@ -84,25 +84,25 @@ mod.spawnWithSetup = function(spawn, urgent, {dynamicExtraAmount, setupConfig, s
 
 const bodyMaxium = 50; //Creep Body Part Maxium Amount
 mod.getMaxiumBody = function(essBody, extraBody, maxExtraAmount, energyAvailable) {
-    var essCost = this.getBodyCost(essBody);
-    var extraCost = this.getBodyCost(extraBody);
+    const essCost = this.getBodyCost(essBody);
+    const extraCost = this.getBodyCost(extraBody);
     if(extraCost===0) return essBody;
 
-    var extraAmount = _.floor((energyAvailable - essCost) / extraCost);
+    const extraAmount = _.floor((energyAvailable - essCost) / extraCost);
     if(!!maxExtraAmount && extraAmount>maxExtraAmount) extraAmount = maxExtraAmount;
     const remainAmount = _.floor((bodyMaxium-essBody.length) / extraBody.length);
     if(extraAmount > remainAmount) extraAmount = remainAmount;
 
-    var body = essBody;
-    for(var i=0; i<extraAmount; i++) {
+    const body = essBody;
+    for(let i=0; i<extraAmount; i++) {
         body.push(extraBody);
     }
     return _.flattenDeep(body);
 };
 
 mod.getBodyCost = function(bodyParts) {
-    var cost = 0;
-    for(var i=0; i<bodyParts.length; i++) {
+    let cost = 0;
+    for(let i=0; i<bodyParts.length; i++) {
         cost += BODYPART_COST[bodyParts[i]];
     }
     return cost;
