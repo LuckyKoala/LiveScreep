@@ -7,5 +7,5 @@ mod.roleConfig = {
 };
 
 mod.loop = function(creep) {
-    this.loop0(creep, creep.memory.healing); //Always use action in outStack
+    this.loop0(creep, creep.memory.healing);
 };
