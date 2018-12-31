@@ -88,7 +88,7 @@ mod.getMaxiumBody = function(essBody, extraBody, maxExtraAmount, energyAvailable
     const extraCost = this.getBodyCost(extraBody);
     if(extraCost===0) return essBody;
 
-    const extraAmount = _.floor((energyAvailable - essCost) / extraCost);
+    let extraAmount = _.floor((energyAvailable - essCost) / extraCost);
     if(!!maxExtraAmount && extraAmount>maxExtraAmount) extraAmount = maxExtraAmount;
     const remainAmount = _.floor((bodyMaxium-essBody.length) / extraBody.length);
     if(extraAmount > remainAmount) extraAmount = remainAmount;
