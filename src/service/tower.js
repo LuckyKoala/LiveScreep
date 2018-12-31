@@ -37,11 +37,9 @@ mod.loop = function(room) {
         }
 
         //Heal creep
-        var closestInjuredCreep = _.filter(room.cachedFind(FIND_MY_CREEPS), {
-            filter: (creep) => creep.hits < creep.hitsMax
-        });
-        if(closestInjuredCreep) {
-            if(tower.heal(closestInjuredCreep) === OK) {
+        const closestInjuredCreeps = _.filter(room.cachedFind(FIND_MY_CREEPS), (creep) => creep.hits < creep.hitsMax);
+        if(closestInjuredCreeps.length > 0) {
+            if(tower.heal(closestInjuredCreeps[0]) === OK) {
                 Util.Stat.incEnergyOut(tower.room.name, TOWER_ENERGY_COST);
             }
             return;
