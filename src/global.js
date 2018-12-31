@@ -139,6 +139,7 @@ global.FlagUtil = {
     defending: {
         color: COLOR_ORANGE,
         secondaryColor: COLOR_GREEN,
+        parent: 'base',
     },
     remoteMining: {
         color: COLOR_WHITE,

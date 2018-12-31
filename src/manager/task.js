@@ -1,5 +1,6 @@
 const MiningTask = require('task_mining');
 const SpawningTask = require('task_spawning');
+const DefendingTask = require('task_defending');
 const BuildingTask = require('task_building');
 const UpgradingTask = require('task_upgrading');
 const OutpostTask = require('task_outpost');
@@ -12,6 +13,7 @@ module.exports = mod;
 mod.loop = function() {
     MiningTask.loop();
     SpawningTask.loop();
+    DefendingTask.loop();
     BuildingTask.loop();
     UpgradingTask.loop();
     OutpostTask.loop();
