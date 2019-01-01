@@ -69,7 +69,7 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     const targetRoomName = Game.flags[destinedTarget].pos.roomName;
     const room = Game.rooms[targetRoomName];
 
-    if(Memory.rooms[targetRoomName] && Memory.rooms[targetRoomName].underAttack) {
+    if(Memory.rooms[targetRoomName] && Memory.rooms[targetRoomName] && Memory.rooms[targetRoomName].underAttack) {
         if(cnt[C.REMOTE_GUARDIAN]===0) {
             queueRoom.queue.extern.unshift([C.REMOTE_GUARDIAN, extraMemory]);
             cnt[C.REMOTE_GUARDIAN]++;
@@ -77,18 +77,21 @@ mod.queueCreeps = function(roomName, destinedTarget) {
         return;
     }
 
+    //Do we have vision of that room?
+    if(room === undefined) {
+        //No vision
+        //Spawn a scout first
+        if(cnt[C.SCOUT]===0) {
+            queueRoom.queue.extern.push([C.SCOUT, extraMemory]);
+            cnt[C.SCOUT]++;
+        }
+        return;
+    }
+
     if(queueRoom.controller.level < 4 || !queueRoom.storage) {
         //Can't afford too many creeps
         // sent remoteWorkers
-        if(room === undefined) {
-            //No vision
-            //Spawn a scout first
-            
-            if(cnt[C.SCOUT]===0) {
-                queueRoom.queue.extern.push([C.SCOUT, extraMemory]);
-                cnt[C.SCOUT]++;
-            }
-        } else {
+        if(room) {
             //=== Harvest all sources and spawn dedicated hauler ===
             let needWorker = room.sources.length*2 - cnt[C.REMOTE_WORKER];
             //Actually enqueue harvesters and haulers
@@ -98,19 +101,6 @@ mod.queueCreeps = function(roomName, destinedTarget) {
             }
         }
 
-        return;
-    }
-
-    //Do we have vision of that room?
-    if(room === undefined) {
-        //No vision
-        //Spawn a scout first
-        /*
-        if(cnt[C.SCOUT]===0) {
-            queueRoom.queue.extern.push([C.SCOUT, extraMemory]);
-            cnt[C.SCOUT]++;
-        }
-        */
         return;
     }
 
