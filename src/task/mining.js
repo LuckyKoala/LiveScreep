@@ -51,7 +51,23 @@ mod.queueCreeps = function(room) {
     let needHarvester = room.sources.length - cnt.total[C.HARVESTER];
     let needHauler;
     if(room.controller.level < 3) {
-        needHauler = room.sources.length*2 - cnt.total[C.HAULER];
+        //=== Calculate ===
+        //carry work move
+        //1. carry with energy(move 1 tile 2 tick)
+        //2. carry with energy(move 1 tile 1 tick)
+        // so avg move speed is 1.5 tile/tick
+        const factor = 1.5;
+        let range = 0;
+        for(let source of room.sources) {
+            range += room.spawns[0].pos.getRangeTo(source);
+            range += room.controller.pos.getRangeTo(source);
+        }
+        const ticksPerRound = Math.ceil(range*2/room.sources.length/factor);
+        //const energyGenPerTick = SOURCE_ENERGY_CAPACITY/ENERGY_REGEN_TIME;
+        const energyGenPerTick = 2*HARVEST_POWER;
+        const carryPerRound = 2*CARRY_CAPACITY;
+        const amountFactor = Math.ceil(energyGenPerTick*ticksPerRound/carryPerRound);
+        needHauler = room.sources.length*amountFactor - cnt.total[C.HAULER];
     } else {
         needHauler = room.sources.length - room.sourceLinks.length - cnt.total[C.HAULER];
     }
