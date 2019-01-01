@@ -35,17 +35,16 @@ const loop0 = function () {
     }
     //Run tasks to get creep spawn queue
     //console.log('1. Running task manager');
-    TaskManager.loop();
+    try { TaskManager.loop(); } catch (e) { console.log("error with task manager loop\n", e.stack); }
     //Run rooms to get metadata and run structures
     //console.log('2. Running room manager');
-    RoomManager.loop();
+    try { RoomManager.loop(); } catch (e) { console.log("error with room manager loop\n", e.stack); }
     //Run creeps
     //console.log('3. Running creep manager');
-    CreepManager.loop();
+    try { CreepManager.loop(); } catch (e) { console.log("error with creep manager loop\n", e.stack); }
     //Validate and clear data
     //console.log('4. Running garbage collection');
     GC();
-    Util.Stat.loop();
     //console.log('<<<====Main Loop End=======');
 };
 
