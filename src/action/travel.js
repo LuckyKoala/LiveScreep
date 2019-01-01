@@ -38,13 +38,23 @@ mod.nextTarget = function() {
     } else {
         //we have no target
         // so we may be wrong room
-        if(creep.room.name === creep.memory.homeRoom) {
-            delete creep.memory.wrongRoomCounter;
-            return false;
-        }
         const home = Game.rooms[creep.memory.homeRoom];
         if(home) {
             const wrongRoomCounter = creep.memory.wrongRoomCounter || 0;
+            //Right room but has been wrong room.
+            if(creep.room.name === creep.memory.homeRoom) {
+                if(wrongRoomCounter>0) {
+                    const pos = creep.pos;
+                    if(pos.x === 0 || pos.x === 49 || pos.y === 0 || pos.y === 49) {
+                        //Don't stay at exit, creep will loop between room
+                        return home.controller;
+                    } else {
+                        delete creep.memory.wrongRoomCounter;
+                    }
+                }
+                return false;
+            }
+
             //Creep can stay in wrong room at most 6 ticks in case it is finding path
             if(wrongRoomCounter > 6) {
                 //Go home boy!
