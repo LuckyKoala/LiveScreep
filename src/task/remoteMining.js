@@ -69,7 +69,7 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     const targetRoomName = Game.flags[destinedTarget].pos.roomName;
     const room = Game.rooms[targetRoomName];
 
-    if(Memory.rooms[targetRoomName].underAttack) {
+    if(Memory.rooms[targetRoomName] && Memory.rooms[targetRoomName].underAttack) {
         if(cnt[C.REMOTE_GUARDIAN]===0) {
             queueRoom.queue.extern.unshift([C.REMOTE_GUARDIAN, extraMemory]);
             cnt[C.REMOTE_GUARDIAN]++;
