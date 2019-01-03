@@ -172,14 +172,16 @@ mod.loop = function(room, forceRun=false) {
             //Iterate
             const x = pos[0];
             const y = pos[1];
-            const arr = room.lookForAt(LOOK_STRUCTURES, x, y);
+            const arr = _.filter(room.lookForAt(LOOK_STRUCTURES, x, y), o => o.structureType===type);
             if(arr.length > 0) {
-                //There is a structure on the pos
-                // TODO check if type is equal and do properly rebuild
+                //There is a same type of structure on the pos
+                // so we can't build on this pos
+                //TODO check integrity, maybe rebuild structure on this pos
                 continue;
             } else {
-                room.createConstructionSite(x, y, type);
-                return true;
+                if(room.createConstructionSite(x, y, type) === OK) {
+                    return true;
+                }
             }
         }
         return false;
@@ -268,17 +270,20 @@ mod.loop = function(room, forceRun=false) {
 
 mod.initRoad = function(room, sources) {
     const self = this;
+    const exits = Game.map.describeExits(room.name);
     const spawns = room.spawns;
     _.forEach(spawns, spawn => {
         //Spawn to Source
         _.forEach(sources, source => self.buildRoad(room, spawn.pos, source.pos));
         //Spawn to Controller
         self.buildRoad(room, spawn.pos, room.controller.pos);
+        //Spawn to Exit
+        for(let exitStr in exits) {
+            const exitDir = parseInt(exitStr);
+            const exit = spawn.pos.findClosestByPath(exitDir);
+            self.buildRoad(room, spawn.pos, exit);
+        }
     });
-    //Spawn to Exit
-    //const exitDir = creep.room.findExitTo(anotherCreep.room);
-    //const exit = creep.pos.findClosestByRange(exitDir);
-    //creep.moveTo(exit);
 };
 
 mod.placeSiteAt = function(room, x, y, structureType) {
@@ -328,6 +333,7 @@ mod.showRoadPath = function(room, from, to) {
         opacity: .1
     });
 };
+
 mod.buildRoad = function(room, from, to) {
     const path = room.findPath(from, to);
     //Only build road between from and to, so we remove these two pos from path
@@ -336,5 +342,3 @@ mod.buildRoad = function(room, from, to) {
     const self = this;
     _.forEach(path, o => self.saveStructure(room, [o.x, o.y], STRUCTURE_ROAD));
 };
-
-//Layout extension
