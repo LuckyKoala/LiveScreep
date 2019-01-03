@@ -37,8 +37,8 @@ const targetInitFunc = function(creep) {
         const storage = creep.room.storage;
         if(storage) {
             return storage;
-        } else if(creep.room.controller.level<3 && creep.room.controller.container) {
-            //If low rcl, we treat controller container as storage
+        } else if(creep.room.controller.container) {
+            //If no storage, we treat controller container as storage
             return creep.room.controller.container;
         } else {
             return false;

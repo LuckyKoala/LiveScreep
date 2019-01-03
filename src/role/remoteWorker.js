@@ -8,7 +8,7 @@ mod.roleConfigWithStorage = {
 
 mod.roleConfigWithoutStorage = {
     inStack: [Action.Travel, Action.Pickup, Action.Harvest],
-    outStack: [Action.Back, Action.Fill, Action.Fuel, Action.PutForUpgrade],
+    outStack: [Action.Back, Action.Fill, Action.Fuel, Action.Build, Action.Upgrade],
 };
 
 mod.loop = function(creep) {
