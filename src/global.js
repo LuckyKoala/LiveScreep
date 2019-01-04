@@ -186,7 +186,6 @@ global.Action = {
     Fill: require('action_fill'),
     Idle: require('action_idle'),
     Upgrade: require('action_upgrade'),
-    ComplexUpgrade: require('action_complex_upgrade'),
     Build: require('action_build'),
     Withdraw: require('action_withdraw'),
     Put: require('action_put'),
