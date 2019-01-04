@@ -11,6 +11,7 @@ mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         const controller = target;
         const container = creep.room.controller.container;
+        const link = creep.room.controllerLink;
         const energyPerAction = UPGRADE_CONTROLLER_POWER*creep.getActiveBodyparts(WORK);
         const energyRemainNextTick = creep.carry.energy - energyPerAction;
 
@@ -19,7 +20,7 @@ mod.loop = function(creep) {
         let moved = false;
         let worked = false;
 
-        if(creep.pos.isNearTo(container)) {
+        if(container && creep.pos.isNearTo(container)) {
             //Maintain container
             if(container.hits < container.hitsMax) {
                 creep.repair(container);
@@ -29,11 +30,13 @@ mod.loop = function(creep) {
         }
         //We need more energy!
         if(energyNotEnoughForNextAction) {
-            if(creep.pos.isNearTo(container)) {
-                //We can do withdraw and upgrade at same tick now!
-                //We need withdraw energy in this tick, because the state of game objects
-                //  only update in next tick
-                creep.withdraw(creep.room.controller.container, RESOURCE_ENERGY);
+            //We can do withdraw and upgrade at same tick now!
+            //We need withdraw energy in this tick, because the state of game objects
+            //  only update in next tick
+            if(link && creep.pos.isNearTo(link) && link.energy>0) {
+                creep.withdraw(link, RESOURCE_ENERGY);
+            } else if(container && creep.pos.isNearTo(container) && container.store[RESOURCE_ENERGY]>0) {
+                creep.withdraw(container, RESOURCE_ENERGY);
             } else {
                 creep.moveTo(container);
                 moved = true;
