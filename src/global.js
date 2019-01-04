@@ -17,6 +17,7 @@ global.tryRequire = (path, silent = false) => {
 
 global.C = {
     USERNAME: 'Lucky777777',
+    SIGN_TEXT: 'A little mutation?',
     OWNED_ROOM: 'owned room',
     EXTERNAL_ROOM: 'external room',
     HIGH_WAY: 'high way',
@@ -207,6 +208,7 @@ global.Action = {
     Reserve: require('action_reserve'),
     Heal: require('action_heal'),
     Claim: require('action_claim'),
+    Sign: require('action_sign'),
     Renew: require('action_renew'),
 };
 global.Setup = {

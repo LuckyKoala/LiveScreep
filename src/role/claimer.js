@@ -2,7 +2,7 @@ var mod = new RoleObj(C.CLAIMER);
 module.exports = mod;
 
 mod.roleConfig= {
-    inStack: [Action.Travel, Action.Claim],
+    inStack: [Action.Travel, Action.Sign, Action.Claim],
     outStack: [],
 };
 
