@@ -33,13 +33,20 @@ mod.loop = function(creep) {
             //We can do withdraw and upgrade at same tick now!
             //We need withdraw energy in this tick, because the state of game objects
             //  only update in next tick
-            if(link && creep.pos.isNearTo(link) && link.energy>0) {
-                creep.withdraw(link, RESOURCE_ENERGY);
-            } else if(container && creep.pos.isNearTo(container) && container.store[RESOURCE_ENERGY]>0) {
-                creep.withdraw(container, RESOURCE_ENERGY);
-            } else {
-                creep.moveTo(container);
-                moved = true;
+            if(link && link.energy>0) {
+                if(creep.pos.isNearTo(link)) {
+                    creep.withdraw(link, RESOURCE_ENERGY);
+                } else {
+                    creep.moveTo(link);
+                    moved = true;
+                }
+            } else if(container && container.store[RESOURCE_ENERGY]>0) {
+                if(creep.pos.isNearTo(container)) {
+                    creep.withdraw(container, RESOURCE_ENERGY);
+                } else {
+                    creep.moveTo(container);
+                    moved = true;
+                }
             }
         }
 
