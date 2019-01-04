@@ -88,8 +88,8 @@ mod.queueCreeps = function(roomName, destinedTarget) {
         return;
     }
 
-    if(queueRoom.controller.level < 4 || !queueRoom.storage) {
-        //Can't afford too many creeps
+    if(queueRoom.controller.level < 4) {
+        //Can't afford spawn cost of claimer
         // sent remoteWorkers
         if(room) {
             //=== Harvest all sources and spawn dedicated hauler ===
