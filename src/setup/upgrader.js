@@ -10,20 +10,20 @@ mod.setupConfig = {
         prefix: `[Low-${C.UPGRADER}]`,
         memory: {role: C.UPGRADER},
     },
-    //Let hauler pull upgrader
     Normal: {
         minEnergy: 650,
+        //40work 8carry  5*10/11(10tick upgrade 1tick withdraw) :) this one better
+        //40work 10carry 4*12/13
         essBody: [WORK, WORK, WORK, MOVE, WORK, WORK, CARRY, MOVE], //5work
-        extraBody: [WORK, WORK, WORK, MOVE, WORK, WORK, WORK, MOVE], //6work
-        maxExtraAmount: 0,
+        extraBody: [WORK, WORK, WORK, MOVE, WORK, WORK, CARRY, MOVE], //5work
         prefix: `[${C.UPGRADER}]`,
         memory: {role: C.UPGRADER},
     },
     High: {
         minEnergy: 300,
-        essBody: [WORK, CARRY],
-        extraBody: [WORK, WORK],
-        maxExtraAmount: 7, //Up to 15 work parts due to limitation of RCL8
+        essBody: [WORK, WORK, WORK, WORK, WORK, CARRY], //5work
+        extraBody: [WORK, WORK, WORK, WORK, WORK, CARRY], //5work
+        maxExtraAmount: 2, //Up to 15 work parts due to limitation of RCL8
         prefix: `[High-${C.UPGRADER}]`,
         memory: {role: C.UPGRADER},
     },
@@ -31,8 +31,8 @@ mod.setupConfig = {
 
 mod.dynamicExtraAmount = function(room) {
     if(room.storage) {
-        //Add 6 work will consume 6energy*1400tick = 8400energy
-        return Math.floor((room.storage.store[RESOURCE_ENERGY] - Config.StorageBoundForAddUpgrader)/8400);
+        //Add 5 work will consume 5energy*10/11tick*1500 = 6818energy
+        return Math.floor((room.storage.store[RESOURCE_ENERGY] - Config.StorageBoundForAddUpgrader)/6818);
     } else {
         return 1; //aka 10 work
     }

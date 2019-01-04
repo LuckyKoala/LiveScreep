@@ -40,15 +40,20 @@ mod.loop = function(room) {
 mod.spawnWithSetup = function(spawn, usedEnergyAmount, urgent, {dynamicExtraAmount, setupConfig, shouldUseHighLevel}, extraMemory) {
     if(spawn.spawning) return false;
 
-    let dynamicMaxExtraAmount = false;
-    if(dynamicExtraAmount) {
-         dynamicMaxExtraAmount = dynamicExtraAmount(spawn.room);
-    }
-
     const energyAvailable = spawn.room.energyAvailable;
+    let dynamicMaxExtraAmount = false;
     let setup;
     if(shouldUseHighLevel === undefined) setup = setupConfig.Normal;
-    else setup = shouldUseHighLevel(spawn.room) ? setupConfig.High : setupConfig.Normal;
+    else {
+        if(shouldUseHighLevel(spawn.room)) {
+            setup = setupConfig.High;
+        } else {
+            if(dynamicExtraAmount) {
+                dynamicMaxExtraAmount = dynamicExtraAmount(spawn.room);
+            }
+            setup = setupConfig.Normal;
+        }
+    }
     //For low energy available, use SetupConfig.Low
     if(energyAvailable < setupConfig.Normal.minEnergy && !!setupConfig.Low) {
         setup = setupConfig.Low;
