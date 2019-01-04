@@ -31,7 +31,7 @@ mod.loop = function(creep) {
 
         if(creep.pos.inRangeTo(target, 3)) {
             const hostiles = creep.pos.findInRange(creep.room.cachedFind(FIND_HOSTILE_CREEPS), 2);
-            if(hostiles > 3) {
+            if(hostiles.length > 3) {
                 creep.rangedMassAttack();
             } else {
                 if(creep.pos.inRangeTo(target, 1)) {
