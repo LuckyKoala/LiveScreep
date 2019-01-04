@@ -4,14 +4,19 @@ module.exports = mod;
 mod.loop = function(room) {
     //Try all the spawn
     let spawns = room.spawns;
+    let usedEnergyAmount = 0;
     for(let spawn of spawns) {
         if(room.queue.urgent.length > 0) {
-            if(this.spawnWithSetup(spawn, true, Setup[room.queue.urgent[0]])) {
+            const usedEnergy = this.spawnWithSetup(spawn, usedEnergyAmount, true, Setup[room.queue.urgent[0]]);
+            if(usedEnergy !== false) {
                 room.queue.urgent.shift();
+                usedEnergyAmount+=usedEnergy;
             }
         } else if(room.queue.normal.length > 0) {
-            if(this.spawnWithSetup(spawn, false, Setup[room.queue.normal[0]])) {
+            const usedEnergy = this.spawnWithSetup(spawn, usedEnergyAmount, false, Setup[room.queue.normal[0]]);
+            if(usedEnergy !== false) {
                 room.queue.normal.shift();
+                usedEnergyAmount+=usedEnergy;
             }
         } else if(room.queue.extern.length > 0) {
             //Different setup format
@@ -20,8 +25,10 @@ mod.loop = function(room) {
             const setupArr = room.queue.extern[0];
             const setup = Setup[setupArr[0]];
             let extraMemory = setupArr[1];
-            if(this.spawnWithSetup(spawn, false, setup, extraMemory)) {
+            const usedEnergy = this.spawnWithSetup(spawn, usedEnergyAmount, false, setup, extraMemory);
+            if(usedEnergy !== false) {
                 room.queue.extern.shift();
+                usedEnergyAmount+=usedEnergy;
             }
         }
     }
@@ -30,7 +37,7 @@ mod.loop = function(room) {
 // Return true indicates that creep can be created
 //When incoming energy of spawn is low, then spawn of worker/harvester-hauler
 //  is urgent, otherwise it is not urgent, we can wait for it to be bigger.
-mod.spawnWithSetup = function(spawn, urgent, {dynamicExtraAmount, setupConfig, shouldUseHighLevel}, extraMemory) {
+mod.spawnWithSetup = function(spawn, usedEnergyAmount, urgent, {dynamicExtraAmount, setupConfig, shouldUseHighLevel}, extraMemory) {
     if(spawn.spawning) return false;
 
     let dynamicMaxExtraAmount = false;
@@ -39,7 +46,6 @@ mod.spawnWithSetup = function(spawn, urgent, {dynamicExtraAmount, setupConfig, s
     }
 
     const energyAvailable = spawn.room.energyAvailable;
-    let energyForSpawnCapacity = spawn.room.energyAvailable;
     let setup;
     if(shouldUseHighLevel === undefined) setup = setupConfig.Normal;
     else setup = shouldUseHighLevel(spawn.room) ? setupConfig.High : setupConfig.Normal;
@@ -49,10 +55,12 @@ mod.spawnWithSetup = function(spawn, urgent, {dynamicExtraAmount, setupConfig, s
     }
     const {minEnergy, essBody, extraBody, prefix, memory, maxExtraAmount} = setup;
 
-    //Calculate body and examine whether energyAvailable is enough
     //If it is not urgent, then use energyCapacityAvailable to calculate
     //  maxiumBody, throught this we achieved "Wait For Bigger Single Creep"
-    if(!urgent) energyForSpawnCapacity = spawn.room.energyCapacityAvailable;
+    let energyForSpawnCapacity = spawn.room.energyAvailable-usedEnergyAmount;
+    if(!urgent) energyForSpawnCapacity = spawn.room.energyCapacityAvailable-usedEnergyAmount;
+    
+    //Calculate body and examine whether energyAvailable is enough
     let body;
     if(dynamicMaxExtraAmount) {
         body = this.getMaxiumBody(essBody, extraBody, dynamicMaxExtraAmount, energyForSpawnCapacity);
@@ -77,7 +85,7 @@ mod.spawnWithSetup = function(spawn, urgent, {dynamicExtraAmount, setupConfig, s
     console.log(`Code[${result}] Spawning ${name}, cost ${bodyCost}, body ${JSON.stringify(body)}`);
     if(result == OK) {
         Util.Stat.incEnergyOut(spawn.room.name, bodyCost);
-        return true;
+        return bodyCost;
     }
     return false;
 };
