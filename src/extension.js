@@ -355,8 +355,8 @@ Object.defineProperties(Room.prototype, {
         get: function() {
             if (!this._spawns) {
                 const spawnIds = this.memory.spawnIds;
-                //If array has no item, re-search and cache it
-                if (spawnIds && spawnIds.length > 0) {
+                const spawnLimit = CONTROLLER_STRUCTURES[STRUCTURE_SPAWN][this.controller.level];
+                if (spawnIds && spawnIds.length === spawnLimit) {
                     var spawns = _.map(spawnIds, id => Game.getObjectById(id));
                     this._spawns = spawns;
                 } else {
