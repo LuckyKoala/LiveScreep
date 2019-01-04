@@ -92,6 +92,8 @@ mod.loopOwnedRoom = function(room) {
     SpawnService.loop(room);
     //Energy history
     Util.Stat.sumEnergyHistory(room.name);
+
+
     //=== Stat Display ===
     //Game time
     room.visual.text(`Time: ${Game.time}`, 8, 2, {color: 'white', font: 1});
@@ -116,9 +118,11 @@ mod.loopOwnedRoom = function(room) {
     const progressTotal = room.controller.progressTotal;
     const percent = (progress/progressTotal).toFixed(2);
     room.visual.text(`Progress: ${progress}/${progressTotal}(${percent})`, 8, 5, {color: 'gold', font: 1});
+    //Energy in spawns and extensions
+    room.visual.text(`EnergyInSpawn: ${room.energyAvailable}/${room.energyCapacityAvailable}`, 8, 6, {color: 'gold', font: 1});
     //Energy in storage
     if(room.storage) {
-        room.visual.text(`Energy in storage: ${room.storage.store[RESOURCE_ENERGY]}`, 8, 6, {color: 'gold', font: 1});
+        room.visual.text(`Energy in storage: ${room.storage.store[RESOURCE_ENERGY]}`, 8, 7, {color: 'gold', font: 1});
     }
 };
 
