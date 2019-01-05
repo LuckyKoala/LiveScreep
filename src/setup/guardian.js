@@ -4,8 +4,8 @@ module.exports = mod;
 mod.setupConfig = {
     Normal: {
         minEnergy: 210,
-        essBody: [ATTACK, ATTACK, MOVE],
-        extraBody: [RANGED_ATTACK, RANGED_ATTACK, MOVE],
+        essBody: [TOUGH, TOUGH, MOVE, TOUGH, ATTACK, MOVE],
+        extraBody: [RANGED_ATTACK, ATTACK, MOVE],
         maxExtraAmount: 1,
         prefix: `[${C.GUARDIAN}]`,
         memory: {role: C.GUARDIAN},
