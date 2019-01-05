@@ -28,6 +28,13 @@ mod.nextTarget = function() {
             }
         });
         if(target) return target;
+        else {
+            //No road need to be repair
+            if(creep.memory.role===C.BUILDER && creep.room.name!==creep.memory.homeRoom) {
+                //Release builder
+                creep.room.memory.lastRepairTick = Game.time;
+            }
+        }
 
         //Now we can find low hits wall
         return creep.pos.findClosestByRange(Util.Defense.getWallsForMaintain(creep.room));
