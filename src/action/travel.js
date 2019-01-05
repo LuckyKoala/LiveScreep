@@ -7,7 +7,7 @@ mod.nextTarget = function() {
     if(creep.memory.destinedTarget) {
         //we have a target
         const flag = Game.flags[creep.memory.destinedTarget];
-        if(!flag) {
+        if(!flag && creep.memory.role!==C.BUILDER) {
             console.log('Detect flag removed');
             creep.memory.role=C.RECYCLER;
             return false;

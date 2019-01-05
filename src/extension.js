@@ -423,13 +423,18 @@ Object.defineProperties(Room.prototype, {
     },
 });
 
+Room.prototype.cachedCreeps = function() {
+    const self = this;
+    return _.filter(Game.creeps, function(creep) { return creep.memory.homeRoom == self.name; });
+};
+
 Room.prototype.cachedRoleCount = function() {
     if(this.Cache === undefined) this.Cache = {};
     const internal = '$roleCount';
     if(this.Cache[internal]===undefined) {
         //=== Role count ===
         const self = this;
-        const roomCreeps = _.filter(Game.creeps, function(creep) { return creep.memory.homeRoom == self.name; });
+        const roomCreeps = this.cachedCreeps();
         let cnt = {
             existed: {},
             queue: {},

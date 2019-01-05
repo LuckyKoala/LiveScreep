@@ -34,6 +34,28 @@ mod.loop = function() {
             flag.memory.assignedRoom = assignedRoom;
             //Loop construction
             ServiceConstruction.loopRemoteMining(flag);
+            //Is there sites need to be build or road need to be repair?
+            if(flag.room) {
+                const sites = flag.room.cachedFind(FIND_CONSTRUCTION_SITES);
+                const lastRepairTick = flag.room.memory.lastRepairTick || 0;
+                if(sites.length > 0 || (Game.time-lastRepairTick)>1500) {
+                    //Find builder and assign destinedTarget to sent builder outside when it is available
+                    const builders = _.filter(Game.rooms[assignedRoom].cachedCreeps(), c => c.memory.role===C.BUILDER && c.memory.destinedTarget===undefined);
+                    if(builders.length>0) {
+                        const builder = builders[0];
+                        builder.memory.destinedTarget=destinedTarget;
+                        console.log(`Sending ${builder.name} to ${destinedTarget}`);
+                    }
+                } else {
+                    //Find builder which is assigned to current flag, unassigned it
+                    const builders = _.filter(Game.rooms[assignedRoom].cachedCreeps(), c => c.memory.role===C.BUILDER && c.memory.destinedTarget===destinedTarget);
+                    if(builders.length>0) {
+                        const builder = builders[0];
+                        delete builder.memory.destinedTarget;
+                        console.log(`Sending ${builder.name} back from ${destinedTarget}`);
+                    }
+                }
+            }
             //Enqueue remote-mining task related creeps
             this.queueCreeps(assignedRoom, destinedTarget);
         }

@@ -24,7 +24,7 @@ mod.nextTarget = function() {
         //Then road
         target = creep.pos.findClosestByRange(creep.room.cachedFind(FIND_STRUCTURES), {
             filter: function(o) {
-                return o.structureType===STRUCTURE_ROAD && o.hits<o.hitsMax;
+                return o.structureType===STRUCTURE_ROAD && o.hits<4/5*o.hitsMax;
             }
         });
         if(target) return target;
