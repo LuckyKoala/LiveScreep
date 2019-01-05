@@ -32,7 +32,8 @@ mod.setupConfig = {
 mod.dynamicExtraAmount = function(room) {
     if(room.storage) {
         //Add 5 work will consume 5energy*10/11tick*1500 = 6818energy
-        return Math.floor((room.storage.store[RESOURCE_ENERGY] - Config.StorageBoundForAddUpgrader)/6818);
+        const amount = Math.floor((room.storage.store[RESOURCE_ENERGY] - Config.StorageBoundForAddUpgrader)/6818);
+        return Math.max(0, amount);
     } else {
         return 1; //aka 10 work
     }
