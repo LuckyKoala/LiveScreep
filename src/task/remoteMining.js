@@ -1,3 +1,5 @@
+const ServiceConstruction = require('service_construction');
+
 var mod = {};
 module.exports = mod;
 
@@ -30,6 +32,8 @@ mod.loop = function() {
         if(assignedRoom) {
             //Write back to memory
             flag.memory.assignedRoom = assignedRoom;
+            //Loop construction
+            ServiceConstruction.loopRemoteMining(flag);
             //Enqueue remote-mining task related creeps
             this.queueCreeps(assignedRoom, destinedTarget);
         }

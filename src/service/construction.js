@@ -143,6 +143,28 @@ mod.init = function(room) {
     room.layout.init = true;
 };
 
+const makeIterateAndPlace = function(room) {
+    return (type) => {
+        for(const pos of room.layout[type]) {
+            //Iterate
+            const x = pos[0];
+            const y = pos[1];
+            const arr = _.filter(room.lookForAt(LOOK_STRUCTURES, x, y), o => o.structureType===type);
+            if(arr.length > 0) {
+                //There is a same type of structure on the pos
+                // so we can't build on this pos
+                //TODO check integrity, maybe rebuild structure on this pos
+                continue;
+            } else {
+                if(room.createConstructionSite(x, y, type) === OK) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+};
+
 mod.loop = function(room, forceRun=false) {
     //Do not init twice
     if(!room.layout.init) this.init(room);
@@ -167,25 +189,7 @@ mod.loop = function(room, forceRun=false) {
 
     //== Common iterate function ==
     let success = false;
-    const iterateAndPlace = function(type) {
-        for(const pos of room.layout[type]) {
-            //Iterate
-            const x = pos[0];
-            const y = pos[1];
-            const arr = _.filter(room.lookForAt(LOOK_STRUCTURES, x, y), o => o.structureType===type);
-            if(arr.length > 0) {
-                //There is a same type of structure on the pos
-                // so we can't build on this pos
-                //TODO check integrity, maybe rebuild structure on this pos
-                continue;
-            } else {
-                if(room.createConstructionSite(x, y, type) === OK) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    };
+    const iterateAndPlace = makeIterateAndPlace(room);
 
     //=== Container ===
     if(!room.controller.container) {
@@ -263,10 +267,65 @@ mod.loop = function(room, forceRun=false) {
     }
     if(success) return;
     //== Road ==
-    iterateAndPlace(STRUCTURE_ROAD);
+    success = iterateAndPlace(STRUCTURE_ROAD);
 
-    room.memory.lastFullyConstructionCheck = Game.time;
+    if(!success) room.memory.lastFullyConstructionCheck = Game.time;
 };
+
+//====================== Remote Mining ==============================
+mod.initRemoteMining = function(flag, room) {
+    delete room._layout; //re init
+    delete room.memory.layout; //re init
+    //== Road ==
+    this.initRemoteMiningRoad(flag, room, room.sources);
+    room.layout.init = true;
+};
+
+mod.loopRemoteMining = function(flag) {
+    const room = flag.room;
+    const assignedRoom = flag.memory.assignedRoom;
+    //Only loop with vision of the room
+    if(!room || !assignedRoom) return;
+
+    //Do not init twice
+    if(!room.layout.init) this.initRemoteMining(flag, room);
+    //Show room plan if ask
+    const show = room.memory.showRoomPlan;
+    if(show) this.showRoomPlan(room);
+    //Do not loop room.layout every tick
+    const lastConstruct = room.memory.lastConstruct || 0;
+    const lastFullyConstructionCheck = room.memory.lastFullyConstructionCheck || 0;
+
+    //one site at one time
+    const sites = room.cachedFind(FIND_CONSTRUCTION_SITES);
+    const noSite = sites.length === 0;
+    if(!noSite || (Game.time-lastFullyConstructionCheck)<100) {
+        // actually not loop room.layout
+        //  so we don not update lastConstruct here
+        return;
+    }
+
+    console.log(`Loop remote mining construction of room ${room.name}`);
+    room.memory.lastConstruct = Game.time;
+
+    const iterateAndPlace = makeIterateAndPlace(room);
+
+    //== Road ==
+    const success = iterateAndPlace(STRUCTURE_ROAD);
+    if(!success) {
+        room.memory.lastFullyConstructionCheck = Game.time;
+    }
+};
+
+mod.initRemoteMiningRoad = function(flag, room, sources) {
+    const self = this;
+    const exitDir = room.findExitTo(Game.rooms[flag.memory.assignedRoom]);
+    _.forEach(sources, source => {
+        const exit = source.pos.findClosestByRange(exitDir);
+        self.buildRoad(room, exit, source.pos);
+    });
+};
+//===================================================================
 
 mod.initRoad = function(room, sources) {
     const self = this;
@@ -335,10 +394,10 @@ mod.showRoadPath = function(room, from, to) {
 };
 
 mod.buildRoad = function(room, from, to) {
-    const path = room.findPath(from, to);
-    //Only build road between from and to, so we remove these two pos from path
-    path.pop();
-    path.shift();
+    const path = room.findPath(from, to, {
+        ignoreCreeps: true,
+        range: 1
+    });
     const self = this;
     _.forEach(path, o => self.saveStructure(room, [o.x, o.y], STRUCTURE_ROAD));
 };
