@@ -45,7 +45,6 @@ mod.word = '🚧 repair';
 
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
-        //console.log('Loop repair action whose target is '+JSON.stringify(target));
         const result = creep.repair(target);
         if(result == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});

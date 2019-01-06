@@ -16,11 +16,11 @@ function resetCmdHandler(args) {
         if(args[0]==='force') {
             for(let key in Memory) {
                 delete Memory[key];
-                console.log('Reset done.');
+                Logger.info('Reset done.');
             }
         }
     } else {
-        console.log('This command will reset Memory, use reset force if you are sure about this');
+        Logger.warning('This command will reset Memory, use reset force if you are sure about this');
     }
 }
 
@@ -42,9 +42,9 @@ function roomPlanCmdHandler(args) {
 };
 
 function notImplemented() {
-    console.log('command not implemented');
+    Logger.warning('command not implemented');
 };
 
 function wrongAmountOfArgs() {
-    console.log('the amount of argument is not correct');
+    Logger.warning('the amount of argument is not correct');
 }

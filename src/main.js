@@ -20,51 +20,51 @@ const version = 1;
 const loop0 = function () {
     const baseFlags = _.filter(Game.flags, flag => FlagUtil.base.examine(flag));
     if(baseFlags.length === 0) {
-        console.log(`Can't find base flag (${FlagUtil.base.describe()}), main loop paused.`);
+        Logger.warning(`Can't find base flag (${FlagUtil.base.describe()}), main loop paused.`);
         return;
     }
 
-    //console.log('=======Main Loop Start====>>>');
+    Logger.trace('=======Main Loop Start====>>>');
     Util.SourceMark.loop();
     //Version update
     const previoudVersion = Memory.version || 0;
     if(previoudVersion!==version) {
         //Do something for breaking change between versions
-        console.log(`Upgraded to version ${version}`);
+        Logger.info(`Upgraded to version ${version}`);
         Memory.version = version;
     }
     //Run tasks to get creep spawn queue
-    //console.log('1. Running task manager');
-    try { TaskManager.loop(); } catch (e) { console.log("error with task manager loop\n", e.stack); }
+    Logger.trace('1. Running task manager');
+    try { TaskManager.loop(); } catch (e) { Logger.fatal("error with task manager loop\n", e.stack); }
     //Run rooms to get metadata and run structures
-    //console.log('2. Running room manager');
-    try { RoomManager.loop(); } catch (e) { console.log("error with room manager loop\n", e.stack); }
+    Logger.trace('2. Running room manager');
+    try { RoomManager.loop(); } catch (e) { Logger.fatal("error with room manager loop\n", e.stack); }
     //Run creeps
-    //console.log('3. Running creep manager');
-    try { CreepManager.loop(); } catch (e) { console.log("error with creep manager loop\n", e.stack); }
+    Logger.trace('3. Running creep manager');
+    try { CreepManager.loop(); } catch (e) { Logger.fatal("error with creep manager loop\n", e.stack); }
     //Validate and clear data
-    //console.log('4. Running garbage collection');
+    Logger.trace('4. Running garbage collection');
     GC();
-    //console.log('<<<====Main Loop End=======');
+    Logger.trace('<<<====Main Loop End=======');
 };
 
 function GC() {
     for(let name in Memory.creeps) {
         if(!Game.creeps[name]) {
             delete Memory.creeps[name];
-            console.log('Clearing non-existing creep memory: ', name);
+            Logger.trace('Clearing non-existing creep memory: ', name);
         }
     }
     for(let id in Memory.structures) {
         if(!Game.getObjectById(id)) {
             delete Memory.structures[id];
-            console.log('Clearing non-existing structure memory: ', id);
+            Logger.info('Clearing non-existing structure memory: ', id);
         }
     }
     for(let id in Memory.sources) {
         if(!Game.getObjectById(id)) {
             delete Memory.sources[id];
-            console.log('Clearing non-existing source memory: ', id);
+            Logger.info('Clearing non-existing source memory: ', id);
         }
     }
     for(let name in Memory.rooms) {
@@ -75,7 +75,7 @@ function GC() {
     for(let name in Memory.construction) {
         if(Game.rooms[name] === undefined) {
             delete Memory.construction[name];
-            console.log('Clearing non-existing construction memory: ', name);
+            Logger.info('Clearing non-existing construction memory: ', name);
         }
     }
 };

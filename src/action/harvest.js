@@ -11,7 +11,7 @@ mod.nextTarget = function() {
 
     if(!markSource) {
         //Not found
-        console.log("Finding unmark source => "+creep.name);
+        Logger.trace("Finding unmark source => "+creep.name);
         const found = Util.SourceMark.findAndMarkSource(creep, dynamic);
         if(found) {
             markSource = Util.SourceMark.getMarkSource(creep);

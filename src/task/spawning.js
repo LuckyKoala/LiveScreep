@@ -11,7 +11,7 @@ mod.loop = function() {
         } else {
             //No vision
             // but this flag should only place in base room!
-            console.log(`Found spawning(base) flag[${flag.name}] in no-vision room[${flag.roomName}]!`);
+            Logger.warning(`Found spawning(base) flag[${flag.name}] in no-vision room[${flag.roomName}]!`);
         }
     }
 };

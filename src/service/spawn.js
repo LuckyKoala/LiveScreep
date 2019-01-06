@@ -87,7 +87,7 @@ function spawnWithSetup (spawn, usedEnergyAmount, urgent, {dynamicExtraAmount, s
     const result = spawn.spawnCreep(body, name, {
         memory: memory,
     });
-    console.log(`Code[${result}] Spawning ${name}, cost ${bodyCost}, body ${JSON.stringify(body)}`);
+    Logger.trace(`Code[${result}] Spawning ${name}, cost ${bodyCost}, body ${JSON.stringify(body)}`);
     if(result == OK) {
         Util.Stat.incEnergyOut(spawn.room.name, bodyCost);
         return bodyCost;

@@ -64,7 +64,7 @@ const targetInitFunc = function(creep) {
             return false;
         }
     } else {
-        console.log(`Can't find target while ${creep.name} using withdraw action`);
+        Logger.warning(`Can't find target while ${creep.name} using withdraw action`);
         return false;
     }
 };

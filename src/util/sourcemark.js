@@ -24,7 +24,7 @@ module.exports = {
             const source = Game.getObjectById(id);
             if(source) ensureSourceMarkInitialize(source);
             if(_.isUndefined(source.memory.mark.status[creep.name])) {
-                console.log(`Clean sourceMark of ${creep.name}`);
+                Logger.trace(`Clean sourceMark of ${creep.name}`);
                 clearSourceMark(creep);
                 return false;
             } else {
@@ -102,7 +102,7 @@ function markSource(creep, source) {
         target: source.id,
     };
     //Log
-    console.log("Mark source [" + source.id + "] by "+creep.name);
+    Logger.trace("Mark source [" + source.id + "] by "+creep.name);
 }
 
 function clearSourceMark(creep) {
@@ -162,6 +162,6 @@ function ensureSourceMarkInitialize(source) {
     //Has source been initialized?
     if(_.isUndefined(source.memory.mark)) {
         initSourceMark(source);
-        console.log(`Init source mark for [${source.id}]`);
+        Logger.info(`Init source mark for [${source.id}]`);
     }
 }

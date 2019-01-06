@@ -8,13 +8,12 @@ mod.loop = function() {
         const destinedTarget = flag.name;
         let assignedRoom = flag.memory.assignedRoom;
         if(assignedRoom === undefined) {
-            console.log(`Detect new outpost flag => ${flag.name}`);
+            Logger.info(`Detect new outpost flag => ${flag.name}`);
             //Find suitable room to do this task
             //NOTE: Currently we only calculate range
             let range = Infinity;
             let selectedRoomName;
             for(const roomName in Game.rooms) {
-                console.log(roomName);
                 const room = Game.rooms[roomName];
                 const roomType = room.memory.roomType;
                 if(roomType && roomType === C.OWNED_ROOM && room.controller.level>=6) {
@@ -73,7 +72,7 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     if(!flag.room) {
         //no vision
         if(cnt[C.SCOUT]===0) {
-            console.log(logPrefix+'Scouting...');
+            Logger.trace(logPrefix+'Scouting...');
             queueRoom.queue.extern.unshift([C.SCOUT, extraMemory]);
             cnt[C.SCOUT]++;
         }
@@ -84,7 +83,7 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     if(!targetRoom.controller.my) {
         //Need to be claim
         if(cnt[C.CLAIMER]===0) {
-            console.log(logPrefix+'Claiming...');
+            Logger.trace(logPrefix+'Claiming...');
             queueRoom.queue.extern.unshift([C.CLAIMER, extraMemory]);
             cnt[C.CLAIMER]++;
         }
@@ -100,13 +99,13 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     // 2. Sent pioneers to do the work
     if(targetRoom.spawns.length===0) {
         if(cnt[C.PIONEER]<2) {
-            console.log(logPrefix+'Building...');
+            Logger.trace(logPrefix+'Building...');
             queueRoom.queue.extern.unshift([C.PIONEER, extraMemory]);
             cnt[C.PIONEER]++;
         }
     } else {
         // 3. Convert to Task.Base
-        console.log(logPrefix+'Converting...');
+        Logger.trace(logPrefix+'Converting...');
         //Convert all remain creep to be a local residents
         const creeps = targetRoom.cachedFind(FIND_MY_CREEPS);
         //let harvesterHeadCount = targetRoom.sources.length;

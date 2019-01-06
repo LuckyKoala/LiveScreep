@@ -1,5 +1,5 @@
 const LogLevel = {
-    'trace': 1,
+    'trace': 1, //Something happens very often, message goes here is only for observation
     'debug': 2,
     'info': 3,
     'warning': 4,

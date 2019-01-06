@@ -26,7 +26,7 @@ mod.loop = function() {
                 }
             }
             assignedRoom = selectedRoomName;
-            console.log(`Detect new remote mining flag => ${flag.name} and assigned to [${assignedRoom}]`);
+            Logger.info(`Detect new remote mining flag => ${flag.name} and assigned to [${assignedRoom}]`);
         }
         //Do we have a assignedRoom now?
         if(assignedRoom) {
@@ -44,7 +44,7 @@ mod.loop = function() {
                     if(builders.length>0) {
                         const builder = builders[0];
                         builder.memory.destinedTarget=destinedTarget;
-                        console.log(`Sending ${builder.name} to ${destinedTarget}`);
+                        Logger.info(`Sending ${builder.name} to ${destinedTarget}`);
                     }
                 } else {
                     //Find builder which is assigned to current flag, unassigned it
@@ -52,7 +52,7 @@ mod.loop = function() {
                     if(builders.length>0) {
                         const builder = builders[0];
                         delete builder.memory.destinedTarget;
-                        console.log(`Sending ${builder.name} back from ${destinedTarget}`);
+                        Logger.info(`Sending ${builder.name} back from ${destinedTarget}`);
                     }
                 }
             }

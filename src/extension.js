@@ -564,7 +564,7 @@ Creep.prototype.moveTo = function(destination, ops, dareDevil = false) {
             // this.say("excuse me", true);
         }
         if (this.memory.stuckCount > 500 && !this.memory.stuckNoted) {
-            console.log(this.name, "is stuck at", this.pos, "stuckCount:", this.memory.stuckCount);
+            Logger.warning(this.name, "is stuck at", this.pos, "stuckCount:", this.memory.stuckCount);
             this.memory.stuckNoted = true;
         }
     }

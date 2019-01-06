@@ -97,7 +97,7 @@ mod.init = function(room) {
             }
         }
     } else {
-        console.log('Failed to find start pos for dissi flower!');
+        Logger.warning('Failed to find start pos for dissi flower!');
         //TODO some fallback layout for extensions
     }
     //== Storage ==
@@ -184,7 +184,7 @@ mod.loop = function(room, forceRun=false) {
         return;
     }
 
-    console.log(`Loop construction of room ${room.name}`);
+    Logger.trace(`Loop construction of room ${room.name}`);
     room.memory.lastConstruct = Game.time;
 
     //== Common iterate function ==
@@ -305,7 +305,7 @@ mod.loopRemoteMining = function(flag) {
         return;
     }
 
-    console.log(`Loop remote mining construction of room ${room.name}`);
+    Logger.trace(`Loop remote mining construction of room ${room.name}`);
     room.memory.lastConstruct = Game.time;
 
     const iterateAndPlace = makeIterateAndPlace(room);

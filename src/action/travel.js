@@ -8,7 +8,7 @@ mod.nextTarget = function() {
         //we have a target
         const flag = Game.flags[creep.memory.destinedTarget];
         if(!flag && creep.memory.role!==C.BUILDER) {
-            console.log('Detect flag removed');
+            Logger.info('Detect flag removed');
             creep.memory.role=C.RECYCLER;
             return false;
         }
@@ -58,7 +58,7 @@ mod.nextTarget = function() {
             //Creep can stay in wrong room at most 6 ticks in case it is finding path
             if(wrongRoomCounter > 6) {
                 //Go home boy!
-                console.log(`Creep ${creep.name} is going home!`);
+                Logger.trace(`Creep ${creep.name} is going home!`);
                 //Remove targets which may be in wrong room
                 delete creep.memory.targetMark;
                 return home.controller;
@@ -67,7 +67,7 @@ mod.nextTarget = function() {
                 return false;
             }
         } else {
-            console.log('no home!');
+            Logger.warning(`Creep ${creep.name} has no home!`);
             return false; // let creep stay at this room since it has no home!
         }
     }

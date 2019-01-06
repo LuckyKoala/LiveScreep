@@ -12,7 +12,7 @@ mod.loop = function() {
         if(roleModule) {
             roleModule.loop(creep);
         } else {
-            console.log('[Error] Undefined role module is in memory of creep -> '+name);
+            Logger.warning('[Error] Undefined role module is in memory of creep -> '+name);
         }
     }
 };

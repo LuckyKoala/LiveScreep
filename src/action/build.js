@@ -15,7 +15,6 @@ mod.word = '🚧 build';
 
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
-        //console.log('Loop build action whose target is '+JSON.stringify(target));
         const result = creep.build(target);
         if(result == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});

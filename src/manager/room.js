@@ -65,7 +65,7 @@ mod.dispatch = function(room) {
         this.loopKeeperRoom(room);
         break;
     default:
-        console.log('Undefined room type');
+        Logger.warning(`Undefined room type for room [${room.name}]`);
     }
 
 };
@@ -139,7 +139,7 @@ mod.expireRoom = function(roomName) {
     const lastSeen = Memory.rooms[roomName].lastSeen || 0;
     if(Game.time - lastSeen > ExpirePeriod) {
         delete Memory.rooms[roomName];
-        console.log('Clearing expired room memory: ', roomName);
+        Logger.info('Clearing expired room memory: ', roomName);
     }
 };
 

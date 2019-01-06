@@ -6,9 +6,9 @@ global.tryRequire = (path, silent = false) => {
         mod = require(path);
     } catch(e) {
         if( e.message && e.message.indexOf('Unknown module') > -1 ){
-            if(!silent) console.log(`Module "${path}" not found!`);
+            if(!silent) Logger.error(`Module "${path}" not found!`);
         } else if(mod == null) {
-            console.log(`Error loading module "${path}"!<br/>${e.stack || e.toString()}`);
+            Logger.error(`Error loading module "${path}"!<br/>${e.stack || e.toString()}`);
         }
         mod = null;
     }
@@ -165,7 +165,7 @@ global.FlagUtil = {
                 if(parentFlag) {
                     return o.color===parentFlag.color && o.secondaryColor===parentFlag.secondaryColor;
                 } else {
-                    console.log('Undefined parentFlag!');
+                    Logger.warning('Undefined parentFlag!');
                 }
             }
             return o.color==constant.color && o.secondaryColor==constant.secondaryColor;
