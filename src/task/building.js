@@ -18,6 +18,11 @@ mod.loop = function() {
 
 //Builder
 mod.queueCreeps = function(room) {
+    if(room.storage && room.storage.store[RESOURCE_ENERGY] < Config.StorageBoundForSpawn) {
+        Logger.trace('skip task.building.queueCreeps due to lack of energy in storage');
+        return;
+    }
+
     //=== Role count ===
     const cnt = room.cachedRoleCount();
 

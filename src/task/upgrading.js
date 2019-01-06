@@ -18,6 +18,11 @@ mod.loop = function() {
 
 //Upgrader and keeper
 mod.queueCreeps = function(room) {
+    if(room.storage && room.storage.store[RESOURCE_ENERGY] < Config.StorageBoundForSpawn) {
+        Logger.trace('skip task.upgrading.queueCreeps due to lack of energy in storage');
+        return;
+    }
+
     //=== Role count ===
     const cnt = room.cachedRoleCount();
 
