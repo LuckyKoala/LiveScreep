@@ -1,5 +1,6 @@
 var mod = {
     EnableProfiler: false,
+    StorageBoundForSpawn: 10*Thousand,
     StorageBoundForAddUpgrader: 60*Thousand,
     RampartMaintainThreshold: {
         //this value shouldn't be too high since it is used by getRampartSitesCanBuild(),

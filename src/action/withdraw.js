@@ -35,7 +35,7 @@ const targetInitFunc = function(creep) {
         }
     } else if(role === C.BUILDER) {
         const storage = creep.room.storage;
-        if(storage) {
+        if(storage && storage.store[RESOURCE_ENERGY]>Config.StorageBoundForSpawn) {
             return storage;
         } else if(creep.room.controller.container) {
             //If no storage, we treat controller container as storage
@@ -45,7 +45,7 @@ const targetInitFunc = function(creep) {
         }
     } else if(role === C.KEEPER) {
         const storage = creep.room.storage;
-        if(storage) {
+        if(storage && storage.store[RESOURCE_ENERGY]>Config.StorageBoundForSpawn) {
             return storage;
         } else {
             return false;
