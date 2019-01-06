@@ -114,7 +114,7 @@ mod.queueCreeps = function(roomName, destinedTarget) {
         return;
     }
 
-    if(queueRoom.controller.level < 4) {
+    if(!queueRoom.storage || queueRoom.storage.store[RESOURCE_ENERGY]<25000) {
         //Can't afford spawn cost of claimer
         // sent remoteWorkers
         if(room) {
