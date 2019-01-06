@@ -88,7 +88,6 @@ mod.loopOwnedRoom = function(room) {
     TowerService.loop(room);
     LinkService.loop(room);
     ConstructionService.loop(room);
-    //Init queue before spawn
     SpawnService.loop(room);
     //Energy history
     Util.Stat.sumEnergyHistory(room.name);

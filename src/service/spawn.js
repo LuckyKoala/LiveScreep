@@ -7,13 +7,13 @@ mod.loop = function(room) {
     let usedEnergyAmount = 0;
     for(let spawn of spawns) {
         if(room.queue.urgent.length > 0) {
-            const usedEnergy = this.spawnWithSetup(spawn, usedEnergyAmount, true, Setup[room.queue.urgent[0]]);
+            const usedEnergy = spawnWithSetup(spawn, usedEnergyAmount, true, Setup[room.queue.urgent[0]]);
             if(usedEnergy !== false) {
                 room.queue.urgent.shift();
                 usedEnergyAmount+=usedEnergy;
             }
         } else if(room.queue.normal.length > 0) {
-            const usedEnergy = this.spawnWithSetup(spawn, usedEnergyAmount, false, Setup[room.queue.normal[0]]);
+            const usedEnergy = spawnWithSetup(spawn, usedEnergyAmount, false, Setup[room.queue.normal[0]]);
             if(usedEnergy !== false) {
                 room.queue.normal.shift();
                 usedEnergyAmount+=usedEnergy;
@@ -25,7 +25,7 @@ mod.loop = function(room) {
             const setupArr = room.queue.extern[0];
             const setup = Setup[setupArr[0]];
             let extraMemory = setupArr[1];
-            const usedEnergy = this.spawnWithSetup(spawn, usedEnergyAmount, false, setup, extraMemory);
+            const usedEnergy = spawnWithSetup(spawn, usedEnergyAmount, false, setup, extraMemory);
             if(usedEnergy !== false) {
                 room.queue.extern.shift();
                 usedEnergyAmount+=usedEnergy;
@@ -37,7 +37,7 @@ mod.loop = function(room) {
 // Return true indicates that creep can be created
 //When incoming energy of spawn is low, then spawn of worker/harvester-hauler
 //  is urgent, otherwise it is not urgent, we can wait for it to be bigger.
-mod.spawnWithSetup = function(spawn, usedEnergyAmount, urgent, {dynamicExtraAmount, setupConfig, shouldUseHighLevel}, extraMemory) {
+function spawnWithSetup (spawn, usedEnergyAmount, urgent, {dynamicExtraAmount, setupConfig, shouldUseHighLevel}, extraMemory) {
     if(spawn.spawning) return false;
 
     const energyAvailable = spawn.room.energyAvailable;
@@ -68,9 +68,9 @@ mod.spawnWithSetup = function(spawn, usedEnergyAmount, urgent, {dynamicExtraAmou
     //Calculate body and examine whether energyAvailable is enough
     let body;
     if(dynamicMaxExtraAmount) {
-        body = this.getMaxiumBody(essBody, extraBody, dynamicMaxExtraAmount, energyForSpawnCapacity);
+        body = getMaxiumBody(essBody, extraBody, dynamicMaxExtraAmount, energyForSpawnCapacity);
     } else {
-        body = this.getMaxiumBody(essBody, extraBody, maxExtraAmount, energyForSpawnCapacity);
+        body = getMaxiumBody(essBody, extraBody, maxExtraAmount, energyForSpawnCapacity);
     }
     const bodyCost = Util.Helper.getBodyCost(body);
     //Check energyAvailable is enough for this spawn action
@@ -96,7 +96,7 @@ mod.spawnWithSetup = function(spawn, usedEnergyAmount, urgent, {dynamicExtraAmou
 };
 
 const bodyMaxium = 50; //Creep Body Part Maxium Amount
-mod.getMaxiumBody = function(essBody, extraBody, maxExtraAmount, energyAvailable) {
+function getMaxiumBody (essBody, extraBody, maxExtraAmount, energyAvailable) {
     const essCost = Util.Helper.getBodyCost(essBody);
     const extraCost = Util.Helper.getBodyCost(extraBody);
     if(extraCost===0) return essBody;
