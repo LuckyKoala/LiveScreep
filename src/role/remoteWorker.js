@@ -1,26 +1,12 @@
 var mod = new RoleObj(C.REMOTE_WORKER);
 module.exports = mod;
 
-mod.roleConfigWithStorage = {
+mod.roleConfig = {
     inStack: [Action.Travel, Action.Pickup, Action.Harvest],
-    outStack: [Action.Back, Action.Store],
-};
-
-mod.roleConfigWithoutStorage = {
-    inStack: [Action.Travel, Action.Pickup, Action.Harvest],
-    outStack: [Action.Back, Action.Fill, Action.Fuel, Action.Build, Action.Upgrade],
+    outStack: [Action.Back, Action.Fill, Action.Fuel, Action.Store, Action.Build, Action.Upgrade],
 };
 
 mod.loop = function(creep) {
-    //Switch role config
-    const homeRoomName = creep.memory.homeRoom;
-    const homeRoom = Game.rooms[homeRoomName];
-    if(homeRoom.storage) {
-        this.roleConfig = this.roleConfigWithStorage;
-    } else {
-        this.roleConfig = this.roleConfigWithoutStorage;
-    }
-    
     if(creep.memory.hauling &&  _.sum(creep.carry) === 0) {
         creep.memory.hauling = false;
     }
