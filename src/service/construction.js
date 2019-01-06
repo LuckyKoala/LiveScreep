@@ -177,7 +177,7 @@ mod.loop = function(room, forceRun=false) {
 
     //one site at one time
     const sites = room.cachedFind(FIND_CONSTRUCTION_SITES);
-    const noSite = sites.length === 0;
+    const noSite = sites.length < 2;
     if(!noSite || (Game.time-lastFullyConstructionCheck)<100) {
         // actually not loop room.layout
         //  so we don not update lastConstruct here
@@ -298,7 +298,7 @@ mod.loopRemoteMining = function(flag) {
 
     //one site at one time
     const sites = room.cachedFind(FIND_CONSTRUCTION_SITES);
-    const noSite = sites.length === 0;
+    const noSite = sites.length < 2;
     if(!noSite || (Game.time-lastFullyConstructionCheck)<100) {
         // actually not loop room.layout
         //  so we don not update lastConstruct here
