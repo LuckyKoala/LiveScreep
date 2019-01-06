@@ -249,6 +249,7 @@ global.Role = {
     [C.PIONEER]: require('role_pioneer'),
 };
 global.Util = {
+    Logger: require('util_logger'),
     Defense: require('util_defense'),
     Mark: require('util_mark'),
     SourceMark: require('util_sourcemark'),
@@ -256,4 +257,6 @@ global.Util = {
     Stat: require('util_stat'),
     Helper: require('util_helper'),
 };
+//Shorthand
+global.Logger = Util.Logger;
 global.State= {};
