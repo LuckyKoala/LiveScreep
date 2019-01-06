@@ -113,7 +113,7 @@ function getMaxiumBody (essBody, extraBody, maxExtraAmount, energyAvailable) {
     const remainAmount = _.floor((bodyMaxium-essBody.length) / extraBody.length);
     if(extraAmount > remainAmount) extraAmount = remainAmount;
 
-    const body = essBody;
+    const body = _.cloneDeep(essBody);
     for(let i=0; i<extraAmount; i++) {
         body.push(extraBody);
     }
