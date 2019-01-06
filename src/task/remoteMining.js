@@ -114,9 +114,9 @@ mod.queueCreeps = function(roomName, destinedTarget) {
         return;
     }
 
-    if(!queueRoom.storage || queueRoom.storage.store[RESOURCE_ENERGY]<25000) {
+    if(!queueRoom.storage) {
         //Can't afford spawn cost of claimer
-        // sent remoteWorkers
+        // sent remoteWorkers instead of a remote group
         if(room) {
             //=== Harvest all sources and spawn dedicated hauler ===
             let needWorker = room.sources.length*2 - cnt[C.REMOTE_WORKER];
