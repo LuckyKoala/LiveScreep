@@ -38,7 +38,9 @@ mod.loop = function(room) {
 //When incoming energy of spawn is low, then spawn of worker/harvester-hauler
 //  is urgent, otherwise it is not urgent, we can wait for it to be bigger.
 function spawnWithSetup (spawn, usedEnergyAmount, urgent, {dynamicExtraAmount, setupConfig, shouldUseHighLevel}, extraMemory) {
-    if(spawn.spawning) return false;
+    if(spawn.spawning) {
+        return false;
+    }
 
     const energyAvailable = spawn.room.energyAvailable;
     let dynamicMaxExtraAmount = false;
@@ -74,7 +76,10 @@ function spawnWithSetup (spawn, usedEnergyAmount, urgent, {dynamicExtraAmount, s
     }
     const bodyCost = Util.Helper.getBodyCost(body);
     //Check energyAvailable is enough for this spawn action
-    if(energyAvailable < bodyCost) return false;
+    if(energyAvailable < bodyCost) {
+        Logger.debug(`[${spawn.room.name}-${spawn.name}] energy is not enough while spawning creep with body:${JSON.stringify(body)} and memory:${JSON.stringify(memory)} which cost ${bodyCost}, energyAvailable: ${energyAvailable}`);
+        return false;
+    }
     //Calculate name
     const name = prefix+spawn.name+'->'+Game.time;
     //Inject memory
@@ -91,8 +96,10 @@ function spawnWithSetup (spawn, usedEnergyAmount, urgent, {dynamicExtraAmount, s
     if(result == OK) {
         Util.Stat.incEnergyOut(spawn.room.name, bodyCost);
         return bodyCost;
+    } else {
+        Logger.debug(`[${spawn.room.name}-${spawn.name}] Err Code ${result} while spawning ${name} with body:${JSON.stringify(body)} and memory:${JSON.stringify(memory)} which cost ${bodyCost}`);
+        return false;
     }
-    return false;
 };
 
 const bodyMaxium = 50; //Creep Body Part Maxium Amount
