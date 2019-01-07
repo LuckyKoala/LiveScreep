@@ -1,6 +1,6 @@
 ﻿# LiveScreep
 
-![ScreenShot in Simulation](img/dissi_flower.jpg)
+![ScreenShot in official Screeps server](img/realworld.jpg)
 
 Latest Release => `v0.4-Road`
 
