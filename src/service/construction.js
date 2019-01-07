@@ -126,12 +126,119 @@ mod.init = function(room) {
         this.saveStructure(room, mineral.pos, STRUCTURE_EXTRACTOR);
         this.saveStructure(room, posNearby(terrain, mineral, 1), STRUCTURE_CONTAINER);
     }
-    //====== Wait to be implement ======
+
     //=== Defense ===
     //== Wall & Rampart ==
+    //layout: 1 for wall,0 for rampart
+    //--0111110--
+    const wallLayout = [STRUCTURE_RAMPART, STRUCTURE_WALL, STRUCTURE_WALL, STRUCTURE_WALL, STRUCTURE_WALL, STRUCTURE_WALL, STRUCTURE_RAMPART];
+    const getWallType = (index) => wallLayout[index%wallLayout.length];
+    //Find all available exit directions
+    const exitStrs = Game.map.describeExits(room.name);
+    for(let exitStr in exitStrs) {
+        const exitDir = parseInt(exitStr);
+        //Firstly, we add offset to x/y coordinate since we can not place structure above exit tile
+        let xoffset = 0;
+        let yoffset = 0;
+        let xLeftOffset = 0;
+        let yLeftOffset = 0;
+        switch(exitDir) {
+        case FIND_EXIT_TOP:
+            //y=0
+            yoffset = 1;
+            xLeftOffset = -1;
+            break;
+        case FIND_EXIT_BOTTOM:
+            //y=49
+            yoffset = -1;
+            xLeftOffset = -1;
+            break;
+        case FIND_EXIT_LEFT:
+            //x=0
+            xoffset = 1;
+            yLeftOffset = -1;
+            break;
+        case FIND_EXIT_RIGHT:
+            //x=49
+            xoffset = -1;
+            yLeftOffset = -1;
+            break;
+        default:
+            Logger.warning(`Unrecognized exit direction: ${exitDir} while initiating layout of room ${room.name}`);
+        }
+        //- for exit tile,  / for natural wall, 0 for plain/swamp terrain, 1 for planned wall
+        // Before plan:
+        //  0000/0000000////
+        //  00//00//00000000
+        //  ///------///--//
+        // After plan:
+        //  0000/0000000////
+        //  00//11//11011000
+        //  ///------///--//
+        //Now we find all exit tile on target direction and do some computation on them
+        const exits = room.cachedFind(exitDir);
+        const wallPosArray = [];
+        for(const exit of exits) {
+            //Extract and add offset to x and y coordinate
+            const x = exit.x+xoffset;
+            const y = exit.y+yoffset;
+
+            //No natural wall below planned wall
+            if(validatePos(x, y) && terrain.get(x, y)!==TERRAIN_MASK_WALL) {
+                const addWall = (x, y) => {
+                    // Before
+                    //  00///0//
+                    //  000/0000
+                    //  //---///
+                    // After
+                    //  00///0//
+                    //  011/1100
+                    //  //---///
+                    //add wall only if up and up-left and up-right is not natural wall
+                    const aboveX = x+xoffset;
+                    const aboveY = y+yoffset;
+                    const aboveLeftX = aboveX+xLeftOffset;
+                    const aboveLeftY = aboveY+yLeftOffset;
+                    const aboveRightX = aboveX-xLeftOffset;
+                    const aboveRightY = aboveY-yLeftOffset;
+                    const isNaturalWall = (x, y) =>  {
+                        if(validatePos(x,y)) {
+                            return terrain.get(x,y)===TERRAIN_MASK_WALL;
+                        } else {
+                            return true;
+                        }
+                    };
+                    if(isNaturalWall(aboveX,aboveY) && isNaturalWall(aboveLeftX,aboveLeftY) && isNaturalWall(aboveRightX,aboveRightY)) {
+                        //No need to add this wall, this pos is surround by natural walls
+                    } else {
+                        wallPosArray.push([x,y]);
+                    }
+                };
+                addWall(x, y);
+                //if left or right is a natural wall, add a new pos
+                const addCoverWall = (x, y) => {
+                    if(validatePos(x, y) && terrain.get(x, y)===TERRAIN_MASK_WALL
+                       && terrain.get(x+xoffset, y+yoffset)!==TERRAIN_MASK_WALL) {
+                        addWall(x+xoffset, y+yoffset);
+                    }
+                };
+                const leftX = exit.x+xLeftOffset;
+                const leftY = exit.y+yLeftOffset;
+                const rightX = exit.x-xLeftOffset;
+                const rightY = exit.y-yLeftOffset;
+                addCoverWall(leftX, leftY);
+                addCoverWall(rightX, rightY);
+            }
+
+        }
+        for(const i in wallPosArray) {
+            this.saveStructure(room, wallPosArray[i], getWallType(i));
+        }
+    }
+
+    //====== Wait to be implement ======
     //=== Technology ===
     //== Lab ==
-    //== Extractor ==
     //== Spawn ==
     //=== Outside world ===
     //== Nuker ==
@@ -268,8 +375,15 @@ mod.loop = function(room, forceRun=false) {
     if(success) return;
     //== Road ==
     success = iterateAndPlace(STRUCTURE_ROAD);
+    if(success) return;
+    //== Wall ==
+    success = iterateAndPlace(STRUCTURE_WALL);
+    if(success) return;
+    //== Rampart ==
+    success = iterateAndPlace(STRUCTURE_RAMPART);
+    if(success) return;
 
-    if(!success) room.memory.lastFullyConstructionCheck = Game.time;
+    room.memory.lastFullyConstructionCheck = Game.time;
 };
 
 //====================== Remote Mining ==============================
@@ -379,6 +493,10 @@ function posNearby(terrain, obj, range) {
         return [swamps[0].x, swamps[0].y];
     }
     return false;
+};
+
+function validatePos(x,y) {
+    return x>=0 && x<=50 && y>=0 && y<=50;
 };
 
 mod.showRoadPath = function(room, from, to) {
