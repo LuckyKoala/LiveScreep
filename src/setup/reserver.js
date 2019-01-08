@@ -6,7 +6,7 @@ mod.setupConfig = {
         minEnergy: 650,
         essBody: [CLAIM, MOVE],
         extraBody: [CLAIM, MOVE],
-        maxExtraAmount: 2,
+        maxExtraAmount: 5,
         prefix: `[${C.RESERVER}]`,
         memory: {role: C.RESERVER},
     },
