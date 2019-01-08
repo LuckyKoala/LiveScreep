@@ -72,8 +72,10 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     //All role is required
     for(let creep of roomCreeps) {
         const role = creep.memory.role;
-        cnt[role]++;
-        cnt.total++;
+        if(creep.spawning || Setup[role] && creep.ticksToLive >= Setup[role].prespawn) {
+            cnt[role]++;
+            cnt.total++;
+        }
     }
     //Count role in queue as well
     const queueRoom = Game.rooms[roomName];

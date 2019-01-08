@@ -20,6 +20,7 @@ var mod = function(name) {
     this.shouldUseHighLevel = function() {
         return false;
     };
+    this.prespawn = 5;
     //this.dynamicExtraAmount = function() {};
 };
 

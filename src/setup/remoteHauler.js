@@ -19,3 +19,5 @@ mod.setupConfig = {
         memory: {role: C.REMOTE_HAULER},
     },
 };
+
+mod.prespawn = 150;

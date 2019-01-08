@@ -11,3 +11,5 @@ mod.setupConfig = {
         memory: {role: C.RESERVER},
     },
 };
+
+mod.prespawn = 40;

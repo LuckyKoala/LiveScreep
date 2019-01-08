@@ -18,3 +18,5 @@ mod.setupConfig = {
         memory: {role: C.REMOTE_HARVESTER},
     },
 };
+
+mod.prespawn = 100;
