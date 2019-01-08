@@ -29,25 +29,27 @@ mod.loop = function(creep) {
         let container = target.container;
         container = (container && source.pos.isNearTo(container)) ? container : false;
         const containerNotTaken = container && container.pos.lookFor(LOOK_CREEPS).length == 0;
-
-        if(containerNotTaken) {
-            //Try stay above the container
-            if(creep.pos.isEqualTo(container)) {
+        const doHarvest = function() {
+            if(source.energy > 0) {
+                //Only do harvest if source has energy remain, save 0.2 CPU!
                 let result = creep.harvest(source);
                 if(result===OK) {
                     let amount = creep.getActiveBodyparts(WORK)*HARVEST_POWER;
                     Util.Stat.incEnergyIn(creep.memory.homeRoom, amount);
                 }
+            }
+        };
+
+        if(containerNotTaken) {
+            //Try stay above the container
+            if(creep.pos.isEqualTo(container)) {
+                doHarvest();
             } else {
                 creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         } else {
             if(creep.pos.isNearTo(source)) {
-                let result = creep.harvest(source);
-                if(result===OK) {
-                    let amount = creep.getActiveBodyparts(WORK)*HARVEST_POWER;
-                    Util.Stat.incEnergyIn(creep.memory.homeRoom, amount);
-                }
+                doHarvest();
             } else {
                 creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
