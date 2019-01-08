@@ -12,8 +12,8 @@ mod.setupConfig = {
     Normal: {
         minEnergy: 500,
         essBody: [WORK,WORK,WORK,WORK,MOVE,MOVE],
-        extraBody: [WORK,CARRY,MOVE],
-        maxExtraAmount: 1,
+        extraBody: [WORK,WORK,MOVE],
+        maxExtraAmount: 4,
         prefix: `[${C.REMOTE_HARVESTER}]`,
         memory: {role: C.REMOTE_HARVESTER},
     },
