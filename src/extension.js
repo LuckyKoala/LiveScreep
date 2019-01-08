@@ -449,7 +449,10 @@ Room.prototype.cachedRoleCount = function() {
         for(let creep of roomCreeps) {
             const role = creep.memory.role;
             cnt.existed[role]++;
-            cnt.total[role]++;
+            if(creep.spawning || Setup[role] && creep.ticksToLive >= Setup[role].prespawn) {
+                //This affect prespawn mechanisim
+                cnt.total[role]++;
+            }
         }
         //Count role in queue as well
         const queue = this.queue.urgent.concat(this.queue.normal);

@@ -24,17 +24,14 @@ mod.queueCreeps = function(room) {
     if(room.storage) {
         //We still have energy in storage
         // Do we have a filler to transfer energy from storage to spawns/extensions?
-        if(cnt.total[C.FILLER]>=1) {
-            //We do have a filler at least
-            // but is it bigger enough or is it will die soon?
-            //For now, we spawn two fillers, so they can help each other
-            if(cnt.total[C.FILLER]===1) {
+        if(cnt.total[C.FILLER]<1) {
+            if(cnt.existed[C.FILLER] > 1) {
+                //So this is normal prespawn stuff
                 room.queue.normal.unshift(C.FILLER);
-                cnt.queue[C.FILLER]++;
-                cnt.total[C.FILLER]++;
+            } else {
+                //So this is kind of emergence
+                room.queue.urgent.unshift(C.FILLER);
             }
-        } else {
-            room.queue.urgent.unshift(C.FILLER);
             cnt.queue[C.FILLER]++;
             cnt.total[C.FILLER]++;
         }
