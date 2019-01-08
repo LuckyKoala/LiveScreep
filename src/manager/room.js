@@ -123,6 +123,17 @@ mod.loopOwnedRoom = function(room) {
     if(room.storage) {
         room.visual.text(`Energy in storage: ${room.storage.store[RESOURCE_ENERGY]}`, 8, 7, {color: 'gold', font: 1});
     }
+    //Roles count in room
+    const showRoleCount = (index, roleName, cnt) => room.visual.text(`${roleName}:   ${cnt}`, 5, 9+index, {font: 1});
+    const roleCnt = room.cachedRoleCount().existed;
+    let index = 0;
+    for(const role in roleCnt) {
+        const cnt = roleCnt[role];
+        if(cnt>0) {
+            showRoleCount(index, role, cnt);
+            index++;
+        }
+    }
 };
 
 //If we have vision of unowned room, record when
