@@ -4,6 +4,7 @@ module.exports = mod;
 mod.nextTarget = function() {
     const creep = this.creep;
     const sortHostiles = Util.Defense.sortHostilesByPos(creep.room, creep.pos);
+    if(creep.hits<150) return false; //flee!
     if(sortHostiles.length > 0) {
         return Game.getObjectById(_.last(sortHostiles).id);
     }
