@@ -26,8 +26,8 @@ mod.nextTarget = function() {
             //What if we treat it as same as other creeps?
             // when invaders is near exit, it will stuck between exits of two rooms.
             if(creep.memory.role===C.REMOTE_GUARDIAN) return false;
-            if(pos.x === 0 || pos.x === 49 || pos.y === 0 || pos.y === 49) {
-                //Don't stay at exit, creep will loop between room
+            if(creep.memory.role===C.SCOUT) {
+                //Don't stay at exit, scout will loop between room
                 return flag;
             } else {
                 return false;
@@ -77,9 +77,12 @@ mod.word = '🕵︎ travel';
 
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
-        creep.moveTo(target, {
-            reusePath: 15,
-            visualizePathStyle: {stroke: '#ffffff'}
-        });
+        if(!creep.pos.inRangeTo(target, 3)) {
+            creep.moveTo(target, {
+                range: 3,
+                reusePath: 15,
+                visualizePathStyle: {stroke: '#ffffff'}
+            });
+        }
     });
 };
