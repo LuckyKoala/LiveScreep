@@ -56,8 +56,8 @@ function spawnWithSetup (spawn, usedEnergyAmount, urgent, {dynamicExtraAmount, s
             setup = setupConfig.Normal;
         }
     }
-    //For low energy available, use SetupConfig.Low
-    if(energyAvailable < setupConfig.Normal.minEnergy && !!setupConfig.Low) {
+    //For low energy capacity available, use SetupConfig.Low
+    if(spawn.room.energyCapacityAvailable < setupConfig.Normal.minEnergy && !!setupConfig.Low) {
         setup = setupConfig.Low;
     }
     const {minEnergy, essBody, extraBody, prefix, memory, maxExtraAmount} = setup;
@@ -66,7 +66,7 @@ function spawnWithSetup (spawn, usedEnergyAmount, urgent, {dynamicExtraAmount, s
     //  maxiumBody, throught this we achieved "Wait For Bigger Single Creep"
     let energyForSpawnCapacity = spawn.room.energyAvailable-usedEnergyAmount;
     if(!urgent) energyForSpawnCapacity = spawn.room.energyCapacityAvailable-usedEnergyAmount;
-    
+
     //Calculate body and examine whether energyAvailable is enough
     let body;
     if(dynamicMaxExtraAmount) {

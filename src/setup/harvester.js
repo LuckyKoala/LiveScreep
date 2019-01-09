@@ -21,7 +21,7 @@ mod.setupConfig = {
         //  in 15000 energy
         //  out 150(15000/20*0.2) cpu and 1400 energy for spawning this creep
         //Diff:
-        //  use 10 work to replce 5 work can decease energyIn by 900energy and also decease cpu cost for 145cpu/1450ticks
+        //  use 10 work to replace 5 work can decease energyIn by 900energy and also decease cpu cost for 145cpu/1450ticks
         //Conclusion: it is worthy.
         //And if we can use one harvester for two sources, we can get more!
         essBody: [WORK,WORK,MOVE,WORK,WORK,MOVE,WORK,CARRY,MOVE],
