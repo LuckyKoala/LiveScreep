@@ -146,8 +146,10 @@ mod.queueCreeps = function(roomName, destinedTarget) {
 
     //=== Harvest all sources and spawn dedicated hauler ===
     //That is one pair of harvester-hauler for the room
+    const range = Util.Helper.calcRoomsRealDistance(queueRoom.name, room.name);
+    const haulerLimit = range;
     let needHarvester = 1 - cnt[C.REMOTE_HARVESTER];
-    let needHauler = 1 - cnt[C.REMOTE_HAULER];
+    let needHauler = haulerLimit - cnt[C.REMOTE_HAULER];
     if(needHarvester>0) {
         queueRoom.queue.extern.push([C.REMOTE_HARVESTER, extraMemory]);
         cnt[C.REMOTE_HARVESTER]++;

@@ -1,6 +1,39 @@
 var mod = {};
 module.exports = mod;
 
+mod.roomNameToXY = function(name) {
+
+    name = name.toUpperCase();
+
+    var match = name.match(/^(\w)(\d+)(\w)(\d+)$/);
+    if(!match) {
+        return [undefined, undefined];
+    }
+    var [,hor,x,ver,y] = match;
+
+    if(hor == 'W') {
+        x = -x-1;
+    }
+    else {
+        x = +x;
+    }
+    if(ver == 'N') {
+        y = -y-1;
+    }
+    else {
+        y = +y;
+    }
+    return [x,y];
+};
+
+mod.calcRoomsRealDistance = function(room1, room2) {
+    var [x1,y1] = this.roomNameToXY(room1);
+    var [x2,y2] = this.roomNameToXY(room2);
+    var dx = Math.abs(x2-x1);
+    var dy = Math.abs(y2-y1);
+    return dx+dy;
+};
+
 mod.getBodyCost = function(bodyParts) {
     let cost = 0;
     for(let i=0; i<bodyParts.length; i++) {
