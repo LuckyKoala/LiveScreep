@@ -13,6 +13,10 @@ mod.word = '⛏ mine';
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         if(target.extractor.cooldown > 0) return;
+        if(target.mineralAmount===0) {
+            Logger.info(`Recycling miner ${creep.name} due to empty mineral`);
+            creep.memory.role=C.RECYCLER;
+        }
         if(target.container) {
             //Try stay above the container
             if(creep.pos.isEqualTo(target.container)) {
