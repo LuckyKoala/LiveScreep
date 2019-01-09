@@ -5,12 +5,12 @@ module.exports = mod;
 // so hauler only haul energy to storage now
 mod.roleConfigWithStorage = {
     inStack: [Action.Travel, Action.Pickup, Action.Withdraw],
-    outStack: [Action.Help, Action.Back, Action.Store],
+    outStack: [Action.Help, Action.Back, Action.PutToLink, Action.Store],
 };
 
 mod.roleConfigWithoutStorage = {
     inStack: [Action.Travel, Action.Pickup, Action.Withdraw],
-    outStack: [Action.Help, Action.Back, Action.Fill, Action.Fuel, Action.PutForUpgrade],
+    outStack: [Action.Help, Action.Back, Action.PutToLink, Action.Fill, Action.Fuel, Action.PutForUpgrade],
 };
 
 mod.loop = function(creep) {

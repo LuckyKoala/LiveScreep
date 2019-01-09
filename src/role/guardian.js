@@ -2,7 +2,7 @@ var mod = new RoleObj(C.GUARDIAN);
 module.exports = mod;
 
 mod.roleConfig = {
-    inStack: [Action.Back, Action.Heal],
+    outStack: [Action.Back, Action.Heal],
     inStack: [Action.Guard, Action.Heal, Action.Travel],
 };
 

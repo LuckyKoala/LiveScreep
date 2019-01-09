@@ -8,8 +8,12 @@ const targetInitFunc = function(creep) {
     return markSource ? markSource.container : false;
 };
 
+const validateFunc = function(creep, target) {
+    return creep.pos.isNearTo(target) && target.energy<target.energyCapacity;
+};
+
 mod.nextTarget = function() {
-    return Util.Mark.handleMark(this.creep, targetInitFunc, this.actionName);
+    return Util.Mark.handleMark(this.creep, targetInitFunc, this.actionName, validateFunc);
 };
 
 mod.word = '➡︎ put';

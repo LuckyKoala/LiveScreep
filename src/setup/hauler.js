@@ -14,7 +14,7 @@ mod.setupConfig = {
         minEnergy: 450,
         essBody: [CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE],
         extraBody: [CARRY, CARRY, MOVE],
-        maxExtraAmount: 2,
+        maxExtraAmount: 4,
         prefix: `[${C.HAULER}]`,
         memory: {role: C.HAULER},
     },

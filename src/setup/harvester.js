@@ -26,8 +26,10 @@ mod.setupConfig = {
         //And if we can use one harvester for two sources, we can get more!
         essBody: [WORK,WORK,MOVE,WORK,WORK,MOVE,WORK,CARRY,MOVE],
         extraBody: [WORK,WORK,MOVE,WORK,WORK,MOVE,WORK,CARRY,MOVE],
-        maxExtraAmount: 1,
+        maxExtraAmount: 2,
         prefix: `[${C.HARVESTER}]`,
         memory: {role: C.HARVESTER},
     },
 };
+
+mod.prespawn = 100;

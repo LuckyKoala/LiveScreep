@@ -12,14 +12,14 @@ const targetInitFunc = function(creep) {
 };
 
 const validateFunc = function(creep, target) {
-    return creep.pos.getRangeTo(target)<=2 && target.energy<target.energyCapacity;
+    return creep.pos.getRangeTo(target)<=6 && target.energy<target.energyCapacity;
 };
 
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, targetInitFunc, this.actionName, validateFunc);
 };
 
-mod.word = '➡︎ put';
+mod.word = '➡︎ toLink';
 
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {

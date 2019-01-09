@@ -5,10 +5,7 @@ module.exports = mod;
 
 mod.roleConfig = {
     inStack: [Action.Withdraw],
-    //If no fill target, then put energy to storage
-    // thought that, filler can keep spawnLink empty
-    // so sourceLinks won't block
-    outStack: [Action.Fill, Action.Store],
+    outStack: [Action.Fill],
 };
 
 mod.loop = function(creep) {

@@ -20,6 +20,13 @@ const targetInitFunc = function(creep) {
         if(mineral && mineral.container && _.sum(mineral.container.store)>=need) {
             return mineral.container;
         }
+
+        if(role === C.HAULER) {
+            const spawnLink = creep.room.spawnLink;
+            if(spawnLink && spawnLink.energy > 0) {
+                return spawnLink;
+            }
+        }
         return false;
     } else if(role === C.FILLER) {
         const tombstones = _.filter(creep.room.cachedFind(FIND_TOMBSTONES), t => t.store[RESOURCE_ENERGY]>0);
@@ -80,8 +87,12 @@ mod.loop = function(creep) {
         let result = OK;
         if(creep.memory.role===C.HAULER || creep.memory.role===C.REMOTE_HAULER) {
             //Only haulers are allowed to get resources other than energy
-            for(const resourceType in target.store) {
-                result = creep.withdraw(target, resourceType);
+            if(target.store) {
+                for(const resourceType in target.store) {
+                    result = creep.withdraw(target, resourceType);
+                }
+            } else {
+                result = creep.withdraw(target, RESOURCE_ENERGY);
             }
         } else {
             result = creep.withdraw(target, RESOURCE_ENERGY);

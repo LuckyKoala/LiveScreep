@@ -19,4 +19,4 @@ mod.setupConfig = {
     },
 };
 
-mod.prespawn = 100;
+mod.prespawn = 120;
