@@ -4,9 +4,9 @@ module.exports = mod;
 mod.setupConfig = {
     Normal: {
         minEnergy: 500,
-        essBody: [WORK,WORK,WORK,WORK,MOVE,MOVE],
+        essBody: [WORK,WORK,MOVE,WORK,WORK,MOVE],
         extraBody: [WORK, WORK, MOVE],
-        maxExtraAmount: 1,
+        maxExtraAmount: 14,
         prefix: `[${C.MINER}]`,
         memory: {role: C.MINER},
     },
