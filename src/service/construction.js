@@ -145,22 +145,22 @@ mod.init = function(room) {
         switch(exitDir) {
         case FIND_EXIT_TOP:
             //y=0
-            yoffset = 1;
+            yoffset = 2;
             xLeftOffset = -1;
             break;
         case FIND_EXIT_BOTTOM:
             //y=49
-            yoffset = -1;
+            yoffset = -2;
             xLeftOffset = -1;
             break;
         case FIND_EXIT_LEFT:
             //x=0
-            xoffset = 1;
+            xoffset = 2;
             yLeftOffset = -1;
             break;
         case FIND_EXIT_RIGHT:
             //x=49
-            xoffset = -1;
+            xoffset = -2;
             yLeftOffset = -1;
             break;
         default:
@@ -263,7 +263,8 @@ const makeIterateAndPlace = function(room) {
                 //TODO check integrity, maybe rebuild structure on this pos
                 continue;
             } else {
-                if(room.createConstructionSite(x, y, type) === OK) {
+                const result = room.createConstructionSite(x, y, type);
+                if(result === OK) {
                     return true;
                 }
             }
@@ -376,6 +377,8 @@ mod.loop = function(room, forceRun=false) {
     //== Road ==
     success = iterateAndPlace(STRUCTURE_ROAD);
     if(success) return;
+
+    return;
     //== Wall ==
     success = iterateAndPlace(STRUCTURE_WALL);
     if(success) return;
@@ -393,6 +396,11 @@ mod.initRemoteMining = function(flag, room) {
     //== Road ==
     this.initRemoteMiningRoad(flag, room, room.sources);
     room.layout.init = true;
+    //== Container ==
+    const terrain = new Room.Terrain(room.name);
+    for(let source of room.sources) {
+        this.saveStructure(room, posNearby(terrain, source, 1), STRUCTURE_CONTAINER);
+    }
 };
 
 mod.loopRemoteMining = function(flag) {
@@ -425,7 +433,12 @@ mod.loopRemoteMining = function(flag) {
     const iterateAndPlace = makeIterateAndPlace(room);
 
     //== Road ==
-    const success = iterateAndPlace(STRUCTURE_ROAD);
+    let success = iterateAndPlace(STRUCTURE_ROAD);
+    if(success) return;
+
+    //== Container ==
+    success = iterateAndPlace(STRUCTURE_CONTAINER);
+
     if(!success) {
         room.memory.lastFullyConstructionCheck = Game.time;
     }
