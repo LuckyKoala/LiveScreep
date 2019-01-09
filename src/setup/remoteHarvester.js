@@ -10,13 +10,13 @@ mod.setupConfig = {
         memory: {role: C.REMOTE_HARVESTER},
     },
     Normal: {
-        minEnergy: 500,
-        essBody: [WORK,WORK,MOVE,WORK,WORK,MOVE],
-        extraBody: [WORK,WORK,CARRY,CARRY,MOVE],
-        maxExtraAmount: 4,
+        minEnergy: 700,
+        essBody: [WORK,WORK,MOVE,WORK,WORK,MOVE,WORK,CARRY,MOVE],
+        extraBody: [WORK,WORK,MOVE,WORK,WORK,MOVE,WORK,CARRY,MOVE],
+        maxExtraAmount: 2,
         prefix: `[${C.REMOTE_HARVESTER}]`,
         memory: {role: C.REMOTE_HARVESTER},
     },
 };
 
-mod.prespawn = 120;
+mod.prespawn = 130;
