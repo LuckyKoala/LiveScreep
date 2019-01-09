@@ -4,16 +4,19 @@ module.exports = mod;
 const targetInitFunc = function(creep) {
     const sourceLinks = creep.room.sourceLinks;
     for(const sourceLink of sourceLinks) {
-        if( creep.pos.getRangeTo(sourceLink)<=2
-            && sourceLink.energy<sourceLink.energyCapacity) {
+        if(validateFunc(creep, sourceLink)) {
             return sourceLink;
         }
     }
     return false;
 };
 
+const validateFunc = function(creep, target) {
+    return creep.pos.getRangeTo(target)<=2 && target.energy<target.energyCapacity;
+};
+
 mod.nextTarget = function() {
-    return Util.Mark.handleMark(this.creep, targetInitFunc, this.actionName);
+    return Util.Mark.handleMark(this.creep, targetInitFunc, this.actionName, validateFunc);
 };
 
 mod.word = '➡︎ put';

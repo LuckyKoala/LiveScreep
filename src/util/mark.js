@@ -5,7 +5,7 @@ module.exports = {
         if(_.isUndefined(actionSource)) return;
         creep.memory.targetMark[actionSource] = false;
     },
-    handleMark: function(creep, targetInitFunc, actionSource) {
+    handleMark: function(creep, targetInitFunc, actionSource, validateFunc=false) {
         var targetId = getMarkTarget(creep, actionSource);
         var target;
     
@@ -16,7 +16,7 @@ module.exports = {
             markTarget(creep, targetId, actionSource);
         }
         target = Game.getObjectById(targetId);
-        if(!target) this.unmarkTarget(creep, actionSource);
+        if(!target || (validateFunc && !validateFunc(creep, target))) this.unmarkTarget(creep, actionSource);
         return target;
     },
 };
