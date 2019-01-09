@@ -32,6 +32,8 @@ mod.loop = function() {
         if(assignedRoom) {
             //Write back to memory
             flag.memory.assignedRoom = assignedRoom;
+
+            //====== Builders on demand ======
             //Loop construction
             ServiceConstruction.loopRemoteMining(flag);
             //Is there sites need to be build or road need to be repair?
@@ -56,6 +58,27 @@ mod.loop = function() {
                     }
                 }
             }
+
+            //====== Guardians on demand ======
+            if(flag.room) {
+                if(flag.room.memory.underAttack) {
+                    //Find guardians and assign destinedTarget to sent guardians outside when it is available
+                    const guardians = _.filter(Game.rooms[assignedRoom].cachedCreeps(), c => c.memory.role===C.GUARDIAN && c.memory.destinedTarget===undefined);
+                    _.forEach(guardians, guardian => {
+                        guardian.memory.destinedTarget = destinedTarget;
+                        Logger.info(`Sending ${guardian.name} to ${destinedTarget}`);
+                    });
+                } else {
+                    //Find guardians which is assigned to current flag, unassigned it
+                    const guardians = _.filter(Game.rooms[assignedRoom].cachedCreeps(), c => c.memory.role===C.GUARDIAN && c.memory.destinedTarget===destinedTarget);
+                    _.forEach(guardians, guardian => {
+                        delete guardian.memory.destinedTarget;
+                        Logger.info(`Sending ${guardian.name} back from ${destinedTarget}`);
+                    });
+                }
+            }
+
+
             //Enqueue remote-mining task related creeps
             this.queueCreeps(assignedRoom, destinedTarget);
         }
@@ -97,14 +120,6 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     const targetRoomName = Game.flags[destinedTarget].pos.roomName;
     const room = Game.rooms[targetRoomName];
 
-    if(Memory.rooms[targetRoomName] && Memory.rooms[targetRoomName] && Memory.rooms[targetRoomName].underAttack) {
-        if(cnt[C.REMOTE_GUARDIAN]===0) {
-            queueRoom.queue.extern.unshift([C.REMOTE_GUARDIAN, extraMemory]);
-            cnt[C.REMOTE_GUARDIAN]++;
-        }
-        return;
-    }
-
     //Do we have vision of that room?
     if(room === undefined) {
         //No vision
@@ -134,7 +149,7 @@ mod.queueCreeps = function(roomName, destinedTarget) {
 
     //=== Keep room reserved ===
     const controller = room.controller;
-    if(controller) {
+    if(controller && controller.canTouch) {
         const reservation = controller.reservation;
         if(reservation && reservation.username===C.USERNAME && reservation.ticksToEnd>1000) {
             //No need to spawn reserver

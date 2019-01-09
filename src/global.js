@@ -80,7 +80,6 @@ global.C = {
     REMOTE_WORKER: 'Rworker', //go to target room, get energy and haul it back
     REMOTE_HARVESTER: 'Rharvester', //go to target room and be a miner in that room
     REMOTE_HAULER: 'Rhauler', //travel and haul energy between rooms
-    REMOTE_GUARDIAN: 'Rguardian', //go to target room and be a guardian in that room
     CLAIMER: 'claimer', //go to target room and claim controller in that room
     PIONEER: 'pioneer', //go to target room, build a spawn and upgrade controller until RCL 3
 };
@@ -223,7 +222,6 @@ global.Setup = {
     [C.REMOTE_WORKER]: require('setup_remoteWorker'),
     [C.REMOTE_HARVESTER]: require('setup_remoteHarvester'),
     [C.REMOTE_HAULER]: require('setup_remoteHauler'),
-    [C.REMOTE_GUARDIAN]: require('setup_remoteGuardian'),
     [C.RESERVER]: require('setup_reserver'),
     [C.CLAIMER]: require('setup_claimer'),
     [C.PIONEER]: require('setup_pioneer'),
@@ -243,7 +241,6 @@ global.Role = {
     [C.REMOTE_WORKER]: require('role_remoteWorker'),
     [C.REMOTE_HARVESTER]: require('role_remoteHarvester'),
     [C.REMOTE_HAULER]: require('role_remoteHauler'),
-    [C.REMOTE_GUARDIAN]: require('role_remoteGuardian'),
     [C.RESERVER]: require('role_reserver'),
     [C.CLAIMER]: require('role_claimer'),
     [C.PIONEER]: require('role_pioneer'),

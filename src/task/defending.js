@@ -23,7 +23,7 @@ mod.queueCreeps = function(room) {
     const cnt = room.cachedRoleCount();
 
     //Spawn a guardian if it is neccessary -> goto util.defense
-    if(cnt.total[C.GUARDIAN] === 0 && room.memory.underAttack) {
+    if(cnt.total[C.GUARDIAN] < 1) {
         room.queue.normal.push(C.GUARDIAN);
         cnt.queue[C.GUARDIAN]++;
         cnt.total[C.GUARDIAN]++;
