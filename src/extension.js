@@ -219,6 +219,19 @@ Object.defineProperties(StructureController.prototype, {
         enumerable: false,
         configurable: true
     },
+    //Only use for remote mining
+    'canTouch': {
+        get: function() {
+            return genericGetter(this, 'canTouch', '_canTouch', (self) => {
+                return canTouch(self);
+            });
+        },
+        set: function(value) {
+            return genericSetter(this, 'canTouch', '_canTouch');
+        },
+        enumerable: false,
+        configurable: true
+    },
 });
 
 function genericGetter(self, name, internalName, initialFunc) {
@@ -226,7 +239,7 @@ function genericGetter(self, name, internalName, initialFunc) {
         if (self.memory[name]) {
             self[internalName] = self.memory[name];
         } else {
-            self.memory[name] = initialFunc();
+            self.memory[name] = initialFunc(self);
             self[internalName] = self.memory[name];
         }
     }
@@ -422,6 +435,29 @@ Object.defineProperties(Room.prototype, {
         configurable: true
     },
 });
+
+function canTouch(obj) {
+    //Check if there are any constructed walls at adjacent square to obj
+    const pos = obj.pos;
+    const x = pos.x;
+    const y = pos.y;
+    let wallCnt = 0;
+    const terrain = new Room.Terrain(obj.room.name);
+
+    //Firstly, we check natural wall
+    for(let xi=x-1; xi<=x+1; xi++) {
+        for(let yi=y-1; yi<=y+1; yi++) {
+            //traverse fields nearby
+            if(xi===x && yi===y) continue;
+            if(TERRAIN_MASK_WALL === terrain.get(xi, yi)) {
+                wallCnt++;
+            }
+        }
+    }
+    //Then we check constructed wall
+    const constructedWalls = _.filter(pos.findInRange(obj.room.cachedFind(FIND_STRUCTURES), 3), o=>o.structureType===STRUCTURE_WALL);
+    return constructedWalls.length+wallCnt < 8;
+};
 
 Room.prototype.cachedCreeps = function() {
     const self = this;
