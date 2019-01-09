@@ -34,6 +34,9 @@ module.exports = {
         else {
             return false;
         }
+    },
+    clearSourceMark: function(creep) {
+        clearSourceMark(creep);
     }
 };
 
@@ -75,8 +78,7 @@ function isSourceAvailable(workParts, source, dynamic=false) {
     if(dynamic) {
         //Dynamic mark
         const available = source.memory.mark.available;
-        const needParts = workParts;
-        return available.spots>=1 && available.parts>=needParts;
+        return available.spots>=1 && source.energy>0;
     } else {
         //One harvester per source
         const takenCnt = _.keys(source.memory.mark.status).length;

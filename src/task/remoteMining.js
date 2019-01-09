@@ -145,22 +145,14 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     }
 
     //=== Harvest all sources and spawn dedicated hauler ===
-    //That is one pair of harvester-hauler per source
-    let needHarvester = room.sources.length - cnt[C.REMOTE_HARVESTER];
-    let needHauler = room.sources.length - cnt[C.REMOTE_HAULER];
-    //Actually enqueue harvesters and haulers
-    while(needHarvester-- > 0) {
+    //That is one pair of harvester-hauler for the room
+    let needHarvester = 1 - cnt[C.REMOTE_HARVESTER];
+    let needHauler = 1 - cnt[C.REMOTE_HAULER];
+    if(needHarvester>0) {
         queueRoom.queue.extern.push([C.REMOTE_HARVESTER, extraMemory]);
         cnt[C.REMOTE_HARVESTER]++;
-        //Spawn matched hauler
-        if(needHauler-- > 0) {
-            queueRoom.queue.extern.push([C.REMOTE_HAULER, extraMemory]);
-            cnt[C.REMOTE_HAULER]++;
-        }
     }
-    //If harvester is enough and hauler is not enough
-    // just spawn it alone
-    while(needHauler-- > 0) {
+    if(needHauler>0) {
         queueRoom.queue.extern.push([C.REMOTE_HAULER, extraMemory]);
         cnt[C.REMOTE_HAULER]++;
     }

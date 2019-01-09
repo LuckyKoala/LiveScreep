@@ -48,7 +48,7 @@ mod.queueCreeps = function(room) {
     //=== Harvest all sources and spawn dedicated hauler if no associated source link present
     //That is one pair of harvester-hauler per source
     // or one pair of harvester-link per source
-    let needHarvester = room.sources.length - cnt.total[C.HARVESTER];
+    let needHarvester;
     let needHauler;
     if(room.controller.level < 3) {
         //=== Calculate ===
@@ -67,9 +67,13 @@ mod.queueCreeps = function(room) {
         const energyGenPerTick = 2*HARVEST_POWER;
         const carryPerRound = 2*CARRY_CAPACITY;
         const amountFactor = Math.ceil(energyGenPerTick*ticksPerRound/carryPerRound);
-        needHauler = room.sources.length*amountFactor - cnt.total[C.HAULER];
+        needHauler = 1*amountFactor - cnt.total[C.HAULER];
+        needHarvester = room.sources.length - cnt.total[C.HARVESTER];
     } else {
-        needHauler = room.sources.length - room.sourceLinks.length - cnt.total[C.HAULER];
+        //one pair for all sources
+        // reuse harvester and save cpu
+        needHauler = 1 - room.sourceLinks.length - cnt.total[C.HAULER];
+        needHarvester = 1 - cnt.total[C.HARVESTER];
     }
     //Actually enqueue harvesters and haulers
     while(needHarvester-- > 0) {

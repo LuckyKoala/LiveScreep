@@ -3,10 +3,7 @@ module.exports = mod;
 
 mod.nextTarget = function() {
     const creep = this.creep;
-    let dynamic = false;
-    if(creep.memory.role===C.PIONEER || creep.memory.role===C.REMOTE_WORKER) {
-        dynamic = true;
-    }
+    const dynamic = true;
     let markSource = Util.SourceMark.getMarkSource(creep);
 
     if(!markSource) {
@@ -37,6 +34,10 @@ mod.loop = function(creep) {
                     let amount = creep.getActiveBodyparts(WORK)*HARVEST_POWER;
                     Util.Stat.incEnergyIn(creep.memory.homeRoom, amount);
                 }
+            } else {
+                //This source has no energy remain!
+                //Go find another source available
+                Util.SourceMark.clearSourceMark(creep);
             }
         };
 

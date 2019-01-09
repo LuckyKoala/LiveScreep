@@ -12,7 +12,7 @@ mod.loop = function(creep) {
 	  }
 	  if(!creep.memory.building && creep.carry.energy == creep.carryCapacity) {
 		    creep.memory.building = true;
-        delete creep.memory.sourceMark;
+        Util.SourceMark.clearSourceMark(creep);
 	  }
 
 	  this.loop0(creep, creep.memory.building);
