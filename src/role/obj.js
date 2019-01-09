@@ -2,7 +2,11 @@ var mod = function(name) {
     this.roleName = name;
     this.roleConfig = {
         inStack: [],
-        outStack: [],
+        outStack: []
+    };
+    this.commonRoleConfig = {
+        bofore: [],
+        after: [Action.Idle]
     };
     //Util function
     this.loop0 = function(creep, useOut) {
@@ -10,15 +14,16 @@ var mod = function(name) {
             const stack = this.roleConfig.outStack;
             //If can't process previous action then invoke next
             for(let i=0; i<stack.length; i++) {
-                if(stack[i].loop(creep)) break;
+                if(stack[i].loop(creep)) return;
             }
         }
         else {
             const stack = this.roleConfig.inStack;
             for(let i=0; i<stack.length; i++) {
-                if(stack[i].loop(creep)) break;
+                if(stack[i].loop(creep)) return;
             }
         }
+        _.forEach(this.commonRoleConfig.after, action=>action.loop(creep));
     };
     //Default behaviour, can be override
     this.loop = function(creep) {
