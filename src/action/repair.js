@@ -43,6 +43,10 @@ mod.nextTarget = function() {
 
 mod.word = '🚧 repair';
 
+const validateFunc = function(creep, target) {
+    return target.room && target.room.name === creep.room.name;
+};
+
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         const result = creep.repair(target);
@@ -55,6 +59,6 @@ mod.loop = function(creep) {
             } else if(target.hits==target.hitsMax) {
                 Util.Mark.unmarkTarget(creep, this.actionName);
             }
-        } 
+        }
     });
 };

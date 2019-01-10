@@ -8,10 +8,14 @@ mod.nextTarget = function() {
                 return o.structureType!=STRUCTURE_RAMPART;
             }
         });
-    }, this.actionName);
+    }, this.actionName, validateFunc);
 };
 
 mod.word = '🚧 build';
+
+const validateFunc = function(creep, target) {
+    return target.room && target.room.name === creep.room.name;
+};
 
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
