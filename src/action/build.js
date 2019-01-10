@@ -17,7 +17,7 @@ mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         const result = creep.build(target);
         if(result == ERR_NOT_IN_RANGE) {
-            creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+            creep.moveTo(target, {maxRooms: 1, visualizePathStyle: {stroke: '#ffffff'}});
         } else if(result == OK) {
             Util.Stat.incEnergyOut(creep.room.name, creep.getActiveBodyparts(WORK)*BUILD_POWER);
             //Only unmark if the structure will be finished in next tick,

@@ -40,7 +40,7 @@ mod.loop = function(creep) {
         if(creep.pos.inRangeTo(target, 3)) {
             creep.repair(target);
         } else {
-            creep.moveTo(target, {range: 3, visualizePathStyle: {stroke: '#ffffff'}});
+            creep.moveTo(target, {maxRooms: 1, range: 3, visualizePathStyle: {stroke: '#ffffff'}});
         }
     });
 };
