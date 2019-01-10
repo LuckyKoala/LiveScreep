@@ -5,7 +5,7 @@ module.exports = mod;
 //  hauler will be in infinite loop of withdraw/transfer.
 const targetInitFunc = function(creep) {
     const markSource = Util.SourceMark.getMarkSource(creep);
-    return markSource ? markSource.container : false;
+    return markSource ? validateFunc(markSource.container) : false;
 };
 
 const validateFunc = function(creep, target) {
