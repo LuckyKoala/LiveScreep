@@ -5,11 +5,15 @@ module.exports = mod;
 //  hauler will be in infinite loop of withdraw/transfer.
 const targetInitFunc = function(creep) {
     const markSource = Util.SourceMark.getMarkSource(creep);
-    return markSource ? validateFunc(markSource.container) : false;
+    if(markSource && validateFunc(creep, markSource.container)) {
+        return markSource.container;
+    } else {
+        return false;
+    }
 };
 
 const validateFunc = function(creep, target) {
-    return creep.pos.isNearTo(target) && target.energy<target.energyCapacity;
+    return creep.pos.isNearTo(target) && target.store[RESOURCE_ENERGY]<target.storeCapacity;
 };
 
 mod.nextTarget = function() {

@@ -27,6 +27,15 @@ const targetInitFunc = function(creep) {
                 return spawnLink;
             }
         }
+
+        //Then find available source container
+        for(let source of creep.room.sources) {
+            const container = source.container || false;
+            if(container && container.store[RESOURCE_ENERGY] > 0) {
+                return container;
+            }
+        }
+
         return false;
     } else if(role === C.FILLER) {
         const tombstones = _.filter(creep.room.cachedFind(FIND_TOMBSTONES), t => t.store[RESOURCE_ENERGY]>0);
