@@ -15,12 +15,14 @@ mod.nextTarget = function() {
         }
 
         if(walls.length>0) {
-            return walls[0];
-        } else {
-            //time to raise maxHits
-            const newMaxHits = creep.memory.maxHits + 1*Thousand;
-            creep.memory.maxHits = Math.min(newMaxHits, Config.WallMaxHits);
-            return false;
+            const target = walls[0];
+            if(!validateFunc(creep, target)) {
+                //time to raise maxHits
+                const newMaxHits = creep.memory.maxHits + 1*Thousand;
+                creep.memory.maxHits = Math.min(newMaxHits, Config.WallMaxHits);
+            }
+
+            return target;
         }
     }, this.actionName, validateFunc);
 };

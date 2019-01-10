@@ -36,8 +36,7 @@ mod.nextTarget = function() {
             }
         }
 
-        //Now we can find low hits wall
-        return creep.pos.findClosestByRange(Util.Defense.getWallsForMaintain(creep.room));
+        return false;
     }, this.actionName);
 };
 
