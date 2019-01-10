@@ -49,7 +49,7 @@ const targetInitFunc = function(creep) {
         } else {
             return creep.room.storage;
         }
-    } else if(role === C.BUILDER) {
+    } else if(role === C.BUILDER || role === C.WALLMAINTAINER) {
         const storage = creep.room.storage;
         if(storage && storage.store[RESOURCE_ENERGY]>Config.StorageBoundForSpawn) {
             return storage;

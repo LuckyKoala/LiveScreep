@@ -12,8 +12,8 @@ module.exports = mod;
 //Run task to get spawn queue
 mod.loop = function() {
     MiningTask.loop();
-    SpawningTask.loop();
     DefendingTask.loop();
+    SpawningTask.loop();
     BuildingTask.loop();
     UpgradingTask.loop();
     OutpostTask.loop();
