@@ -11,6 +11,7 @@ var mod = {
         Low: 60*Thousand,
         Normal: 150*Thousand,
     },
+    WallMaxHits: 30*Thousand*Thousand,
     EnergyForDefend: 600,
 };
 module.exports = mod;

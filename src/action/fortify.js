@@ -1,29 +1,25 @@
 let mod = new ActionObj('Fortify');
 module.exports = mod;
 
-//30M is enough
-const MAXHITS = 30*Thousand*Thousand;
-
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, creep => {
-        const walls = _.filter(creep.room.cachedFind(FIND_STRUCTURES), function(o) {
+        const walls = _.sortBy(_.filter(creep.room.cachedFind(FIND_STRUCTURES), function(o) {
             return o.structureType==STRUCTURE_RAMPART || o.structureType==STRUCTURE_WALL;
-        });
+        }), o=>o.hits);
 
         const lastMaxHits = creep.memory.maxHits || 0;
         let maxHits = lastMaxHits;
         if(lastMaxHits === 0) {
-            maxHits = _.max(_.map(walls, wall => wall.hits));
-            creep.memory.maxHits = maxHits;
+            maxHits = 300*Thousand;
+            creep.memory.maxHits = Math.min(maxHits, Config.WallMaxHits);
         }
 
-        const lowWalls = _.filter(walls, wall=>wall.hits<maxHits);
-        if(lowWalls.length>0) {
-            return creep.pos.findClosestByRange(lowWalls);
+        if(walls.length>0) {
+            return walls[0];
         } else {
             //time to raise maxHits
             const newMaxHits = creep.memory.maxHits + 1*Thousand;
-            creep.memory.maxHits = Math.min(newMaxHits, MAXHITS);
+            creep.memory.maxHits = Math.min(newMaxHits, Config.WallMaxHits);
             return false;
         }
     }, this.actionName, validateFunc);
