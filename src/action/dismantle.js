@@ -16,17 +16,20 @@ mod.nextTarget = function() {
             }
         }
         return false;
-    }, this.actionName);
-
+    }, this.actionName, validateFunc);
 };
 
 mod.word = '🚧 dismantle';
+
+const validateFunc = function(creep, target) {
+    return target.room && target.room.name === creep.room.name;
+};
 
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         const result = creep.dismantle(target);
         if(result == ERR_NOT_IN_RANGE) {
-            creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+            creep.moveTo(target, {range: 1, maxRooms: 1, visualizePathStyle: {stroke: '#ffffff'}});
         } else if(result == OK) {
             Util.Stat.incEnergyIn(creep.room.name, creep.getActiveBodyparts(WORK)*DISMANTLE_POWER*DISMANTLE_COST);
         }

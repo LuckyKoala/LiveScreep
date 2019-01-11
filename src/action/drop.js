@@ -2,7 +2,7 @@ let mod = new ActionObj('Drop');
 module.exports = mod;
 
 mod.nextTarget = function() {
-    return true;
+    return _.sum(this.creep.carry) > 0;
 };
 
 mod.word = '⬇︎ drop';

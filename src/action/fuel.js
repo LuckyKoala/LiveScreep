@@ -14,13 +14,15 @@ mod.nextTarget = function() {
 
 mod.word = '🕯︎ fuel';
 
+const validateFunc = function(creep, target) {
+    return target.room && target.room.name === creep.room.name && target.energy < Config.EnergyForDefend;
+};
+
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         const result = creep.transfer(target, RESOURCE_ENERGY);
         if(result == ERR_NOT_IN_RANGE) {
-            creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
-        } else if(result == OK) {
-            Util.Mark.unmarkTarget(creep, this.actionName);
+            creep.moveTo(target, {range: 1, maxRooms: 1, visualizePathStyle: {stroke: '#ffffff'}});
         }
     });
 };

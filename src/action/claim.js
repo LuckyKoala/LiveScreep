@@ -16,7 +16,7 @@ mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         const result = creep.claimController(target);
         if(result === ERR_NOT_IN_RANGE) {
-            creep.moveTo(target);
+            creep.moveTo(target, {range: 1});
         } else if(result === OK) {
             //Controller ownership update
             delete creep.room.memory.roomType;

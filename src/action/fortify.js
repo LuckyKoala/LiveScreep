@@ -23,12 +23,14 @@ mod.nextTarget = function() {
             }
 
             return target;
+        } else {
+            return false;
         }
     }, this.actionName, validateFunc);
 };
 
 const validateFunc = function(creep, target) {
-    return target.hits<creep.memory.maxHits;
+    return target.room && target.room.name===creep.room.name && target.hits<creep.memory.maxHits;
 };
 
 mod.word = '🚧 fortify';

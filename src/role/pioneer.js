@@ -2,7 +2,7 @@ var mod = new RoleObj(C.PIONEER);
 module.exports = mod;
 
 mod.roleConfig= {
-    inStack: [Action.Travel, Action.Renew, Action.Pickup, Action.Withdraw, Action.Harvest],
+    inStack: [Action.Travel, Action.Renew, Action.FromTombstone, Action.Harvest],
     outStack: [Action.Renew, Action.Build, Action.Upgrade],
 };
 

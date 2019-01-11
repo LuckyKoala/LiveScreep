@@ -2,7 +2,7 @@ var mod = new RoleObj(C.BUILDER);
 module.exports = mod;
 
 mod.roleConfig= {
-    inStack: [Action.Back, Action.Dismantle, Action.Withdraw, Action.Pickup],
+    inStack: [Action.Back, Action.Dismantle, Action.FromStorage, Action.Pickup],
     //Maintain ramparts first since it will decay and it is a structure for defense
     // then repair hurt structures,roads and walls
     // build structures at last since it can wait

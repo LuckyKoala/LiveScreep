@@ -2,7 +2,7 @@ var mod = new RoleObj(C.WALLMAINTAINER);
 module.exports = mod;
 
 mod.roleConfig= {
-    inStack: [Action.Back, Action.Dismantle, Action.Withdraw, Action.Pickup],
+    inStack: [Action.Back, Action.Dismantle, Action.FromStorage, Action.Pickup],
     outStack: [Action.Fortify],
 };
 

@@ -7,11 +7,11 @@ var mod = function(name) {
     //Util function
     //False means this action can't process
     this.loop0 = function(creep, actionFunc) {
-        creep.say(this.word);
         this.creep = creep;
         const target = this.nextTarget();
         if(target) {
             actionFunc(creep, target);
+            creep.say(this.word);
             return true;
         } else {
             return false;

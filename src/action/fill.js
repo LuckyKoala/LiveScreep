@@ -9,18 +9,20 @@ mod.nextTarget = function() {
                     structure.energy < structure.energyCapacity;
             }
         });
-    }, this.actionName);
+    }, this.actionName, validateFunc);
 };
 
 mod.word = '🍽︎ fill';
+
+const validateFunc = function(creep, target) {
+    return target.room && target.room.name === creep.room.name && target.energy < target.energyCapacity;
+};
 
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         const result = creep.transfer(target, RESOURCE_ENERGY);
         if(result == ERR_NOT_IN_RANGE) {
-            creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
-        } else if(result == OK || result == ERR_FULL) {
-            Util.Mark.unmarkTarget(creep, this.actionName);
+            creep.moveTo(target, {range: 1, maxRooms: 1, visualizePathStyle: {stroke: '#ffffff'}});
         }
     });
 };

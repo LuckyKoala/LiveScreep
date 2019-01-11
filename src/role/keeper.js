@@ -2,7 +2,7 @@ var mod = new RoleObj(C.KEEPER);
 module.exports = mod;
 
 mod.roleConfig = {
-    inStack: [Action.Withdraw],
+    inStack: [Action.FromStorage],
     outStack: [Action.Fill, Action.Fuel, Action.PutForUpgrade, Action.Help],
 };
 
