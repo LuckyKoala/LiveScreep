@@ -5,8 +5,12 @@ const targetInitFunc = function(creep) {
     const need = creep.carryCapacity - creep.carry.energy;
     const role = creep.memory.role;
     const room = creep.room;
-    if(role === C.UPGRADER && room.controller.container && room.controller.container.store[RESOURCE_ENERGY]>need) {
-        return room.controller.container;
+    if(role === C.UPGRADER) {
+        if(room.controller.container && room.controller.container.store[RESOURCE_ENERGY]>need) {
+            return room.controller.container;
+        } else {
+            return false;
+        }
     }
     //Find source container
     for(let source of room.sources) {
@@ -15,8 +19,8 @@ const targetInitFunc = function(creep) {
             return container;
         }
     }
+    //Find mineral container
     if(role === C.HAULER || role === C.REMOTE_HAULER) {
-        //Find mineral container
         const mineral = room.mineral;
         if(mineral && mineral.container && _.sum(mineral.container.store)>=need) {
             return mineral.container;

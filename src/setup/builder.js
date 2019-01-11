@@ -13,7 +13,7 @@ mod.setupConfig = {
 		    minEnergy: 400,
 		    essBody: [CARRY, CARRY, MOVE, WORK, WORK, MOVE],
 		    extraBody: [CARRY, WORK, MOVE],
-        maxExtraAmount: 4,
+        maxExtraAmount: 14,
 		    prefix: `[${C.BUILDER}]`,
 		    memory: {role: C.BUILDER},
 	  },

@@ -24,7 +24,7 @@ mod.queueCreeps = function(room) {
     if(room.storage) {
         //We still have energy in storage
         // Do we have a filler to transfer energy from storage to spawns/extensions?
-        if(cnt.total[C.FILLER]<1) {
+        if(cnt.total[C.FILLER]<2) {
             if(cnt.existed[C.FILLER] > 1) {
                 //So this is normal prespawn stuff
                 room.queue.normal.unshift(C.FILLER);
