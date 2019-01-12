@@ -3,11 +3,11 @@ var mod = {};
 module.exports = mod;
 
 const ConstructureMaintainThreshold = {
-    container: 80000, //80K
+    [STRUCTURE_CONTAINER]: 80000, //80K
+    [STRUCTURE_ROAD]: 2100
 };
 
 mod.loop = function(room) {
-
     //Check whether energy available is enough for next action
     const towers = _.filter(room.cachedFind(FIND_MY_STRUCTURES), (structure) => {
         return (structure.structureType == STRUCTURE_TOWER) &&
@@ -49,8 +49,7 @@ mod.loop = function(room) {
 
         const lastRepairCheck = room.memory.lastRepairCheck || 0;
 
-        if((Game.time - lastRepairCheck) > 200) {
-            room.memory.lastRepairCheck = Game.time;
+        if((Game.time - lastRepairCheck) > 30) {
             //Repair structure
             const closestDamagedStructure = tower.pos.findClosestByRange(room.cachedFind(FIND_STRUCTURES), {
                 filter: (structure) => {
@@ -65,7 +64,7 @@ mod.loop = function(room) {
                         } else if(structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_RAMPART) {
                             return false;
                         } else if(structure.structureType == STRUCTURE_ROAD) {
-                            return false;
+                            return structure.hits < ConstructureMaintainThreshold[STRUCTURE_ROAD];
                         }
                         return true;
                     } else {
@@ -79,6 +78,8 @@ mod.loop = function(room) {
                 }
                 return;
             }
+
+            room.memory.lastRepairCheck = Game.time;
         }
     });
 }
