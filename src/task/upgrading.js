@@ -44,9 +44,7 @@ mod.queueCreeps = function(room) {
     upgraderAmount = Math.min(3, upgraderAmount); // 3 at most, more creep more cpu and more crowded
     upgraderAmount = Math.max(1, upgraderAmount); // 1 at least
 
-    //Only spawn upgrader if there is no structures need to be build
-    const needBuildStructures = room.cachedFind(FIND_CONSTRUCTION_SITES);
-    if((room.controller.tickToDowngrade<10000 || needBuildStructures.length === 0) && room.controller.container) {
+    if(room.controller.container) {
         if(cnt.total[C.UPGRADER] < upgraderAmount) {
             room.queue.normal.push(C.UPGRADER);
             cnt.queue[C.UPGRADER]++;
