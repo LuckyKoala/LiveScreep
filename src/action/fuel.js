@@ -9,13 +9,13 @@ mod.nextTarget = function() {
                     structure.energy < Config.EnergyForDefend;
             }
         });
-    }, this.actionName);
+    }, this.actionName, validateFunc);
 };
 
 mod.word = '🕯︎ fuel';
 
 const validateFunc = function(creep, target) {
-    return target.room && target.room.name === creep.room.name && target.energy < Config.EnergyForDefend;
+    return target.room && target.room.name === creep.room.name && target.energy!==target.energyCapacity;
 };
 
 mod.loop = function(creep) {
