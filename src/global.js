@@ -63,6 +63,7 @@ global.C = {
     so keeper redistribute energy from storage or self to towers/upgraders(its container if present)
     */
     //=== Base role ===
+    WORKER: 'worker',
     HARVESTER: 'harvester',
     HAULER: 'hauler',
     UPGRADER: 'upgrader',
@@ -116,6 +117,11 @@ global.FlagUtil = {
         secondaryColor: COLOR_BROWN,
     },
     //=============================
+    working: {
+        color: COLOR_BROWN,
+        secondaryColor: COLOR_RED,
+        parent: 'base',
+    },
     spawning: {
         color: COLOR_ORANGE,
         secondaryColor: COLOR_RED,
@@ -215,6 +221,7 @@ global.Action = {
     Renew: require('action_renew'),
 };
 global.Setup = {
+    [C.WORKER]: require('setup_worker'),
     [C.HARVESTER]: require('setup_harvester'),
     [C.MINER]: require('setup_miner'),
     [C.UPGRADER]: require('setup_upgrader'),
@@ -234,6 +241,7 @@ global.Setup = {
 };
 
 global.Role = {
+    [C.WORKER]: require('role_worker'),
     [C.HARVESTER]: require('role_harvester'),
     [C.MINER]: require('role_miner'),
     [C.UPGRADER]: require('role_upgrader'),

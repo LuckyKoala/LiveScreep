@@ -19,6 +19,10 @@ mod.loop = function() {
 };
 
 mod.queueCreeps = function(room) {
+    if(room.energyCapacityAvailable<Setup[C.HARVESTER].setupConfig.Normal.minEnergy) {
+        Logger.trace('skip task.defending.queueCreeps due to low energyCapacityAvailable');
+        return;
+    }
     //=== Role count ===
     const cnt = room.cachedRoleCount();
 

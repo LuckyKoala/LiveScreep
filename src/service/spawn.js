@@ -57,7 +57,7 @@ function spawnWithSetup (spawn, usedEnergyAmount, urgent, {dynamicExtraAmount, s
         }
     }
     //For low energy capacity available, use SetupConfig.Low
-    if(spawn.room.energyCapacityAvailable < setupConfig.Normal.minEnergy && !!setupConfig.Low) {
+    if((spawn.room.energyCapacityAvailable < setupConfig.Normal.minEnergy || urgent) && !!setupConfig.Low) {
         setup = setupConfig.Low;
     }
     const {minEnergy, essBody, extraBody, prefix, memory, maxExtraAmount} = setup;
@@ -77,7 +77,7 @@ function spawnWithSetup (spawn, usedEnergyAmount, urgent, {dynamicExtraAmount, s
     const bodyCost = Util.Helper.getBodyCost(body);
     //Check energyAvailable is enough for this spawn action
     if(energyAvailable < bodyCost) {
-        //Logger.debug(`[${spawn.room.name}-${spawn.name}] energy is not enough while spawning creep with body:${JSON.stringify(body)} and memory:${JSON.stringify(memory)} which cost ${bodyCost}, energyAvailable: ${energyAvailable}`);
+        Logger.trace(`[${spawn.room.name}-${spawn.name}] energy is not enough while spawning creep with body:${JSON.stringify(body)} and memory:${JSON.stringify(memory)} which cost ${bodyCost}, energyAvailable: ${energyAvailable}`);
         return false;
     }
     //Calculate name

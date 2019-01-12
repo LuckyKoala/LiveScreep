@@ -299,6 +299,24 @@ mod.loop = function(room, forceRun=false) {
     let success = false;
     const iterateAndPlace = makeIterateAndPlace(room);
 
+    //=== Extension ===
+    //Build extension if we can
+    const extensionLimit = CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][room.controller.level];
+    var extensions = room.find(FIND_MY_STRUCTURES, {
+        filter: (structure) => {
+            return structure.structureType == STRUCTURE_EXTENSION;
+        }
+    });
+    if(extensions.length<extensionLimit) {
+        success = iterateAndPlace(STRUCTURE_EXTENSION);
+    }
+    if(success) return;
+
+    //Speed up low rcl room
+    if(room.energyCapacityAvailable<Setup[C.HARVESTER].setupConfig.Normal.minEnergy) {
+        Logger.trace('skip service.construction.loop due to low energyCapacityAvailable');
+        return;
+    }
     //=== Container ===
     if(!room.controller.container) {
         success = iterateAndPlace(STRUCTURE_CONTAINER);
@@ -320,18 +338,6 @@ mod.loop = function(room, forceRun=false) {
             if(success) return;
         }
     }
-    //=== Extension ===
-    //Build extension if we can
-    const extensionLimit = CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][room.controller.level];
-    var extensions = room.find(FIND_MY_STRUCTURES, {
-        filter: (structure) => {
-            return structure.structureType == STRUCTURE_EXTENSION;
-        }
-    });
-    if(extensions.length<extensionLimit) {
-        success = iterateAndPlace(STRUCTURE_EXTENSION);
-    }
-    if(success) return;
     //== Tower ==
     //Build tower if we can
     const towerLimit = CONTROLLER_STRUCTURES[STRUCTURE_TOWER][room.controller.level];

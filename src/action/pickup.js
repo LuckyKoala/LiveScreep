@@ -15,16 +15,20 @@ mod.nextTarget = function() {
             target = creep.pos.findClosestByRange(creep.room.cachedFind(FIND_DROPPED_RESOURCES));
             return target;
         }
-    }, this.actionName);
+    }, this.actionName, validateFunc);
 };
 
 mod.word = '⬆︎ pickup';
+
+const validateFunc = function(creep, target) {
+    return target.room && target.room.name===creep.room.name && target.amount>0;
+};
 
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         const result = creep.pickup(target);
         if(result == ERR_NOT_IN_RANGE) {
-            creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}});
+            creep.moveTo(target, {range: 1, maxRoomx: 1, visualizePathStyle: {stroke: '#ffaa00'}});
         } else if(result == OK) {
             Util.Mark.unmarkTarget(creep, this.actionName);
         }

@@ -74,6 +74,13 @@ mod.loopOwnedRoom = function(room) {
     const baseFlag = _.filter(room.cachedFind(FIND_FLAGS), f => FlagUtil.base.examine(f));
     if(baseFlag.length === 0) return;
 
+    //Detect no creep edge case
+    const creeps = room.cachedFind(FIND_MY_CREEPS);
+    if(creeps.length===0 && room.queue.urgent.length===0) {
+        Logger.warning(`Detect no creeps edge case in ${room.name}, resetting spawn queue...`);
+        room.queue.normal = [];
+    }
+
     //Detect hostile creeps
     const hostiles = room.cachedFind(FIND_HOSTILE_CREEPS);
     if(hostiles.length>0) {

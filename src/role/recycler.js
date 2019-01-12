@@ -5,7 +5,7 @@ module.exports = mod;
 // and then go to spawn and recycle self
 mod.roleConfig = {
     inStack: [Action.Back, Action.Recycle],
-    outStack: [Action.Back, Action.Store],
+    outStack: [Action.Back, Action.Store, Action.Recycle],
 };
 
 mod.loop = function(creep) {

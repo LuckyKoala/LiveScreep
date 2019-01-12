@@ -18,6 +18,10 @@ mod.loop = function() {
 
 //Builder
 mod.queueCreeps = function(room) {
+    if(room.energyCapacityAvailable<Setup[C.HARVESTER].setupConfig.Normal.minEnergy) {
+        Logger.trace('skip task.building.queueCreeps due to low energyCapacityAvailable');
+        return;
+    }
     if(room.storage && room.storage.store[RESOURCE_ENERGY] < Config.StorageBoundForSpawn) {
         Logger.trace('skip task.building.queueCreeps due to lack of energy in storage');
         return;
@@ -37,12 +41,7 @@ mod.queueCreeps = function(room) {
     });
     const needBuilder = (needBuildStructures.length + needRepairStructures.length) > 0;
     if(needBuilder) {
-        let limit;
-        if(needBuildStructures.length>0 && room.controller.level<3) {
-            limit = 2;
-        } else {
-            limit = 1;
-        }
+        const limit = 1;
         if(cnt.total[C.BUILDER]<limit) {
             room.queue.normal.push(C.BUILDER);
             cnt.queue[C.BUILDER]++;

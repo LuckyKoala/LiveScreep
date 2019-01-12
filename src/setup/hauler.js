@@ -3,10 +3,10 @@ module.exports = mod;
 
 mod.setupConfig = {
     Low: {
-        minEnergy: 150,
-        essBody: [CARRY, CARRY, MOVE],
-        extraBody: [CARRY, CARRY, MOVE],
-        maxExtraAmount: 1,
+        minEnergy: 100,
+        essBody: [CARRY, MOVE],
+        extraBody: [CARRY, MOVE],
+        maxExtraAmount: 3,
         prefix: `[Low-${C.HAULER}]`,
         memory: {role: C.HAULER},
     },

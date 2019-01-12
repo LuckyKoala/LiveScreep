@@ -1,4 +1,5 @@
 const MiningTask = require('task_mining');
+const WorkingTask = require('task_working');
 const SpawningTask = require('task_spawning');
 const DefendingTask = require('task_defending');
 const BuildingTask = require('task_building');
@@ -12,6 +13,7 @@ module.exports = mod;
 //Run task to get spawn queue
 mod.loop = function() {
     MiningTask.loop();
+    WorkingTask.loop();
     DefendingTask.loop();
     SpawningTask.loop();
     BuildingTask.loop();

@@ -18,6 +18,10 @@ mod.loop = function() {
 
 //Upgrader and keeper
 mod.queueCreeps = function(room) {
+    if(room.energyCapacityAvailable<Setup[C.HARVESTER].setupConfig.Normal.minEnergy) {
+        Logger.trace('skip task.upgrading.queueCreeps due to low energyCapacityAvailable');
+        return;
+    }
     if(room.storage && room.storage.store[RESOURCE_ENERGY] < Config.StorageBoundForSpawn) {
         Logger.trace('skip task.upgrading.queueCreeps due to lack of energy in storage');
         return;
