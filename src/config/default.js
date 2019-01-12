@@ -9,7 +9,7 @@ var mod = {
         //  have many limitation.
         Lowest: 10*Thousand,
         Low: 60*Thousand,
-        Normal: 150*Thousand,
+        Normal: 120*Thousand,
     },
     WallMaxHits: 30*Thousand*Thousand,
     EnergyForDefend: 600,
