@@ -30,14 +30,6 @@ mod.queueCreeps = function(room) {
     //=== Role count ===
     const cnt = room.cachedRoleCount();
 
-    //Only spawn keeper if storage present
-    //spawn keeper first, so there will be energy source for upgrader
-    if(room.storage && cnt.total[C.KEEPER] === 0) {
-        room.queue.normal.push(C.KEEPER);
-        cnt.queue[C.KEEPER]++;
-        cnt.total[C.KEEPER]++;
-    }
-
     //If currently energy capacity can't afford single bigger creep
     // then let's add amount of upgraders
     const energyForSpawnCapacity = room.energyCapacityAvailable;
@@ -46,9 +38,18 @@ mod.queueCreeps = function(room) {
     const totalEnergyNeed = setup.setupConfig.Normal.minEnergy + dynamicMaxExtraAmount * Util.Helper.getBodyCost(setup.setupConfig.Normal.extraBody);
     let upgraderAmount = Math.ceil(totalEnergyNeed/energyForSpawnCapacity);
     upgraderAmount = Math.min(3, upgraderAmount); // 3 at most, more creep more cpu and more crowded
-    upgraderAmount = Math.max(1, upgraderAmount); // 1 at least
+    upgraderAmount = Math.max(0, upgraderAmount); // 0 at least
 
     if(room.controller.container) {
+        if(upgraderAmount > 0) {
+            //Only spawn keeper if storage present
+            //spawn keeper first, so there will be energy source for upgrader
+            if(room.storage && cnt.total[C.KEEPER] === 0) {
+                room.queue.normal.push(C.KEEPER);
+                cnt.queue[C.KEEPER]++;
+                cnt.total[C.KEEPER]++;
+            }
+        }
         if(cnt.total[C.UPGRADER] < upgraderAmount) {
             room.queue.normal.push(C.UPGRADER);
             cnt.queue[C.UPGRADER]++;
