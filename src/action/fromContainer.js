@@ -20,7 +20,7 @@ const targetInitFunc = function(creep) {
             if(!suitableContainer || container.store[RESOURCE_ENERGY] > suitableContainer.store[RESOURCE_ENERGY]) suitableContainer = container;
         }
     }
-    if(suitableContainer) return suitableContainer;
+    if(suitableContainer && suitableContainer.store[RESOURCE_ENERGY]>0) return suitableContainer;
 
     //Find mineral container
     if(role === C.HAULER || role === C.REMOTE_HAULER) {
@@ -54,8 +54,10 @@ mod.loop = function(creep) {
         } else {
             result = creep.withdraw(target, RESOURCE_ENERGY);
         }
-        if(result == ERR_NOT_IN_RANGE) {
+        if(result === ERR_NOT_IN_RANGE) {
             creep.moveTo(target, {range: 1, maxRooms: 1, visualizePathStyle: {stroke: '#ffaa00'}});
+        } else if(result === OK) {
+            Util.Mark.unmarkTarget(creep, this.actionName);
         }
     });
 };
