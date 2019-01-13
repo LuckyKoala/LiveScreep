@@ -131,7 +131,7 @@ mod.queueCreeps = function(roomName, destinedTarget) {
         return;
     }
 
-    if(!queueRoom.storage) {
+    if(!queueRoom.storage || room.energyCapacityAvailable<Config.StorageBoundForSpawnRecovery) {
         //Can't afford spawn cost of claimer
         // sent remoteWorkers instead of a remote group
         if(room) {
@@ -141,6 +141,15 @@ mod.queueCreeps = function(roomName, destinedTarget) {
             while(needWorker-- > 0) {
                 queueRoom.queue.extern.push([C.REMOTE_WORKER, extraMemory]);
                 cnt[C.REMOTE_WORKER]++;
+            }
+            //==== Recycle remoteHauler and remoteHarvester ====
+            if(cnt[C.REMOTE_HARVESTER]>0 || cnt[C.REMOTE_HAULER]>0) {
+                Logger.info(`Recycling remoteHarvester and remoteHauler of ${destinedTarget} due to lack of energy in storage`);
+                _.forEach(roomCreeps, c => {
+                    if(c.memory.role===C.REMOTE_HARVESTER || c.memory.role===C.REMOTE_HAULER) {
+                        c.memory.role = C.RECYCLER;
+                    }
+                });
             }
         }
 

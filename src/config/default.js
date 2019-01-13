@@ -1,6 +1,7 @@
 var mod = {
     EnableProfiler: false,
     StorageBoundForSpawn: 10*Thousand,
+    StorageBoundForSpawnRecovery: 20*Thousand,
     StorageBoundForAddUpgrader: 60*Thousand,
     StorageBoundForWallMaintainer: 50*Thousand,
     RampartMaintainThreshold: {

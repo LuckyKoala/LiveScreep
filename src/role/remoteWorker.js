@@ -2,7 +2,7 @@ var mod = new RoleObj(C.REMOTE_WORKER);
 module.exports = mod;
 
 mod.roleConfig = {
-    inStack: [Action.Travel, Action.Pickup, Action.Harvest],
+    inStack: [Action.Travel, Action.Pickup, Action.FromContainer, Action.Harvest],
     outStack: [Action.Back, Action.Store, Action.Fill, Action.Fuel, Action.Build, Action.Upgrade],
 };
 
