@@ -49,6 +49,12 @@ const loop0 = function () {
 };
 
 function GC() {
+    for(let name in Memory.flags) {
+        if(!Game.flags[name]) {
+            delete Memory.flags[name];
+            Logger.info('Clearing non-existing flag memory: ', name);
+        }
+    }
     for(let name in Memory.creeps) {
         if(!Game.creeps[name]) {
             delete Memory.creeps[name];
