@@ -13,12 +13,15 @@ const targetInitFunc = function(creep) {
         }
     }
     //Find source container
+    let suitableContainer = false;;
     for(let source of room.sources) {
         const container = source.container || false;
-        if(container && container.store[RESOURCE_ENERGY] >= need) {
-            return container;
+        if(container) {
+            if(!suitableContainer || container.store[RESOURCE_ENERGY] > suitableContainer.store[RESOURCE_ENERGY]) suitableContainer = container;
         }
     }
+    if(suitableContainer) return suitableContainer;
+
     //Find mineral container
     if(role === C.HAULER || role === C.REMOTE_HAULER) {
         const mineral = room.mineral;
@@ -35,8 +38,7 @@ mod.nextTarget = function() {
 };
 
 const validateFunc = function(creep, target) {
-    const need = creep.carryCapacity - creep.carry.energy;
-    return target.room && target.room.name===creep.room.name && _.sum(target.store) > need;
+    return target.room && target.room.name===creep.room.name && _.sum(target.store) > 0;
 };
 
 mod.word = '⬅︎Container';
