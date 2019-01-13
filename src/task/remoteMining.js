@@ -26,13 +26,12 @@ mod.loop = function() {
                 }
             }
             assignedRoom = selectedRoomName;
+            //Write back to memory
+            flag.memory.assignedRoom = assignedRoom;
             Logger.info(`Detect new remote mining flag => ${flag.name} and assigned to [${assignedRoom}]`);
         }
         //Do we have a assignedRoom now?
         if(assignedRoom) {
-            //Write back to memory
-            flag.memory.assignedRoom = assignedRoom;
-
             //====== Builders on demand ======
             //Loop construction
             ServiceConstruction.loopRemoteMining(flag);
@@ -168,10 +167,29 @@ mod.queueCreeps = function(roomName, destinedTarget) {
         }
     }
 
+    //====== Calculate path length between remote sources and home controller ======
+    const flag = Game.flags[destinedTarget];
+    let avgPathLength = flag.memory.avgPathLength;
+    if(avgPathLength === undefined) {
+        let length = 0;
+        let goals = _.map(room.sources, function(source) {
+            // We can't actually walk on sources-- set `range` to 1 
+            // so we path next to it.
+            return { pos: source.pos, range: 1 };
+        });
+        const pathObj = PathFinder.search(queueRoom.storage.pos, goals);
+        avgPathLength = pathObj.path.length;
+        //Write back
+        flag.memory.avgPathLength = avgPathLength;
+    }
+
     //=== Harvest all sources and spawn dedicated hauler ===
     //That is one pair of harvester-hauler for the room
-    const range = Util.Helper.calcRoomsRealDistance(queueRoom.name, room.name);
-    const haulerLimit = range+1;
+    const energyGenPerTick = 30; //hardcode for 15work*2harvest_power
+    const energyHaulPerRound = 1600; //hardcode for 32carry
+    const ticksPerRound = avgPathLength*2; //best situation: there are well maintained roads on the path, so move speed is 1 tile/tick
+    const haulerLimit = parseInt((energyGenPerTick*ticksPerRound/energyHaulPerRound).toFixed());
+    //Logger.debug(`[${queueRoom.name} <-> ${flag.room.name}] ${haulerLimit}`);
     let needHarvester = 1 - cnt[C.REMOTE_HARVESTER];
     let needHauler = haulerLimit - cnt[C.REMOTE_HAULER];
     if(needHarvester>0) {
