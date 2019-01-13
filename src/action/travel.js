@@ -7,9 +7,13 @@ mod.nextTarget = function() {
     if(creep.memory.destinedTarget) {
         //we have a target
         const flag = Game.flags[creep.memory.destinedTarget];
-        if(!flag && creep.memory.role!==C.BUILDER) {
-            Logger.info('Detect flag removed');
-            creep.memory.role=C.RECYCLER;
+        if(!flag) {
+            if(creep.memory.role!==C.BUILDER && creep.memory.role!==C.GUARDIAN) {
+                Logger.info('Detect flag removed');
+                creep.memory.role=C.RECYCLER;
+            } else {
+                delete creep.memory.destinedTarget;
+            }
             return false;
         }
         //If target room is under attack, do not go in
