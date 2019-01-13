@@ -2,7 +2,7 @@ var mod = new RoleObj(C.REMOTE_HAULER);
 module.exports = mod;
 
 mod.roleConfig = {
-    inStack: [Action.Travel, Action.Pickup, Action.FromTombstone, Action.FromContainer],
+    inStack: [Action.Travel, Action.FromTombstone, Action.FromContainer, Action.Pickup],
     outStack: [Action.Help, Action.Back, Action.PutToLink, Action.Store, Action.Fill, Action.Fuel, Action.PutForUpgrade],
 };
 
