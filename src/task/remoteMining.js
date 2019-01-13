@@ -131,7 +131,7 @@ mod.queueCreeps = function(roomName, destinedTarget) {
         return;
     }
 
-    if(!queueRoom.storage || room.energyCapacityAvailable<Config.StorageBoundForSpawnRecovery) {
+    if(!queueRoom.storage) {
         //Can't afford spawn cost of claimer
         // sent remoteWorkers instead of a remote group
         if(room) {
