@@ -188,7 +188,7 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     const energyGenPerTick = 30; //hardcode for 15work*2harvest_power
     const energyHaulPerRound = 1600; //hardcode for 32carry
     const ticksPerRound = avgPathLength*2; //best situation: there are well maintained roads on the path, so move speed is 1 tile/tick
-    const haulerLimit = parseInt((energyGenPerTick*ticksPerRound/energyHaulPerRound).toFixed());
+    const haulerLimit = Math.floor(energyGenPerTick*ticksPerRound/energyHaulPerRound);
     //Logger.debug(`[${queueRoom.name} <-> ${flag.room.name}] ${haulerLimit}`);
     let needHarvester = 1 - cnt[C.REMOTE_HARVESTER];
     let needHauler = haulerLimit - cnt[C.REMOTE_HAULER];
