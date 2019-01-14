@@ -7,20 +7,21 @@ mod.nextTarget = function() {
 
 mod.word = '🍽︎ idle';
 
+function makeIdleEntry(creep) {
+    const pos = creep.pos;
+    return `${pos.x},${pos.y}`;
+}
+
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         let lastIdleTick = creep.memory.lastIdleTick || 0;
         let lastIdleCnt = creep.memory.lastIdleCnt || 0;
         if(Game.time-lastIdleTick===1) {
+            creep.room.State[C.STATE.IDLE_CREEPS].push(creep.id);
+
             lastIdleCnt++;
-        }
-        if(lastIdleCnt>4) {
-            //Do random move
-            const dir = Math.ceil(Math.random() * 8);
-            creep.move(dir);
-            creep.memory.lastIdleCnt = 0;
         } else {
-            creep.memory.lastIdleCnt = lastIdleCnt;
+            lastIdleCnt = 0;
         }
 
         creep.memory.lastIdleTick = Game.time;

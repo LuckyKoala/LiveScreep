@@ -591,19 +591,34 @@ Creep.prototype.moveTo = function(destination, ops, dareDevil = false) {
     let stuck = pos.inRangeTo(lastPos.x, lastPos.y, 0) || this.memory.edgeCounter>=2;
     this.memory.position = this.pos;
     if (stuck && movingLastTick) {
-        if (!this.memory.stuckCount) this.memory.stuckCount = 0;
-        if (!this.memory.edgeCounter) this.memory.edgeCounter = 0;
-        this.memory.stuckCount++;
-        if (dareDevil && this.memory.stuckCount > 0) {
-            this.memory.detourTicks = 5;
+        //Do we encounter a idle creep?
+        let idleCreepFound = false;
+        const state = this.room.State[C.STATE.IDLE_CREEPS];
+        for(const id of state) {
+            const creep = Game.getObjectById(id);
+            if(creep.pos.isNearTo(pos)) {
+                idleCreepFound = true;
+                creep.move(creep.pos.getDirectionTo(pos));
+                break;
+            }
         }
-        else if (this.memory.stuckCount >= 2) {
-            this.memory.detourTicks = 5;
-            // this.say("excuse me", true);
-        }
-        if (this.memory.stuckCount > 500 && !this.memory.stuckNoted) {
-            Logger.warning(this.name, "is stuck at", this.pos, "stuckCount:", this.memory.stuckCount);
-            this.memory.stuckNoted = true;
+        if(!idleCreepFound) {
+            if (!this.memory.stuckCount) this.memory.stuckCount = 0;
+            if (!this.memory.edgeCounter) this.memory.edgeCounter = 0;
+            this.memory.stuckCount++;
+
+
+            if (dareDevil && this.memory.stuckCount > 0) {
+                this.memory.detourTicks = 5;
+            }
+            else if (this.memory.stuckCount >= 2) {
+                this.memory.detourTicks = 5;
+                // this.say("excuse me", true);
+            }
+            if (this.memory.stuckCount > 500 && !this.memory.stuckNoted) {
+                Logger.warning(this.name, "is stuck at", this.pos, "stuckCount:", this.memory.stuckCount);
+                this.memory.stuckNoted = true;
+            }
         }
     }
     else {

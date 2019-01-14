@@ -23,6 +23,9 @@ global.C = {
     HIGH_WAY: 'high way',
     CENTER_ROOM: 'center room',
     KEEPER_ROOM: 'keeper room',
+    STATE: {
+        IDLE_CREEPS: 'idleCreeps'
+    },
     /*
     ========================================
     harvest energy from source and haul it
