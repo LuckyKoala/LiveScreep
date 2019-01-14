@@ -55,12 +55,9 @@ mod.queueCreeps = function(room) {
     let harvesterLimit;
     let haulerLimit = room.sources.length;
     const fiveWorkCost = Setup[C.HARVESTER].setupConfig.Normal.minEnergy;
-    if(room.energyCapacityAvailable>=fiveWorkCost*3) {
-        //High RCL, reuse one bigger harvester for all sources
-        harvesterLimit = 1;
-    } else if(room.energyCapacityAvailable>=fiveWorkCost*1) {
+    if(room.energyCapacityAvailable>=fiveWorkCost) {
         //Normal RCL, one 5xWORK harvester per source
-        harvesterLimit = rooms.sources.length;
+        harvesterLimit = room.sources.length;
     } else {
         //Low RCL, more little harvester
         let accessibleFields = 0;

@@ -3,10 +3,11 @@ module.exports = mod;
 
 mod.nextTarget = function() {
     const creep = this.creep;
-    const dynamic = true;
     let markSource = Util.SourceMark.getMarkSource(creep);
 
     if(!markSource) {
+        const role = creep.memory.role;
+        const dynamic = role!==C.HARVESTER && role!==C.REMOTE_HARVESTER;
         //Not found
         Logger.trace("Finding unmark source => "+creep.name);
         const found = Util.SourceMark.findAndMarkSource(creep, dynamic);
@@ -37,7 +38,9 @@ mod.loop = function(creep) {
             } else {
                 //This source has no energy remain!
                 //Go find another source available
-                Util.SourceMark.clearSourceMark(creep);
+                const role = creep.memory.role;
+                const dynamic = role!==C.HARVESTER && role!==C.REMOTE_HARVESTER;
+                if(dynamic) Util.SourceMark.clearSourceMark(creep);
             }
         };
 
