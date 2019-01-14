@@ -27,7 +27,13 @@ mod.loop = function(creep) {
             //Only unmark if the structure will be finished in next tick,
             //  so creep will not search for other sites while it has unfinished target
             const finish = (target.progressTotal - target.progress - creep.getActiveBodyparts(WORK)*BUILD_POWER) == 0;
-            if(finish) Util.Mark.unmarkTarget(creep, this.actionName);
+            if(finish) {
+                Util.Mark.unmarkTarget(creep, this.actionName);
+
+                if(target.structureType===STRUCTURE_LINK) {
+                    creep.room.saveLinks();
+                }
+            }
         }
     });
 };

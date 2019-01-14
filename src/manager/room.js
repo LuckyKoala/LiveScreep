@@ -89,8 +89,6 @@ mod.loopOwnedRoom = function(room) {
         room.memory.underAttack = false;
     }
 
-    room.saveLinks();
-
     Util.Defense.tryActivateSafeMode(room);
     TowerService.loop(room);
     LinkService.loop(room);

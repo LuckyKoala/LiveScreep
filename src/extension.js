@@ -513,7 +513,6 @@ Room.prototype.cachedFind = function(type) {
 };
 
 Room.prototype.saveLinks = function() {
-    if(this.sourceLink && this.spawnLink && this.controllerLink) return; //Only do search when links is not valid.
     const self = this;
     const links = _.filter(this.cachedFind(FIND_MY_STRUCTURES), { structureType: STRUCTURE_LINK });
     const controller = this.controller;
