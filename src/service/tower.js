@@ -53,11 +53,6 @@ mod.loop = function(room) {
             //Repair structure
             const closestDamagedStructure = tower.pos.findClosestByRange(room.cachedFind(FIND_STRUCTURES), {
                 filter: (structure) => {
-                    const flags = structure.pos.lookFor(LOOK_FLAGS);
-                    if(flags) {
-                        const dismantleFlagFound = _.filter(flags, o => FlagUtil.dismantle.examine(o)).length;
-                        if(dismantleFlagFound) return false;
-                    }
                     if(structure.hits < structure.hitsMax) {
                         if(structure.structureType == STRUCTURE_CONTAINER) {
                             return structure.hits < ConstructureMaintainThreshold[STRUCTURE_CONTAINER];
