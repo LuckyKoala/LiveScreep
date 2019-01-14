@@ -13,7 +13,7 @@ const targetInitFunc = function(creep) {
 };
 
 const validateFunc = function(creep, target) {
-    return creep.pos.isNearTo(target) && target.store[RESOURCE_ENERGY]<target.storeCapacity;
+    return target && target.store[RESOURCE_ENERGY]<target.storeCapacity;
 };
 
 mod.nextTarget = function() {

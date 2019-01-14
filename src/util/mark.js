@@ -6,8 +6,8 @@ module.exports = {
         creep.memory.targetMark[actionSource] = false;
     },
     handleMark: function(creep, targetInitFunc, actionSource, validateFunc=false) {
-        var targetId = getMarkTarget(creep, actionSource);
-        var target;
+        let targetId = getMarkTarget(creep, actionSource);
+        let target;
     
         if(!targetId) {
             target = targetInitFunc(creep);
