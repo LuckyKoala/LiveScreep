@@ -64,6 +64,7 @@ mod.queueCreeps = function(room) {
         for(let source of room.sources) {
             accessibleFields += source.accessibleFields;
         }
+        //FIXME harvester no longer use dynamic source mark! More than one harvester at a source won't work any more
         harvesterLimit = accessibleFields;
         haulerLimit = 2*room.sources.length;
     }

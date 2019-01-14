@@ -23,7 +23,19 @@ mod.word = '⛏ harvest';
 
 mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
-        const doHarvest = function() {
+        const source = target;
+        const container = target.container;
+        let moved = false;
+        if(container && container.pos.isNearTo(source)) {
+            const role = creep.memory.role;
+            const range = (role===C.HARVESTER || role===C.REMOTE_HARVESTER) ? 0 : 1;
+            if(!creep.pos.inRangeTo(container, range)) {
+                creep.moveTo(container, {range: range, maxRooms: 1, visualizePathStyle: {stroke: '#ffaa00'}});
+                moved = true;
+            }
+        }
+
+        if(creep.pos.isNearTo(source)) {
             if(source.energy > 0) {
                 //Only do harvest if source has energy remain, save 0.2 CPU!
                 let result = creep.harvest(source);
@@ -38,14 +50,8 @@ mod.loop = function(creep) {
                 const dynamic = role!==C.HARVESTER && role!==C.REMOTE_HARVESTER;
                 if(dynamic) Util.SourceMark.clearSourceMark(creep);
             }
-        };
-        const source = target;
-        const container = target.container;
-
-        if(creep.pos.isNearTo(source)) {
-            doHarvest();
         } else {
-            creep.moveTo(source, {range: 1, maxRooms: 1, visualizePathStyle: {stroke: '#ffaa00'}});
+            if(!moved) creep.moveTo(source, {range: 1, maxRooms: 1, visualizePathStyle: {stroke: '#ffaa00'}});
         }
     });
 };
