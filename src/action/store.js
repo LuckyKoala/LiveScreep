@@ -2,8 +2,9 @@ let mod = new ActionObj('Store');
 module.exports = mod;
 
 const targetInitFunc = function(creep) {
-    if(creep.room.storage) {
-        return creep.room.storage;
+    const storage = Game.rooms[creep.memory.homeRoom].storage;
+    if(storage) {
+        return storage;
     } else {
         const keepers = _.filter(creep.room.cachedFind(FIND_MY_CREEPS), c => c.memory.role === C.KEEPER);
         if(keepers.length>0) {
