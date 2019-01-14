@@ -5,7 +5,6 @@ module.exports = mod;
 mod.loop = function() {
     for(const name in Game.creeps) {
         const creep = Game.creeps[name];
-        if(creep.spawning) return;
         const role = creep.memory.role;
         const roleModule = Role[role];
 
