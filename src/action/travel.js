@@ -10,7 +10,7 @@ mod.nextTarget = function() {
         if(!flag) {
             if(creep.memory.role!==C.BUILDER && creep.memory.role!==C.GUARDIAN) {
                 Logger.info('Detect flag removed');
-                creep.memory.role=C.RECYCLER;
+                //creep.memory.role=C.RECYCLER;
             } else {
                 delete creep.memory.destinedTarget;
             }
