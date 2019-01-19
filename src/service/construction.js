@@ -46,24 +46,26 @@ const bunker = {
         [1,4,1,1,3,4,5,4,3,1,1,4,1],
         [1,1,4,1,4,0,3,0,4,1,4,1,4],
         [4,1,1,4,5,3,6,4,7,4,1,1,4],
-        [4,1,4,1,4,0,3,0,4,0,4,0,4],
+        [4,1,4,1,4,0,3,0,4,11,4,0,4],
         [1,4,1,1,3,4,5,4,8,9,9,4,0],
-        [4,1,4,1,1,1,4,0,9,9,4,9,4],
+        [4,1,4,1,1,1,4,12,9,9,4,9,4],
         [4,1,1,4,1,4,1,4,9,4,9,9,4],
-        [4,10,1,1,4,1,1,0,4,9,9,0,4],
+        [4,10,1,1,4,1,1,0,4,9,9,7,4],
         [0,4,4,4,1,1,4,4,0,4,4,4,0]
     ],
     typeMap: [false,
-              [STRUCTURE_EXTENSION],
-              [STRUCTURE_CONTAINER],
-              [STRUCTURE_TOWER],
-              [STRUCTURE_ROAD],
-              [STRUCTURE_SPAWN],
-              [STRUCTURE_STORAGE],
-              [STRUCTURE_LINK],
-              [STRUCTURE_TERMINAL],
-              [STRUCTURE_LAB],
-              [STRUCTURE_OBSERVER]]
+              STRUCTURE_EXTENSION,
+              STRUCTURE_CONTAINER,
+              STRUCTURE_TOWER,
+              STRUCTURE_ROAD,
+              STRUCTURE_SPAWN,
+              STRUCTURE_STORAGE,
+              STRUCTURE_LINK,
+              STRUCTURE_TERMINAL,
+              STRUCTURE_LAB,
+              STRUCTURE_OBSERVER,
+              STRUCTURE_POWER_SPAWN,
+              STRUCTURE_NUKER]
 };
 
 mod.showRoomPlan = function(room) {
@@ -245,6 +247,8 @@ mod.loop = function(room, forceRun=false) {
     addToChainIfPossible(STRUCTURE_LINK);
     addToChainIfPossible(STRUCTURE_LAB);
     addToChainIfPossible(STRUCTURE_OBSERVER);
+    addToChainIfPossible(STRUCTURE_POWER_SPAWN);
+    addToChainIfPossible(STRUCTURE_NUKER);
     chain.add(() => room.memory.lastFullyConstructionCheck = Game.time);
 
     //======== Actually run chain functions ========
