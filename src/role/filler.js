@@ -5,7 +5,7 @@ module.exports = mod;
 
 mod.roleConfig = {
     inStack: [Action.FromLink, Action.FromStorage, Action.FromTombstone],
-    outStack: [Action.Fill, Action.PutForUpgrade],
+    outStack: [Action.Fill],
 };
 
 mod.loop = function(creep) {

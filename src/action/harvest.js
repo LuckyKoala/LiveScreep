@@ -7,7 +7,7 @@ mod.nextTarget = function() {
 
     if(!markSource) {
         const role = creep.memory.role;
-        const dynamic = role!==C.HARVESTER && role!==C.REMOTE_HARVESTER;
+        const dynamic = (role!==C.HARVESTER || creep.getActiveBodyparts(WORK)<5) && role!==C.REMOTE_HARVESTER;
         //Not found
         Logger.trace("Finding unmark source => "+creep.name);
         const found = Util.SourceMark.findAndMarkSource(creep, dynamic);
@@ -28,7 +28,7 @@ mod.loop = function(creep) {
         let moved = false;
         if(container && container.pos.isNearTo(source)) {
             const role = creep.memory.role;
-            const range = (role===C.HARVESTER || role===C.REMOTE_HARVESTER) ? 0 : 1;
+            const range = ((role===C.HARVESTER && creep.getActiveBodyparts(WORK)>=5) || role===C.REMOTE_HARVESTER) ? 0 : 1;
             if(!creep.pos.inRangeTo(container, range)) {
                 creep.moveTo(container, {range: range, maxRooms: 1, visualizePathStyle: {stroke: '#ffaa00'}});
                 moved = true;

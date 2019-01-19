@@ -394,7 +394,7 @@ Object.defineProperties(Room.prototype, {
                 const sourceIds = this.memory.sourceIds;
                 //If array has no item, re-search and cache it
                 if (sourceIds && sourceIds.length > 0) {
-                    let sources = _.map(sourceIds, id => Game.getObjectById(id));
+                    let sources = sourceIds.map(id => Game.getObjectById(id)).filter(obj => !!obj);
                     this._sources = sources;
                 } else {
                     const sources = this.cachedFind(FIND_SOURCES);
