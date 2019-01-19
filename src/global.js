@@ -102,59 +102,71 @@ global.ColorMapper = ['NONE',
                       'COLOR_RED', 'COLOR_PURPLE', 'COLOR_BLUE', 'COLOR_CYAN',
                       'COLOR_GREEN', 'COLOR_YELLOW', 'COLOR_ORANGE', 'COLOR_BROWN',
                       'COLOR_GREY', 'COLOR_WHITE'];
+//WHITE for top level task
+//GREY for low level task
+//BROWN for special use
+//YELLOW for anchor
+//RED for combat task
 global.FlagUtil = {
+    //=========Anchor=========
+    bunkerAnchor: {
+        color: COLOR_YELLOW,
+        secondaryColor: COLOR_WHITE
+    },
+    //=========Top level=========
     // base is a combination of spawning, mining, building and upgrading
     base: {
-        color: COLOR_YELLOW,
-        secondaryColor: COLOR_RED,
+        color: COLOR_WHITE,
+        secondaryColor: COLOR_WHITE,
     },
     // outpost is a combination of spawning, mining
     //  once this task is finished, it will be convert to a base task
     outpost: {
-        color: COLOR_YELLOW,
-        secondaryColor: COLOR_PURPLE,
+        color: COLOR_WHITE,
+        secondaryColor: COLOR_GREY,
     },
-    // create this, set its memory and convert it to useful task flag
-    empty: {
-        color: COLOR_BROWN,
+    remoteMining: {
+        color: COLOR_WHITE,
         secondaryColor: COLOR_BROWN,
     },
-    //=============================
+    //=========Low level=========
     working: {
-        color: COLOR_BROWN,
-        secondaryColor: COLOR_RED,
+        color: COLOR_GREY,
+        secondaryColor: COLOR_WHITE,
         parent: 'base',
     },
     spawning: {
-        color: COLOR_ORANGE,
-        secondaryColor: COLOR_RED,
+        color: COLOR_GREY,
+        secondaryColor: COLOR_GREY,
         parent: 'base',
     },
     mining: {
-        color: COLOR_ORANGE,
-        secondaryColor: COLOR_PURPLE,
+        color: COLOR_GREY,
+        secondaryColor: COLOR_BROWN,
         parent: 'base',
     },
     building: {
-        color: COLOR_ORANGE,
-        secondaryColor: COLOR_BLUE,
+        color: COLOR_GREY,
+        secondaryColor: COLOR_ORANGE,
         parent: 'base',
     },
     upgrading: {
-        color: COLOR_ORANGE,
-        secondaryColor: COLOR_CYAN,
+        color: COLOR_GREY,
+        secondaryColor: COLOR_YELLOW,
         parent: 'base',
     },
-    //=============================
     defending: {
         color: COLOR_ORANGE,
         secondaryColor: COLOR_GREEN,
         parent: 'base',
     },
-    remoteMining: {
-        color: COLOR_WHITE,
+    //=============================
+    // create this, set its memory and convert it to useful task flag
+    empty: {
+        color: COLOR_BROWN,
         secondaryColor: COLOR_WHITE,
     },
+    //Depreated not used!
     dismantle: {
         color: COLOR_RED,
         secondaryColor: COLOR_RED,

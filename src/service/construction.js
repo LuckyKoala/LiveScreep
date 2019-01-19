@@ -37,6 +37,35 @@ const dissiFlower = {
     road: 4
 };
 
+const bunker = {
+    vector: [
+        [0,4,4,1,1,4,4,4,1,4,4,4,0],
+        [4,7,1,1,4,1,1,1,4,1,1,7,4],
+        [4,1,1,4,1,4,1,4,1,4,1,1,4],
+        [4,1,4,1,1,1,4,1,1,1,4,1,1],
+        [1,4,1,1,3,4,5,4,3,1,1,4,1],
+        [1,1,4,1,4,0,3,0,4,1,4,1,4],
+        [4,1,1,4,5,3,6,4,7,4,1,1,4],
+        [4,1,4,1,4,0,3,0,4,0,4,0,4],
+        [1,4,1,1,3,4,5,4,8,9,9,4,0],
+        [4,1,4,1,1,1,4,0,9,9,4,9,4],
+        [4,1,1,4,1,4,1,4,9,4,9,9,4],
+        [4,10,1,1,4,1,1,0,4,9,9,0,4],
+        [0,4,4,4,1,1,4,4,0,4,4,4,0]
+    ],
+    typeMap: [false,
+              [STRUCTURE_EXTENSION],
+              [STRUCTURE_CONTAINER],
+              [STRUCTURE_TOWER],
+              [STRUCTURE_ROAD],
+              [STRUCTURE_SPAWN],
+              [STRUCTURE_STORAGE],
+              [STRUCTURE_LINK],
+              [STRUCTURE_TERMINAL],
+              [STRUCTURE_LAB],
+              [STRUCTURE_OBSERVER]]
+};
+
 mod.showRoomPlan = function(room) {
     for(const type in room.layout) {
         if(type === 'init') continue; //skip init flag
@@ -55,70 +84,61 @@ function wrap2DArray(array) {
     };
 }
 
-//Calculate a layout for the room and save to memory
-//FIXME Structures may overlapped
 mod.init = function(room) {
     delete room._layout; //re init
     delete room.memory.layout; //re init
     const terrain = room.getTerrain();
-    //== Container ==
+    //== Controller container ==
     //Firstly, we need a container for upgrader so it won't move
-    this.saveStructure(room, posNearby(terrain, room.controller, 2), STRUCTURE_CONTAINER);
+    this.saveStructure(room, posNearby(terrain, room.controller, 1), STRUCTURE_CONTAINER);
     //Then we need a container per source
     for(let source of room.sources) {
         this.saveStructure(room, posNearby(terrain, source, 1), STRUCTURE_CONTAINER);
     }
-    //== Extension ==
-    //Dissi flower here!
-    const xlen = dissiFlower.vector[0].length;
-    const ylen = dissiFlower.vector.length;
-    const blockStartPos = Util.Helper.findBlockInRoom(room.name, xlen, ylen);
-    if(blockStartPos) {
-        //We can build dissi flower!
-        const arrayWraper = wrap2DArray(dissiFlower.vector);
-        for(let x=0; x<xlen; x++) {
-            for(let y=0; y<ylen; y++) {
-                const actualX = blockStartPos[0] + x;
-                const actualY = blockStartPos[1] + y;
-                switch(arrayWraper(x,y)) {
-                case dissiFlower.extension:
-                    this.saveStructure(room, [actualX,actualY], STRUCTURE_EXTENSION);
-                    break;
-                case dissiFlower.link:
-                    this.saveStructure(room, [actualX,actualY], STRUCTURE_LINK);
-                    break;
-                case dissiFlower.tower:
-                    this.saveStructure(room, [actualX,actualY], STRUCTURE_TOWER);
-                    break;
-                case dissiFlower.road:
-                    this.saveStructure(room, [actualX,actualY], STRUCTURE_ROAD);
-                    break;
-                }
-            }
-        }
-    } else {
-        Logger.warning('Failed to find start pos for dissi flower!');
-        //TODO some fallback layout for extensions
+    //== Bunker ==
+    const anchorFlags = _.filter(room.cachedFind(FIND_FLAGS), f => FlagUtil.bunkerAnchor.examine(f));
+    if(anchorFlags.length !== 1) {
+        Logger.warning(`[${room.name}] Can't find exactly one anchorFlag[${FlagUtil.bunkerAnchor.describe()}], please check`);
+        return;
     }
-    //== Storage ==
-    this.saveStructure(room, posNearby(terrain, room.spawns[0], 4), STRUCTURE_STORAGE);
+    const anchorFlag = anchorFlags[0];
+    const rotation = anchorFlag.memory.rotation || 0;
+    const xlen = bunker.vector[0].length;
+    const ylen = bunker.vector.length;
+    //We can build dissi flower!
+    const arrayWraper = wrap2DArray(bunker.vector);
+    const posMapper = (function(rotationAngle) {
+        const initialX = anchorFlag.pos.x;
+        const initialY = anchorFlag.pos.y;
+        switch(rotationAngle) {
+        case 0:
+            return (x, y) => [initialX+x, initialY+y];
+        case 1:
+            return (x, y) => [initialX-y, initialY+x];
+        case 2:
+            return (x, y) => [initialX-x, initialY-y];
+        case 3:
+            return (x, y) => [initialX+y, initialY-x];
+        default:
+            Logger.warning('rotationAngle shoule be one of [0,1,2,3] ! using fallback 0 angle mapper...');
+            return (x, y) => [initialX+x, initialY+y];
+        }
+    })(rotation);
+
+    for(let x=0; x<xlen; x++) {
+        for(let y=0; y<ylen; y++) {
+            const structureTypeVal = arrayWraper(x,y);
+            const structureType = bunker.typeMap[structureTypeVal];
+            if(structureType) this.saveStructure(room, posMapper(x, y), structureType);
+        }
+    }
     //== Road ==
     this.initRoad(room, room.sources);
-    //== Link ==
-    if(blockStartPos) {
-        //We have dissi flower
-        // so we don't need to place spawnLink
-    } else {
-        //A output link to match input link
-        this.saveStructure(room, posNearby(terrain, room.spawns[0], 3), STRUCTURE_LINK);
-    }
+
     //Source links first, it is input link
     for(let source of room.sources) {
         this.saveStructure(room, posNearby(terrain, source, 2), STRUCTURE_LINK);
     }
-    //Controller link is also a output link
-    this.saveStructure(room, posNearby(terrain, room.controller, 3), STRUCTURE_LINK);
-    //TODO 2 links for remote mining or mineral mining
     //== Extractor ==
     const minerals = room.cachedFind(FIND_MINERALS);
     if(minerals.length>0) {
@@ -127,151 +147,47 @@ mod.init = function(room) {
         this.saveStructure(room, posNearby(terrain, mineral, 1), STRUCTURE_CONTAINER);
     }
 
-    //=== Defense ===
-    //== Wall & Rampart ==
-    //layout: 1 for wall,0 for rampart
-    //--0111110--
-    const wallLayout = [STRUCTURE_RAMPART, STRUCTURE_WALL, STRUCTURE_WALL, STRUCTURE_WALL, STRUCTURE_WALL, STRUCTURE_WALL, STRUCTURE_RAMPART];
-    const getWallType = (index) => wallLayout[index%wallLayout.length];
-    //Find all available exit directions
-    const exitStrs = Game.map.describeExits(room.name);
-    for(let exitStr in exitStrs) {
-        const exitDir = parseInt(exitStr);
-        //Firstly, we add offset to x/y coordinate since we can not place structure above exit tile
-        let xoffset = 0;
-        let yoffset = 0;
-        let xLeftOffset = 0;
-        let yLeftOffset = 0;
-        switch(exitDir) {
-        case FIND_EXIT_TOP:
-            //y=0
-            yoffset = 2;
-            xLeftOffset = -1;
-            break;
-        case FIND_EXIT_BOTTOM:
-            //y=49
-            yoffset = -2;
-            xLeftOffset = -1;
-            break;
-        case FIND_EXIT_LEFT:
-            //x=0
-            xoffset = 2;
-            yLeftOffset = -1;
-            break;
-        case FIND_EXIT_RIGHT:
-            //x=49
-            xoffset = -2;
-            yLeftOffset = -1;
-            break;
-        default:
-            Logger.warning(`Unrecognized exit direction: ${exitDir} while initiating layout of room ${room.name}`);
-        }
-        //- for exit tile,  / for natural wall, 0 for plain/swamp terrain, 1 for planned wall
-        // Before plan:
-        //  0000/0000000////
-        //  00//00//00000000
-        //  ///------///--//
-        // After plan:
-        //  0000/0000000////
-        //  00//11//11011000
-        //  ///------///--//
-        //Now we find all exit tile on target direction and do some computation on them
-        const exits = room.cachedFind(exitDir);
-        const wallPosArray = [];
-        for(const exit of exits) {
-            //Extract and add offset to x and y coordinate
-            const x = exit.x+xoffset;
-            const y = exit.y+yoffset;
-
-            //No natural wall below planned wall
-            if(validatePos(x, y) && terrain.get(x, y)!==TERRAIN_MASK_WALL) {
-                const addWall = (x, y) => {
-                    // Before
-                    //  00///0//
-                    //  000/0000
-                    //  //---///
-                    // After
-                    //  00///0//
-                    //  011/1100
-                    //  //---///
-                    //add wall only if up and up-left and up-right is not natural wall
-                    const aboveX = x+xoffset;
-                    const aboveY = y+yoffset;
-                    const aboveLeftX = aboveX+xLeftOffset;
-                    const aboveLeftY = aboveY+yLeftOffset;
-                    const aboveRightX = aboveX-xLeftOffset;
-                    const aboveRightY = aboveY-yLeftOffset;
-                    const isNaturalWall = (x, y) =>  {
-                        if(validatePos(x,y)) {
-                            return terrain.get(x,y)===TERRAIN_MASK_WALL;
-                        } else {
-                            return true;
-                        }
-                    };
-                    if(isNaturalWall(aboveX,aboveY) && isNaturalWall(aboveLeftX,aboveLeftY) && isNaturalWall(aboveRightX,aboveRightY)) {
-                        //No need to add this wall, this pos is surround by natural walls
-                    } else {
-                        wallPosArray.push([x,y]);
-                    }
-                };
-                addWall(x, y);
-                //if left or right is a natural wall, add a new pos
-                const addCoverWall = (x, y) => {
-                    if(validatePos(x, y) && terrain.get(x, y)===TERRAIN_MASK_WALL
-                       && terrain.get(x+xoffset, y+yoffset)!==TERRAIN_MASK_WALL) {
-                        addWall(x+xoffset, y+yoffset);
-                    }
-                };
-                const leftX = exit.x+xLeftOffset;
-                const leftY = exit.y+yLeftOffset;
-                const rightX = exit.x-xLeftOffset;
-                const rightY = exit.y-yLeftOffset;
-                addCoverWall(leftX, leftY);
-                addCoverWall(rightX, rightY);
-            }
-
-        }
-        for(const i in wallPosArray) {
-            this.saveStructure(room, wallPosArray[i], getWallType(i));
-        }
-    }
-
-    //====== Wait to be implement ======
-    //=== Technology ===
-    //== Lab ==
-    //== Spawn ==
-    //=== Outside world ===
-    //== Nuker ==
-    //== PowerSpawn ==
-    //== Observer ==
-    //== Terminal ==
-
     //Set init flag
     room.layout.init = true;
 };
 
+//== Common iterate function ==
 const makeIterateAndPlace = function(room) {
     return (type) => {
-        for(const pos of room.layout[type]) {
-            //Iterate
-            const x = pos[0];
-            const y = pos[1];
-            const arr = _.filter(room.lookForAt(LOOK_STRUCTURES, x, y), o => o.structureType===type);
-            if(arr.length > 0) {
-                //There is a same type of structure on the pos
-                // so we can't build on this pos
-                //TODO check integrity, maybe rebuild structure on this pos
-                continue;
-            } else {
-                const result = room.createConstructionSite(x, y, type);
-                if(result === OK) {
-                    return true;
+        return () => {
+            for(const pos of room.layout[type]) {
+                //Iterate
+                const x = pos[0];
+                const y = pos[1];
+                const arr = _.filter(room.lookForAt(LOOK_STRUCTURES, x, y), o => o.structureType===type);
+                if(arr.length > 0) {
+                    //There is a same type of structure on the pos
+                    // so we can't build on this pos
+                    //TODO check integrity, maybe rebuild structure on this pos
+                    continue;
+                } else {
+                    const result = room.createConstructionSite(x, y, type);
+                    if(result === OK) {
+                        return true;
+                    }
                 }
             }
-        }
-        return false;
+            return false;
+        };
     };
 };
+const ChainHelper = function(room) {
+    this.functions = [];
+    this.add = function(func) {
+        this.functions.push(func);
+    };
+    this.run = function(func) {
+        for(const f of this.functions) {
+            if(f()) break;
+        }
+    };
+};
+//==============================
 
 mod.loop = function(room, forceRun=false) {
     //Do not init twice
@@ -295,104 +211,44 @@ mod.loop = function(room, forceRun=false) {
     Logger.trace(`Loop construction of room ${room.name}`);
     room.memory.lastConstruct = Game.time;
 
-    //== Common iterate function ==
-    let success = false;
     const iterateAndPlace = makeIterateAndPlace(room);
+    const chain = new ChainHelper(room);
+    const addToChainIfPossible = function(structureType, predicate=false) {
+        if(predicate) {
+            if(predicate()) chain.add(iterateAndPlace(structureType));
+            return;
+        }
 
-    //=== Extension ===
-    //Build extension if we can
-    const extensionLimit = CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][room.controller.level];
-    var extensions = room.find(FIND_MY_STRUCTURES, {
-        filter: (structure) => {
-            return structure.structureType == STRUCTURE_EXTENSION;
+        const limit = CONTROLLER_STRUCTURES[structureType][room.controller.level];
+        if(limit > 0) {
+            const objs = _.filter(room.cachedFind(FIND_MY_STRUCTURES), (structure) => {
+                return structure.structureType == structureType;
+            });
+            if(objs.length < limit) chain.add(iterateAndPlace(structureType));
         }
-    });
-    if(extensions.length<extensionLimit) {
-        success = iterateAndPlace(STRUCTURE_EXTENSION);
-    }
-    if(success) return;
+    };
 
-    //Speed up low rcl room
-    if(room.energyCapacityAvailable<Setup[C.HARVESTER].setupConfig.Normal.minEnergy) {
-        Logger.trace('skip service.construction.loop due to low energyCapacityAvailable');
-        return;
-    }
-    //=== Container ===
-    if(!room.controller.container) {
-        success = iterateAndPlace(STRUCTURE_CONTAINER);
-        if(success) return;
-    }
-    //Only build source container at RCL 3
-    if(room.controller.level >= 3) {
-        for(let source of room.sources) {
-            if(!source.container) {
-                success = iterateAndPlace(STRUCTURE_CONTAINER);
-                if(success) return;
-            }
-        }
-    }
-    //Only build mineral container at RCL 6
-    if(room.controller.level >= 6) {
-        if(!room.mineral.container) {
-            success = iterateAndPlace(STRUCTURE_CONTAINER);
-            if(success) return;
-        }
-    }
-    //== Tower ==
-    //Build tower if we can
-    const towerLimit = CONTROLLER_STRUCTURES[STRUCTURE_TOWER][room.controller.level];
-    var towers = room.find(FIND_MY_STRUCTURES, {
-        filter: (structure) => {
-            return structure.structureType == STRUCTURE_TOWER;
-        }
-    });
-    if(towers.length<towerLimit) {
-        success = iterateAndPlace(STRUCTURE_TOWER);
-    }
-    if(success) return;
-    //== Storage ==
-    if(!room.storage) {
-        const storageAvailable = CONTROLLER_STRUCTURES[STRUCTURE_STORAGE][room.controller.level];
-        if(storageAvailable>=1) {
-            success = iterateAndPlace(STRUCTURE_STORAGE);
-        }
-    }
-    if(success) return;
-    //== Link ==
-    const linkLimit = CONTROLLER_STRUCTURES[STRUCTURE_LINK][room.controller.level];
-    const links = room.find(FIND_MY_STRUCTURES, {
-        filter: (structure) => {
-            return structure.structureType == STRUCTURE_LINK;
-        }
-    });
-    if(links.length<linkLimit) {
-        success = iterateAndPlace(STRUCTURE_LINK);
-    }
-    if(success) return;
-    //== Extractor ==
-    const extractorLimit = CONTROLLER_STRUCTURES[STRUCTURE_EXTRACTOR][room.controller.level];
-    const extractors = room.find(FIND_MY_STRUCTURES, {
-        filter: (structure) => {
-            return structure.structureType == STRUCTURE_EXTRACTOR;
-        }
-    });
-    if(extractors.length<extractorLimit) {
-        success = iterateAndPlace(STRUCTURE_EXTRACTOR);
-    }
-    if(success) return;
-    //== Road ==
-    success = iterateAndPlace(STRUCTURE_ROAD);
-    if(success) return;
+    //======== Low level structures 1-4 =======
+    addToChainIfPossible(STRUCTURE_CONTAINER);
+    addToChainIfPossible(STRUCTURE_EXTENSION);
+    addToChainIfPossible(STRUCTURE_TOWER);
+    addToChainIfPossible(STRUCTURE_ROAD);
+    addToChainIfPossible(STRUCTURE_STORAGE, () => room.storage===undefined);
 
-    return;
-    //== Wall ==
-    success = iterateAndPlace(STRUCTURE_WALL);
-    if(success) return;
-    //== Rampart ==
-    success = iterateAndPlace(STRUCTURE_RAMPART);
-    if(success) return;
+    //======== High level structures 5-8 ========
+    addToChainIfPossible(STRUCTURE_EXTRACTOR);
+    addToChainIfPossible(STRUCTURE_SPAWN, () => {
+        const spawnLimit = CONTROLLER_STRUCTURES[STRUCTURE_SPAWN][room.controller.level];
+        return spawnLimit > 0 && room.spawns.length < spawnLimit;
+    });
+    addToChainIfPossible(STRUCTURE_STORAGE, () => room.terminal===undefined);
+    addToChainIfPossible(STRUCTURE_LINK);
+    addToChainIfPossible(STRUCTURE_LAB);
+    addToChainIfPossible(STRUCTURE_OBSERVER);
+    chain.add(() => room.memory.lastFullyConstructionCheck = Game.time);
 
-    room.memory.lastFullyConstructionCheck = Game.time;
+    //======== Actually run chain functions ========
+    chain.run();
 };
 
 //====================== Remote Mining ==============================
@@ -437,17 +293,12 @@ mod.loopRemoteMining = function(flag) {
     room.memory.lastConstruct = Game.time;
 
     const iterateAndPlace = makeIterateAndPlace(room);
+    const chain = new ChainHelper(room);
 
-    //== Road ==
-    let success = iterateAndPlace(STRUCTURE_ROAD);
-    if(success) return;
-
-    //== Container ==
-    success = iterateAndPlace(STRUCTURE_CONTAINER);
-
-    if(!success) {
-        room.memory.lastFullyConstructionCheck = Game.time;
-    }
+    chain.add(iterateAndPlace(STRUCTURE_ROAD));
+    chain.add(iterateAndPlace(STRUCTURE_CONTAINER));
+    chain.add(() => room.memory.lastFullyConstructionCheck = Game.time);
+    chain.run();
 };
 
 mod.initRemoteMiningRoad = function(flag, room, sources) {
