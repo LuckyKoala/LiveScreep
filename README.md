@@ -1,6 +1,6 @@
 ﻿# LiveScreep
 
-![ScreenShot in official Screeps server](img/realworld.jpg)
+![Bunker layout in simulation](img/bunker.jpg)
 
 Latest Release => `v0.4-Road`
 
