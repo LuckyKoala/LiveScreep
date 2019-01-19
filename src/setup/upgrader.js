@@ -20,9 +20,9 @@ mod.setupConfig = {
         memory: {role: C.UPGRADER},
     },
     High: {
-        minEnergy: 300,
-        essBody: [WORK, WORK, WORK, WORK, WORK, CARRY], //5work
-        extraBody: [WORK, WORK, WORK, WORK, WORK, CARRY], //5work
+        minEnergy: 650,
+        essBody: [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE], //5work
+        extraBody: [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE], //5work
         maxExtraAmount: 2, //Up to 15 work parts due to limitation of RCL8
         prefix: `[High-${C.UPGRADER}]`,
         memory: {role: C.UPGRADER},
