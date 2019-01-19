@@ -370,7 +370,7 @@ Object.defineProperties(Room.prototype, {
                 const spawnIds = this.memory.spawnIds;
                 const spawnLimit = CONTROLLER_STRUCTURES[STRUCTURE_SPAWN][this.controller.level];
                 if (spawnIds && spawnIds.length === spawnLimit) {
-                    var spawns = _.map(spawnIds, id => Game.getObjectById(id));
+                    const spawns = spawnIds.map(id => Game.getObjectById(id)).filter(obj => !!obj);
                     this._spawns = spawns;
                 } else {
                     const roomName = this.name;
@@ -596,9 +596,8 @@ Creep.prototype.moveTo = function(destination, ops, dareDevil = false) {
         const state = this.room.State[C.STATE.IDLE_CREEPS];
         for(const id of state) {
             const creep = Game.getObjectById(id);
-            if(creep.pos.isNearTo(pos)) {
+            if(creep.pos.isNearTo(pos) && creep.move(creep.pos.getDirectionTo(pos))) {
                 idleCreepFound = true;
-                creep.move(creep.pos.getDirectionTo(pos));
                 break;
             }
         }
@@ -620,8 +619,7 @@ Creep.prototype.moveTo = function(destination, ops, dareDevil = false) {
                 this.memory.stuckNoted = true;
             }
         }
-    }
-    else {
+    } else {
         this.memory.stuckCount = 0;
     }
 
