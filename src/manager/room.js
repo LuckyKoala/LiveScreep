@@ -126,10 +126,14 @@ mod.loopOwnedRoom = function(room) {
     const energyDiff = energyIn-energyOut;
     room.visual.text(`AvgEnergy +${energyIn.toFixed(2)} -${energyOut.toFixed(2)} = ${energyDiff.toFixed(2)}`, 8, 4, {color: 'green', font: 1});
     //Controller progress
-    const progress = room.controller.progress;
-    const progressTotal = room.controller.progressTotal;
-    const percent = (progress/progressTotal).toFixed(2);
-    room.visual.text(`Progress: ${progress}/${progressTotal}(${percent})`, 8, 5, {color: 'gold', font: 1});
+    if(room.controller.level!==8) {
+        const progress = room.controller.progress;
+        const progressTotal = room.controller.progressTotal;
+        const percent = (progress/progressTotal).toFixed(2);
+        room.visual.text(`Progress: ${progress}/${progressTotal}(${percent})`, 8, 5, {color: 'gold', font: 1});
+    } else {
+        room.visual.text(`Progress: 100%`, 8, 5, {color: 'gold', font: 1});
+    }
     //Energy in spawns and extensions
     room.visual.text(`EnergyInSpawn: ${room.energyAvailable}/${room.energyCapacityAvailable}`, 8, 6, {color: 'gold', font: 1});
     //Energy in storage
