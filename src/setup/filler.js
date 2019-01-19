@@ -14,7 +14,7 @@ mod.setupConfig = {
         minEnergy: 300,
         essBody: [CARRY, CARRY, MOVE, CARRY, CARRY, MOVE],
         extraBody: [CARRY, CARRY, MOVE],
-        maxExtraAmount: 7,
+        maxExtraAmount: 6,
         prefix: `[${C.FILLER}]`,
         memory: {role: C.FILLER},
     },
