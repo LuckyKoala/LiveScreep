@@ -202,7 +202,7 @@ mod.loop = function(room, forceRun=false) {
     const lastFullyConstructionCheck = room.memory.lastFullyConstructionCheck || 0;
 
     //one site at one time
-    const sites = room.cachedFind(FIND_CONSTRUCTION_SITES);
+    const sites = _.filter(room.cachedFind(FIND_CONSTRUCTION_SITES), c => c.my);
     const noSite = sites.length < 2;
     if(!noSite || (Game.time-lastFullyConstructionCheck)<100) {
         // actually not loop room.layout
@@ -285,7 +285,7 @@ mod.loopRemoteMining = function(flag) {
     const lastFullyConstructionCheck = room.memory.lastFullyConstructionCheck || 0;
 
     //one site at one time
-    const sites = room.cachedFind(FIND_CONSTRUCTION_SITES);
+    const sites = _.filter(room.cachedFind(FIND_CONSTRUCTION_SITES), c => c.my);
     const noSite = sites.length < 2;
     if(!noSite || (Game.time-lastFullyConstructionCheck)<100) {
         // actually not loop room.layout

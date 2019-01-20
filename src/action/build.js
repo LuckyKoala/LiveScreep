@@ -5,7 +5,7 @@ mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, creep => {
         return creep.pos.findClosestByRange(creep.room.cachedFind(FIND_CONSTRUCTION_SITES), {
             filter: function(o) {
-                return o.structureType!=STRUCTURE_RAMPART;
+                return o.my && o.structureType!=STRUCTURE_RAMPART;
             }
         });
     }, this.actionName, validateFunc);

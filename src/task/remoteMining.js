@@ -37,7 +37,7 @@ mod.loop = function() {
             ServiceConstruction.loopRemoteMining(flag);
             //Is there sites need to be build or road need to be repair?
             if(flag.room) {
-                const sites = flag.room.cachedFind(FIND_CONSTRUCTION_SITES);
+                const sites = _.filter(flag.room.cachedFind(FIND_CONSTRUCTION_SITES), c => c.my);
                 const lastRepairTick = flag.room.memory.lastRepairTick || 0;
                 if(sites.length > 0 || (Game.time-lastRepairTick)>1500) {
                     //Find builder and assign destinedTarget to sent builder outside when it is available
