@@ -14,5 +14,6 @@ var mod = {
     },
     WallMaxHits: 30*Thousand*Thousand,
     EnergyForDefend: 600,
+    SellExtraResourceBound: 10*Thousand
 };
 module.exports = mod;

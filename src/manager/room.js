@@ -2,6 +2,7 @@ const SpawnService = require('service_spawn');
 const LinkService = require('service_link');
 const ConstructionService = require('service_construction');
 const TowerService = require('service_tower');
+const TerminalService = require('service_terminal');
 
 var mod = {};
 module.exports = mod;
@@ -102,6 +103,7 @@ mod.loopOwnedRoom = function(room) {
     LinkService.loop(room);
     ConstructionService.loop(room);
     SpawnService.loop(room);
+    TerminalService.loop(room);
     //Energy history
     Util.Stat.sumEnergyHistory(room.name);
 
