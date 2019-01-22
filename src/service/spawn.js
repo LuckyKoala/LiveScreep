@@ -83,9 +83,10 @@ function spawnWithSetup (spawn, usedEnergyAmount, urgent, {dynamicExtraAmount, s
         return false;
     }
     //Calculate name
-    const name = prefix+spawn.name+'->'+Game.time;
+    const name = prefix+spawn.name+'->'+Game.time.toString(36);
     //Inject memory
     memory['homeRoom'] = spawn.room.name;
+    memory['bornTime'] = Game.time;
     if(extraMemory) {
         for(const key in extraMemory) {
             memory[key] = extraMemory[key];
