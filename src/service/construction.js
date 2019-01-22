@@ -15,6 +15,14 @@ mod.saveStructure = function(room, pos, type) {
     }
 };
 
+mod.unsaveStructure = function(room, pos, type) {
+    if(pos) {
+        const entry = room.layout[type];
+        if(entry) {
+            _.remove(entry, ele => ele[0]===pos[0] && ele[1]===pos[1]);
+        }
+    }
+};
 //** Dissi Flower **
 // 60 extensions, 6 towers and 1 link
 const dissiFlower = {
@@ -107,7 +115,6 @@ mod.init = function(room) {
     const rotation = anchorFlag.memory.rotation || 0;
     const xlen = bunker.vector[0].length;
     const ylen = bunker.vector.length;
-    //We can build dissi flower!
     const arrayWraper = wrap2DArray(bunker.vector);
     const posMapper = (function(rotationAngle) {
         const initialX = anchorFlag.pos.x;
@@ -127,11 +134,20 @@ mod.init = function(room) {
         }
     })(rotation);
 
+    anchorFlag.memory.diagonal = posMapper(xlen-1, ylen-1);
+
     for(let x=0; x<xlen; x++) {
         for(let y=0; y<ylen; y++) {
             const structureTypeVal = arrayWraper(x,y);
             const structureType = bunker.typeMap[structureTypeVal];
-            if(structureType) this.saveStructure(room, posMapper(x, y), structureType);
+            if(structureType) {
+                const realPos = posMapper(x, y);
+                if(terrain.get(realPos[0], realPos[1])===TERRAIN_MASK_WALL && structureType!==STRUCTURE_ROAD) {
+                    Logger.warning(`[${room.name}] There is a natural wall at [${realPos[0]}, ${realPos[1]}] where is meant to be ${structureType}`);
+                } else {
+                    this.saveStructure(room, realPos, structureType);
+                }
+            }
         }
     }
     //== Road ==
@@ -156,21 +172,94 @@ mod.init = function(room) {
 //== Common iterate function ==
 const makeIterateAndPlace = function(room) {
     return (type) => {
+        const anchorFlags = _.filter(room.cachedFind(FIND_FLAGS), f => FlagUtil.bunkerAnchor.examine(f));
+        if(anchorFlags.length !== 1) return false;
+        const anchorFlag = anchorFlags[0];
+        const inAABB = (function(xmin, xmax, ymin, ymax) {
+            return (c) => (xmin < c.pos.x && c.pos.x < xmax) &&
+                (ymin < c.pos.y && c.pos.y < ymax);
+        })(Math.min(anchorFlag.pos.x, anchorFlag.memory.diagonal[0]),
+           Math.max(anchorFlag.pos.x, anchorFlag.memory.diagonal[0]),
+           Math.min(anchorFlag.pos.y, anchorFlag.memory.diagonal[1]),
+           Math.max(anchorFlag.pos.y, anchorFlag.memory.diagonal[1]));
+
         return () => {
             for(const pos of room.layout[type]) {
                 //Iterate
                 const x = pos[0];
                 const y = pos[1];
-                const arr = _.filter(room.lookForAt(LOOK_STRUCTURES, x, y), o => o.structureType===type);
-                if(arr.length > 0) {
-                    //There is a same type of structure on the pos
-                    // so we can't build on this pos
-                    //TODO check integrity, maybe rebuild structure on this pos
-                    continue;
-                } else {
-                    const result = room.createConstructionSite(x, y, type);
-                    if(result === OK) {
-                        return true;
+                const arr = room.lookForAt(LOOK_STRUCTURES, x, y);
+                let rebuildStatus = false;
+                const canBuild = (function () {
+                    for(const structure of arr) {
+                        const structureType = structure.structureType;
+                        if(structureType === type) return false; //already in place
+                        if(structureType===STRUCTURE_RAMPART || (structureType===STRUCTURE_ROAD && type===STRUCTURE_CONTAINER)) continue; //any structure other than themselves can place above
+                        //Then we may need to destroy and rebuild
+                        if(!Config.RebuildStructures) continue;
+
+                        //Starting rebuild procedure
+                        //FIXME maybe rebuild a structure at untouchable place
+                        if(structure.my!==undefined && !structure.my) {
+                            //Someone else owned it, place a dismantle flag
+                            room.createFlag(x, y, `dismantle_${room.name}_{x}_{y}`, FlagUtil.dismantle.color, FlagUtil.dismantle.secondaryColor);
+                            Logger.info(`[${room.name}] Dismantle other's ${type} scheduled at [${x}, ${y}]`);
+                            return false;
+                        }
+
+                        if(structureType===STRUCTURE_SPAWN) {
+                            //Do we have more than one spawn?
+                            //TODO rebuild initial spawn even there is no other spawn
+                            if(room.spawns.length > 1) {
+                                const spawn = structure;
+                                if(!spawn.spawning && spawn.destroy()===OK) {
+                                    rebuildStatus = true;
+                                }
+                                return false;
+                            }
+                        }
+
+                        if(structureType===STRUCTURE_STORAGE || (!room.storage && structureType===STRUCTURE_TERMINAL)) return false; //no to destroy these precious building
+
+                        if(type!==STRUCTURE_ROAD && structure.destroy()===OK) {
+                            //Current structure is conflict with scheduled structure,
+                            //  let's remove it from plan so AI won't trapped in dead loop.
+                            mod.unsaveStructure(room, pos, structureType);
+
+                            rebuildStatus = true;
+                        }
+                        return false;
+                    }
+                    return true;
+                })();
+
+                //So this is normal case
+                if(rebuildStatus) return true; //block iterateAndPlace request after so AI can select same target in next tick.
+                if(!canBuild) continue;
+                const result = room.createConstructionSite(x, y, type);
+                if(result === OK) {
+                    return true;
+                } else if(result === ERR_RCL_NOT_ENOUGH) {
+                    //We may have some structures outside bunker
+                    if(Config.RebuildStructures) {
+                        const fakeRoomObject = {pos: {
+                            x: x,
+                            y: y
+                        }};
+                        if(!inAABB(fakeRoomObject)) {
+                            //Only rebuild structures inside bunker
+                            return false;
+                        }
+
+                        if(type===STRUCTURE_SPAWN && room.spawns.length <= 1) return false;
+
+                        if(type===STRUCTURE_STORAGE || (!room.storage && type===STRUCTURE_TERMINAL)) return false; //no to destroy these precious building
+
+                        const structuresOutsideBunker = room.cachedFind(FIND_MY_STRUCTURES).filter(s => s.structureType===type && !inAABB(s));
+                        if(structuresOutsideBunker.length > 0 && structuresOutsideBunker[0].destroy()===OK) {
+                            mod.unsaveStructure(room, pos, type);
+                            return true; //block iterateAndPlace request after so AI can select same target in next tick.
+                        }
                     }
                 }
             }
@@ -178,7 +267,7 @@ const makeIterateAndPlace = function(room) {
         };
     };
 };
-const ChainHelper = function(room) {
+const ChainHelper = function() {
     this.functions = [];
     this.add = function(func) {
         this.functions.push(func);
@@ -203,7 +292,7 @@ mod.loop = function(room, forceRun=false) {
 
     //one site at one time
     const sites = _.filter(room.cachedFind(FIND_CONSTRUCTION_SITES), c => c.my);
-    const noSite = sites.length < 2;
+    const noSite = sites.length === 0;
     if(!noSite || (Game.time-lastFullyConstructionCheck)<100) {
         // actually not loop room.layout
         //  so we don not update lastConstruct here
@@ -214,8 +303,12 @@ mod.loop = function(room, forceRun=false) {
     room.memory.lastConstruct = Game.time;
 
     const iterateAndPlace = makeIterateAndPlace(room);
-    const chain = new ChainHelper(room);
+    const chain = new ChainHelper();
     const addToChainIfPossible = function(structureType, predicate=false) {
+        if(Config.RebuildStructures) {
+            chain.add(iterateAndPlace(structureType));
+            return;
+        }
         if(predicate) {
             if(predicate()) chain.add(iterateAndPlace(structureType));
             return;
@@ -230,25 +323,29 @@ mod.loop = function(room, forceRun=false) {
         }
     };
 
-    //======== Low level structures 1-4 =======
-    addToChainIfPossible(STRUCTURE_CONTAINER);
-    addToChainIfPossible(STRUCTURE_EXTENSION);
-    addToChainIfPossible(STRUCTURE_TOWER);
+    //Make sure there is a path inside bunker
     addToChainIfPossible(STRUCTURE_ROAD);
-    addToChainIfPossible(STRUCTURE_STORAGE, () => room.storage===undefined);
-
-    //======== High level structures 5-8 ========
-    addToChainIfPossible(STRUCTURE_EXTRACTOR);
+    //Spawns and extensions is vital for spawning
     addToChainIfPossible(STRUCTURE_SPAWN, () => {
         const spawnLimit = CONTROLLER_STRUCTURES[STRUCTURE_SPAWN][room.controller.level];
         return spawnLimit > 0 && room.spawns.length < spawnLimit;
     });
-    addToChainIfPossible(STRUCTURE_STORAGE, () => room.terminal===undefined);
+    addToChainIfPossible(STRUCTURE_EXTENSION);
+    //Defense unit!
+    addToChainIfPossible(STRUCTURE_TOWER);
+    //Storage and terminal
+    addToChainIfPossible(STRUCTURE_STORAGE, () => room.storage===undefined);
+    addToChainIfPossible(STRUCTURE_TERMINAL, () => room.terminal===undefined);
+    //Buffer and link
     addToChainIfPossible(STRUCTURE_LINK);
+    addToChainIfPossible(STRUCTURE_CONTAINER);
+
+    addToChainIfPossible(STRUCTURE_EXTRACTOR);
     addToChainIfPossible(STRUCTURE_LAB);
     addToChainIfPossible(STRUCTURE_OBSERVER);
-    addToChainIfPossible(STRUCTURE_POWER_SPAWN);
+
     addToChainIfPossible(STRUCTURE_NUKER);
+    addToChainIfPossible(STRUCTURE_POWER_SPAWN);
     chain.add(() => room.memory.lastFullyConstructionCheck = Game.time);
 
     //======== Actually run chain functions ========
@@ -297,7 +394,7 @@ mod.loopRemoteMining = function(flag) {
     room.memory.lastConstruct = Game.time;
 
     const iterateAndPlace = makeIterateAndPlace(room);
-    const chain = new ChainHelper(room);
+    const chain = new ChainHelper();
 
     chain.add(iterateAndPlace(STRUCTURE_ROAD));
     chain.add(iterateAndPlace(STRUCTURE_CONTAINER));
