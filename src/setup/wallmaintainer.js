@@ -21,7 +21,7 @@ mod.setupConfig = {
 		    minEnergy: 400,
 		    essBody: [CARRY, CARRY, MOVE, WORK, WORK, MOVE],
 		    extraBody: [CARRY, WORK, MOVE],
-            maxExtraAmount: 14,
+        maxExtraAmount: 14,
 		    prefix: `[${C.WALLMAINTAINER}]`,
 		    memory: {role: C.WALLMAINTAINER},
 	  },
@@ -29,9 +29,4 @@ mod.setupConfig = {
 
 mod.shouldUseHighLevel = function(room) {
     return room.controller.level === 8;
-}
 };
-
-mod.shouldUseHighLevel = function(room) {
-    return room.controller.level === 8;
-}
