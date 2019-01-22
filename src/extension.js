@@ -371,6 +371,7 @@ Object.defineProperties(Room.prototype, {
                 const spawnLimit = CONTROLLER_STRUCTURES[STRUCTURE_SPAWN][this.controller.level];
                 if (spawnIds && spawnIds.length === spawnLimit) {
                     const spawns = spawnIds.map(id => Game.getObjectById(id)).filter(obj => !!obj);
+                    this.memory.spawnIds = spawns.map(obj => obj.id);
                     this._spawns = spawns;
                 } else {
                     const roomName = this.name;
