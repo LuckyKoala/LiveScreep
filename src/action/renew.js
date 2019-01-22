@@ -3,7 +3,7 @@ module.exports = mod;
 
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, creep => {
-        if(creep.ticksToLive < 200) {
+        if(creep.ticksToLive < 500) {
             const spawns = creep.room.spawns.filter(spawn => !spawn.spawning);
             if(spawns.length>0) return spawns[0];
         }
@@ -12,8 +12,8 @@ mod.nextTarget = function() {
 };
 
 const validateFunc = function(creep, target) {
-    const ticksToLiveLimit = creep.getActiveBodyparts(CLAIM)>0 ? 500 : 1400;
-    return target.room && target.room.name === creep.room.name && !target.spawning && creep.ticksToLive>ticksToLiveLimit;
+    const ticksToLiveLimit = creep.getActiveBodyparts(CLAIM)>0 ? 520 : 1420;
+    return target.room && target.room.name === creep.room.name && !target.spawning && creep.ticksToLive<ticksToLiveLimit;
 };
 
 mod.word = '🕵︎ Renew';
