@@ -25,7 +25,11 @@ mod.loop = function(creep) {
                 creep.moveTo(target.container, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         } else {
-            creep.harvest(target);
+            if(creep.pos.isNearTo(target)) {
+                creep.harvest(target);
+            } else {
+                creep.moveTo(target, {range: 1, visualizePathStyle: {stroke: '#ffaa00'}});
+            }
         }
     });
 };
