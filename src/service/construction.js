@@ -150,8 +150,6 @@ mod.init = function(room) {
             }
         }
     }
-    //== Road ==
-    this.initRoad(room, room.sources);
 
     //Source links first, it is input link
     for(let source of room.sources) {
@@ -159,6 +157,10 @@ mod.init = function(room) {
     }
     //Controller link
     this.saveStructure(room, posNearby(terrain, room.controller, 2), STRUCTURE_LINK);
+
+    //== Road and link near exit ==
+    this.initRoad(room, room.sources);
+
     //== Extractor ==
     const minerals = room.cachedFind(FIND_MINERALS);
     if(minerals.length>0) {
@@ -418,7 +420,10 @@ mod.initRoad = function(room, sources) {
     const self = this;
     const exits = Game.map.describeExits(room.name);
     const spawns = room.spawns;
-    _.forEach(spawns, spawn => {
+    const terrain = new Room.Terrain(room.name);
+    let linkRemain = 2;
+    if(spawns.length > 0) {
+        const spawn = spawns[0];
         //Spawn to Source
         _.forEach(sources, source => self.buildRoad(room, spawn.pos, source.pos));
         //Spawn to Controller
@@ -427,9 +432,14 @@ mod.initRoad = function(room, sources) {
         for(let exitStr in exits) {
             const exitDir = parseInt(exitStr);
             const exit = spawn.pos.findClosestByPath(exitDir);
+            if(linkRemain > 0) {
+                const pos = posNearby(terrain, {pos: exit}, 6, true);
+                self.saveStructure(room, pos, STRUCTURE_LINK);
+                if(pos) linkRemain--;
+            }
             self.buildRoad(room, spawn.pos, exit);
         }
-    });
+    }
 };
 
 mod.placeSiteAt = function(room, x, y, structureType) {
@@ -443,7 +453,7 @@ mod.placeSiteAt = function(room, x, y, structureType) {
     }
 };
 
-function posNearby(terrain, obj, range) {
+function posNearby(terrain, obj, range, ensureRange=false) {
     const y = obj.pos.y;
     const x = obj.pos.x;
     let swamps = [];
@@ -451,6 +461,8 @@ function posNearby(terrain, obj, range) {
         for(let yi=y-range; yi<=y+range; yi++) {
             //traverse fields nearby
             if(xi===x && yi===y) continue;
+            if(!validatePos(xi, yi)) continue;
+            if(ensureRange && Math.max(Math.abs(xi-x), Math.abs(yi-y)) !== range) continue;
             if(0 === terrain.get(xi, yi)) {
                 //Plain Terrain is Best!
                 return [xi, yi];
@@ -469,7 +481,7 @@ function posNearby(terrain, obj, range) {
 };
 
 function validatePos(x,y) {
-    return x>=0 && x<=50 && y>=0 && y<=50;
+    return x>=0 && x<=49 && y>=0 && y<=49;
 };
 
 mod.showRoadPath = function(room, from, to) {
