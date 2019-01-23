@@ -69,7 +69,7 @@ mod.queueCreeps = function(room) {
         haulerLimit = 2*room.sources.length;
     }
     //We assume sourceLink -> storageLink -> sourceLink
-    let sourceLinkLength;
+    let sourceLinkLength = 0;
     if(room.links.length >= 3) {
         sourceLinkLength = 2;
     } else if(room.links.length >= 2) {
