@@ -48,7 +48,7 @@ const dissiFlower = {
 const bunker = {
     vector: [
         [0,4,4,1,1,4,4,4,1,4,4,4,0],
-        [4,7,1,1,4,1,1,1,4,1,1,7,4],
+        [4,0,1,1,4,1,1,1,4,1,1,0,4],
         [4,1,1,4,1,4,1,4,1,4,1,1,4],
         [4,1,4,1,1,1,4,1,1,1,4,1,1],
         [1,4,1,1,3,4,5,4,3,1,1,4,1],
@@ -58,7 +58,7 @@ const bunker = {
         [1,4,1,1,3,4,5,4,8,9,9,4,0],
         [4,1,4,1,1,1,4,12,9,9,4,9,4],
         [4,1,1,4,1,4,1,4,9,4,9,9,4],
-        [4,10,1,1,4,1,1,0,4,9,9,7,4],
+        [4,10,1,1,4,1,1,0,4,9,9,0,4],
         [0,4,4,4,1,1,4,4,0,4,4,4,0]
     ],
     typeMap: [false,
@@ -157,6 +157,8 @@ mod.init = function(room) {
     for(let source of room.sources) {
         this.saveStructure(room, posNearby(terrain, source, 2), STRUCTURE_LINK);
     }
+    //Controller link
+    this.saveStructure(room, posNearby(terrain, room.controller, 2), STRUCTURE_LINK);
     //== Extractor ==
     const minerals = room.cachedFind(FIND_MINERALS);
     if(minerals.length>0) {
@@ -172,17 +174,6 @@ mod.init = function(room) {
 //== Common iterate function ==
 const makeIterateAndPlace = function(room) {
     return (type) => {
-        const anchorFlags = _.filter(room.cachedFind(FIND_FLAGS), f => FlagUtil.bunkerAnchor.examine(f));
-        if(anchorFlags.length !== 1) return false;
-        const anchorFlag = anchorFlags[0];
-        const inAABB = (function(xmin, xmax, ymin, ymax) {
-            return (c) => (xmin < c.pos.x && c.pos.x < xmax) &&
-                (ymin < c.pos.y && c.pos.y < ymax);
-        })(Math.min(anchorFlag.pos.x, anchorFlag.memory.diagonal[0]),
-           Math.max(anchorFlag.pos.x, anchorFlag.memory.diagonal[0]),
-           Math.min(anchorFlag.pos.y, anchorFlag.memory.diagonal[1]),
-           Math.max(anchorFlag.pos.y, anchorFlag.memory.diagonal[1]));
-
         return () => {
             for(const pos of room.layout[type]) {
                 //Iterate
@@ -221,10 +212,10 @@ const makeIterateAndPlace = function(room) {
 
                         if(structureType===STRUCTURE_STORAGE || (!room.storage && structureType===STRUCTURE_TERMINAL)) return false; //no to destroy these precious building
 
-                        if(type!==STRUCTURE_ROAD && structure.destroy()===OK) {
+                        if(structure.destroy()===OK) {
                             //Current structure is conflict with scheduled structure,
                             //  let's remove it from plan so AI won't trapped in dead loop.
-                            mod.unsaveStructure(room, pos, structureType);
+                            if(type!==STRUCTURE_ROAD) mod.unsaveStructure(room, pos, structureType);
 
                             rebuildStatus = true;
                         }
@@ -242,6 +233,17 @@ const makeIterateAndPlace = function(room) {
                 } else if(result === ERR_RCL_NOT_ENOUGH) {
                     //We may have some structures outside bunker
                     if(Config.RebuildStructures) {
+                        const anchorFlags = _.filter(room.cachedFind(FIND_FLAGS), f => FlagUtil.bunkerAnchor.examine(f));
+                        if(anchorFlags.length !== 1) return false;
+                        const anchorFlag = anchorFlags[0];
+                        const inAABB = (function(xmin, xmax, ymin, ymax) {
+                            return (c) => (xmin < c.pos.x && c.pos.x < xmax) &&
+                                (ymin < c.pos.y && c.pos.y < ymax);
+                        })(Math.min(anchorFlag.pos.x, anchorFlag.memory.diagonal[0]),
+                           Math.max(anchorFlag.pos.x, anchorFlag.memory.diagonal[0]),
+                           Math.min(anchorFlag.pos.y, anchorFlag.memory.diagonal[1]),
+                           Math.max(anchorFlag.pos.y, anchorFlag.memory.diagonal[1]));
+
                         const fakeRoomObject = {pos: {
                             x: x,
                             y: y

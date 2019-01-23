@@ -2,10 +2,10 @@ let mod = new ActionObj('PutToLink');
 module.exports = mod;
 
 const targetInitFunc = function(creep) {
-    const sourceLinks = creep.room.sourceLinks;
-    for(const sourceLink of sourceLinks) {
-        if(validateFunc(creep, sourceLink)) {
-            return sourceLink;
+    const links = creep.room.links;
+    for(const link of links) {
+        if(validateFunc(creep, link)) {
+            return link;
         }
     }
     return false;

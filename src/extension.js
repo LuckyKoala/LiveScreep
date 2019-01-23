@@ -299,67 +299,25 @@ Object.defineProperties(Room.prototype, {
         enumerable: false,
         configurable: true
     },
-    'spawnLink': {
+    'links': {
         get: function() {
-            if (!this._spawnLink) {
-                if (this.memory.spawnLinkId) {
-                    const obj = Game.getObjectById(this.memory.spawnLinkId);
-                    if(!obj) {
-                        this.memory.spawnLinkId = false;
-                        return false;
-                    }
-                    this._spawnLink = obj;
+            if (!this._links) {
+                const linkIds = this.memory.linkIds;
+                const linkLimit = CONTROLLER_STRUCTURES[STRUCTURE_LINK][this.controller.level];
+                let links;
+                if (linkIds && linkIds.length === linkLimit) {
+                    links = linkIds.map(id => Game.getObjectById(id)).filter(obj => !!obj);
                 } else {
-                    return false;
+                    links = _.filter(this.cachedFind(FIND_MY_STRUCTURES), o => o.structureType===STRUCTURE_LINK);
                 }
+                this.memory.linkIds = links.map(obj => obj.id);
+                this._links = links;
             }
-            return this._spawnLink;
+            return this._links;
         },
-        set: function(spawnLink) {
-            this.memory.spawnLinkId = spawnLink.id;
-            this._spawnLink = spawnLink;
-        },
-        enumerable: false,
-        configurable: true
-    },
-    'sourceLinks': {
-        get: function() {
-            if (!this._sourceLinks) {
-                const sourceLinkIds = this.memory.sourceLinkIds;
-                if (sourceLinkIds && sourceLinkIds.length > 0) {
-                    this._sourceLinks = _.map(sourceLinkIds, id => Game.getObjectById(id));
-                } else {
-                    this._sourceLinks = [];
-                }
-            }
-            return this._sourceLinks;
-        },
-        set: function(sourceLinks) {
-            this.memory.sourceLinkIds = _.map(sourceLinks, link => link.id);
-            this._sourceLinks = sourceLinks;
-        },
-        enumerable: false,
-        configurable: true
-    },
-    'controllerLink': {
-        get: function() {
-            if (!this._controllerLink) {
-                if (this.memory.controllerLinkId) {
-                    const obj = Game.getObjectById(this.memory.controllerLinkId);
-                    if(!obj) {
-                        this.memory.controllerLinkId = false;
-                        return false;
-                    }
-                    this._controllerLink = obj;
-                } else {
-                    return false;
-                }
-            }
-            return this._controllerLink;
-        },
-        set: function(controllerLink) {
-            this.memory.controllerLinkId = controllerLink.id;
-            this._controllerLink = controllerLink;
+        set: function(links) {
+            this.memory.linkIds = links.map(obj => obj.id);
+            this._links = links;
         },
         enumerable: false,
         configurable: true
@@ -511,28 +469,6 @@ Room.prototype.cachedFind = function(type) {
         this.Cache[internal] = this.find(type);
     }
     return this.Cache[internal];
-};
-
-Room.prototype.saveLinks = function() {
-    const self = this;
-    const links = _.filter(this.cachedFind(FIND_MY_STRUCTURES), { structureType: STRUCTURE_LINK });
-    const controller = this.controller;
-    const sources = this.cachedFind(FIND_SOURCES);
-    const spawnsAndExtensions = _.filter(this.cachedFind(FIND_MY_STRUCTURES), o => o.structureType==STRUCTURE_SPAWN || o.structureType==STRUCTURE_EXTENSION);
-
-    let sourceLinks = [];
-    _.forEach(links, link => {
-        if(link.pos.inRangeTo(controller, 3)) {
-            self.controllerLink = link;
-        } else if(link.pos.findInRange(sources, 2).length) {
-            sourceLinks.push(link);
-        } else if(link.pos.findInRange(spawnsAndExtensions, 3).length) {
-            self.spawnLink = link;
-        }
-    });
-    if(sourceLinks.length > 0) {
-        this.sourceLinks = sourceLinks;
-    }
 };
 
 if(!Creep.prototype._moveTo) {

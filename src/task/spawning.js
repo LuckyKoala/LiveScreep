@@ -25,8 +25,7 @@ mod.queueCreeps = function(room) {
         //We still have energy in storage
         // Do we have a filler to transfer energy from storage to spawns/extensions?
         if(cnt.total[C.FILLER]<3) {
-            if(cnt.existed[C.FILLER] > 1) {
-                //So this is normal prespawn stuff
+            if(cnt.existed[C.FILLER] > 1 && room.storage.store[RESOURCE_ENERGY] > 5000) {
                 room.queue.normal.unshift(C.FILLER);
             } else {
                 //So this is kind of emergence

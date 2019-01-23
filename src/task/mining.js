@@ -68,15 +68,27 @@ mod.queueCreeps = function(room) {
         harvesterLimit = accessibleFields;
         haulerLimit = 2*room.sources.length;
     }
-    let needHauler = haulerLimit - room.sourceLinks.length - cnt.total[C.HAULER];
+    //We assume sourceLink -> storageLink -> sourceLink
+    let sourceLinkLength;
+    if(room.links.length >= 3) {
+        sourceLinkLength = 2;
+    } else if(room.links.length >= 2) {
+        sourceLinkLength = 1;
+    }
+    let needHauler = haulerLimit - sourceLinkLength - cnt.total[C.HAULER];
     let needHarvester = harvesterLimit - cnt.total[C.HARVESTER];
     //Actually enqueue harvesters and haulers
-    if(needHarvester>0) {
+    while(needHarvester-->0) {
         room.queue.normal.push(C.HARVESTER);
         cnt.queue[C.HARVESTER]++;
         cnt.total[C.HARVESTER]++;
+        while(needHauler-->0) {
+            room.queue.normal.push(C.HAULER);
+            cnt.queue[C.HAULER]++;
+            cnt.total[C.HAULER]++;
+        }
     }
-    if(needHauler>0) {
+    while(needHauler-->0) {
         room.queue.normal.push(C.HAULER);
         cnt.queue[C.HAULER]++;
         cnt.total[C.HAULER]++;
@@ -89,7 +101,7 @@ mod.queueCreeps = function(room) {
         cnt.total[C.MINER]++;
     }
     //Does miner has dedicated hauler?
-    const needExtraHaulerCnt = cnt.total[C.HAULER] - cnt.total[C.MINER] - (room.sources.length - room.sourceLinks.length);
+    const needExtraHaulerCnt = cnt.total[C.HAULER] - cnt.total[C.MINER] - (room.sources.length - sourceLinkLength);
     if(needExtraHaulerCnt<0) {
         //Haulers is matched with harvesters
         room.queue.normal.push(C.HAULER);

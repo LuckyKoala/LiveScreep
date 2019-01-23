@@ -2,22 +2,12 @@ let mod = new ActionObj('FromLink');
 module.exports = mod;
 
 const targetInitFunc = function(creep) {
-    const role = creep.memory.role;
-    if(role === C.UPGRADER) {
-        const link = creep.room.controllerLink;
-        if(link && link.energy > 0) {
+    const links = creep.room.links;
+    for(const link of links) {
+        if(validateFunc(creep, link)) {
             return link;
         }
-    } else {
-        const spawnLink = creep.room.spawnLink;
-        if(spawnLink && spawnLink.energy > 0) {
-            //SourceLink only transfer energy when no energy remain in spawnLink
-            //  so filler should move all the remain energy in SpawnLink ASAP.
-            //Otherwise it will block link between source-link and spawn-link
-            return spawnLink;
-        }
     }
-
     return false;
 };
 
@@ -26,7 +16,7 @@ mod.nextTarget = function() {
 };
 
 const validateFunc = function(creep, target) {
-    return target.room && target.room.name===creep.room.name && target.energy>0;
+    return creep.pos.getRangeTo(target)<=4 && target.room && target.room.name===creep.room.name && target.energy>0;
 };
 
 mod.word = '⬅︎Link';
