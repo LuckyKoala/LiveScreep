@@ -4,15 +4,29 @@ module.exports = mod;
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, creep => {
         const remainCapacity = creep.carryCapacity - _.sum(creep.carry);
+        const resourceTypeExamine = resource => {
+            const role = creep.memory.role;
+            if(role===C.HAULER || role===C.REMOTE_HAULER) {
+                const homeRoom = Game.rooms[creep.memory.homeRoom];
+                if(homeRoom.storage || homeRoom.terminal) {
+                    return true;
+                }
+            }
+            return resource.resourceType===RESOURCE_ENERGY;
+        }
         let target = creep.pos.findClosestByRange(creep.room.cachedFind(FIND_DROPPED_RESOURCES), {
             filter: function(o) {
-                return o.amount >= remainCapacity;
+                return o.amount >= remainCapacity && resourceTypeExamine(o);
             }
         });
         if(target) return target;
         else {
             //no match, then find any dropped resource
-            target = creep.pos.findClosestByRange(creep.room.cachedFind(FIND_DROPPED_RESOURCES));
+            target = creep.pos.findClosestByRange(creep.room.cachedFind(FIND_DROPPED_RESOURCES), {
+                filter: function(o) {
+                    return resourceTypeExamine(o);
+                }
+            });
             return target;
         }
     }, this.actionName, validateFunc);
@@ -21,7 +35,17 @@ mod.nextTarget = function() {
 mod.word = '⬆︎ pickup';
 
 const validateFunc = function(creep, target) {
-    return target.room && target.room.name===creep.room.name && target.amount>0;
+    const resourceTypeExamine = resource => {
+        const role = creep.memory.role;
+        if(role===C.HAULER || role===C.REMOTE_HAULER) {
+            const homeRoom = Game.rooms[creep.memory.homeRoom];
+            if(homeRoom.storage || homeRoom.terminal) {
+                return true;
+            }
+        }
+        return resource.resourceType===RESOURCE_ENERGY;
+    }
+    return target.room && target.room.name===creep.room.name && target.amount>0 && resourceTypeExamine(target);
 };
 
 mod.loop = function(creep) {
