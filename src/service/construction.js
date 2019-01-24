@@ -218,7 +218,7 @@ const makeIterateAndPlace = function(room) {
                         if(structure.destroy()===OK) {
                             //Current structure is conflict with scheduled structure,
                             //  let's remove it from plan so AI won't trapped in dead loop.
-                            if(type!==STRUCTURE_ROAD) mod.unsaveStructure(room, pos, structureType);
+                            if(structureType===STRUCTURE_ROAD) mod.unsaveStructure(room, pos, STRUCTURE_ROAD);
 
                             rebuildStatus = true;
                         }
@@ -262,8 +262,12 @@ const makeIterateAndPlace = function(room) {
                         if(type===STRUCTURE_TERMINAL && (!room.storage || room.terminal.cooldown>0)) continue; //no to destroy these precious building
 
                         const structuresOutsideBunker = room.cachedFind(FIND_MY_STRUCTURES).filter(s => s.structureType===type && !inAABB(s));
-                        if(structuresOutsideBunker.length > 0 && structuresOutsideBunker[0].destroy()===OK) {
-                            mod.unsaveStructure(room, pos, type);
+                        if(structuresOutsideBunker.length > 0) {
+                            const structure = structuresOutsideBunker[0];
+                            const structurePos = structure.pos;
+                            if(structure.destroy()===OK) {
+                                mod.unsaveStructure(room, structurePos, type);
+                            }
                             return true; //block iterateAndPlace request after so AI can select same target in next tick.
                         }
                     }
