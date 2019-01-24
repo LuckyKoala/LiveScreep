@@ -17,7 +17,7 @@ mod.loop = function(room) {
             else if(link.energy===0) outputLinks.push(link);
         } else {
             let marked = false;
-            if(link.pos.findInRange(room.controller, 2).length > 0) {
+            if(link.pos.inRangeTo(room.controller, 2)) {
                 link.memory.controller = true;
                 marked = true;
             }
