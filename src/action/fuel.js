@@ -6,7 +6,7 @@ mod.nextTarget = function() {
         return creep.pos.findClosestByRange(creep.room.cachedFind(FIND_MY_STRUCTURES), {
             filter: (structure) => {
                 return (structure.structureType == STRUCTURE_TOWER) &&
-                    structure.energy < Config.EnergyForDefend;
+                    structure.energy < structure.energyCapacity;
             }
         });
     }, this.actionName, validateFunc);
