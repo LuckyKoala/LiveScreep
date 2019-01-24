@@ -212,7 +212,8 @@ const makeIterateAndPlace = function(room) {
                             }
                         }
 
-                        if(structureType===STRUCTURE_STORAGE || (!room.storage && structureType===STRUCTURE_TERMINAL)) return false; //no to destroy these precious building
+                        if(structureType===STRUCTURE_STORAGE) return false;
+                        if(structureType===STRUCTURE_TERMINAL && (!room.storage || room.terminal.cooldown>0)) return false; //no to destroy these precious building
 
                         if(structure.destroy()===OK) {
                             //Current structure is conflict with scheduled structure,
@@ -239,8 +240,8 @@ const makeIterateAndPlace = function(room) {
                         if(anchorFlags.length !== 1) return false;
                         const anchorFlag = anchorFlags[0];
                         const inAABB = (function(xmin, xmax, ymin, ymax) {
-                            return (c) => (xmin < c.pos.x && c.pos.x < xmax) &&
-                                (ymin < c.pos.y && c.pos.y < ymax);
+                            return (c) => (xmin <= c.pos.x && c.pos.x <= xmax) &&
+                                (ymin <= c.pos.y && c.pos.y <= ymax);
                         })(Math.min(anchorFlag.pos.x, anchorFlag.memory.diagonal[0]),
                            Math.max(anchorFlag.pos.x, anchorFlag.memory.diagonal[0]),
                            Math.min(anchorFlag.pos.y, anchorFlag.memory.diagonal[1]),
@@ -252,12 +253,13 @@ const makeIterateAndPlace = function(room) {
                         }};
                         if(!inAABB(fakeRoomObject)) {
                             //Only rebuild structures inside bunker
-                            return false;
+                            continue;
                         }
 
-                        if(type===STRUCTURE_SPAWN && room.spawns.length <= 1) return false;
+                        if(type===STRUCTURE_SPAWN && room.spawns.length <= 1) continue;
 
-                        if(type===STRUCTURE_STORAGE || (!room.storage && type===STRUCTURE_TERMINAL)) return false; //no to destroy these precious building
+                        if(type===STRUCTURE_STORAGE) continue;
+                        if(type===STRUCTURE_TERMINAL && (!room.storage || room.terminal.cooldown>0)) continue; //no to destroy these precious building
 
                         const structuresOutsideBunker = room.cachedFind(FIND_MY_STRUCTURES).filter(s => s.structureType===type && !inAABB(s));
                         if(structuresOutsideBunker.length > 0 && structuresOutsideBunker[0].destroy()===OK) {
