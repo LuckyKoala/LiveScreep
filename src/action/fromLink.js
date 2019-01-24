@@ -16,7 +16,7 @@ mod.nextTarget = function() {
 };
 
 const validateFunc = function(creep, target) {
-    return creep.pos.getRangeTo(target)<=4 && target.room && target.room.name===creep.room.name && target.energy>0;
+    return creep.pos.getRangeTo(target)<=6 && target.room && target.room.name===creep.room.name && target.energy>0;
 };
 
 mod.word = '⬅︎Link';
