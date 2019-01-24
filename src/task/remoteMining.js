@@ -153,6 +153,16 @@ mod.queueCreeps = function(roomName, destinedTarget) {
         }
 
         return;
+    } else {
+        //==== Recycle remoteWorker ====
+        if(cnt[C.REMOTE_WORKER]>0) {
+            Logger.info(`Recycling remoteWorker of ${destinedTarget} due to presence of storage`);
+            _.forEach(roomCreeps, c => {
+                if(c.memory.role===C.REMOTE_WORKER) {
+                    c.memory.role = C.RECYCLER;
+                }
+            });
+        }
     }
 
     //=== Keep room reserved ===
@@ -173,7 +183,7 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     if(avgPathLength === undefined) {
         let length = 0;
         let goals = _.map(room.sources, function(source) {
-            // We can't actually walk on sources-- set `range` to 1 
+            // We can't actually walk on sources-- set `range` to 1
             // so we path next to it.
             return { pos: source.pos, range: 1 };
         });
