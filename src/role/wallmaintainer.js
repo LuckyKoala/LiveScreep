@@ -3,7 +3,7 @@ module.exports = mod;
 
 mod.roleConfig= {
     inStack: [Action.Back, Action.Dismantle, Action.FromStorage, Action.Pickup],
-    outStack: [Action.Fortify],
+    outStack: [Action.Maintain, Action.Fortify],
 };
 
 mod.loop = function(creep) {
