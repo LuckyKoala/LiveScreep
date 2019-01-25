@@ -4,7 +4,7 @@ module.exports = mod;
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, creep => {
         const walls = _.sortBy(_.filter(creep.room.cachedFind(FIND_STRUCTURES), function(o) {
-            return o.structureType==STRUCTURE_RAMPART || o.structureType==STRUCTURE_WALL;
+            return o.structureType==STRUCTURE_RAMPART;
         }), o=>o.hits);
 
         const lastMaxHits = creep.memory.maxHits || 0;

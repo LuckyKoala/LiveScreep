@@ -100,10 +100,14 @@ mod.init = function(room) {
     const terrain = room.getTerrain();
     //== Controller container ==
     //Firstly, we need a container for upgrader so it won't move
-    this.saveStructure(room, posNearby(terrain, room.controller, 1), STRUCTURE_CONTAINER);
+    const posControllerContainer = posNearby(terrain, room.controller, 1);
+    this.saveStructure(room, posControllerContainer, STRUCTURE_CONTAINER);
+    this.saveStructure(room, posControllerContainer, STRUCTURE_RAMPART);
     //Then we need a container per source
     for(let source of room.sources) {
-        this.saveStructure(room, posNearby(terrain, source, 1), STRUCTURE_CONTAINER);
+        const posContainer = posNearby(terrain, source, 1);
+        this.saveStructure(room, posContainer, STRUCTURE_CONTAINER);
+        this.saveStructure(room, posContainer, STRUCTURE_RAMPART);
     }
     //== Bunker ==
     const anchorFlags = _.filter(room.cachedFind(FIND_FLAGS), f => FlagUtil.bunkerAnchor.examine(f));
@@ -140,23 +144,28 @@ mod.init = function(room) {
         for(let y=0; y<ylen; y++) {
             const structureTypeVal = arrayWraper(x,y);
             const structureType = bunker.typeMap[structureTypeVal];
-            if(structureType) {
-                const realPos = posMapper(x, y);
-                if(terrain.get(realPos[0], realPos[1])===TERRAIN_MASK_WALL && structureType!==STRUCTURE_ROAD) {
-                    Logger.warning(`[${room.name}] There is a natural wall at [${realPos[0]}, ${realPos[1]}] where is meant to be ${structureType}`);
-                } else {
+            const realPos = posMapper(x, y);
+            if(terrain.get(realPos[0], realPos[1])===TERRAIN_MASK_WALL && structureType!==STRUCTURE_ROAD) {
+                Logger.warning(`[${room.name}] There is a natural wall at [${realPos[0]}, ${realPos[1]}] where is meant to be ${structureType}`);
+            } else {
+                if(structureType) {
                     this.saveStructure(room, realPos, structureType);
                 }
+                this.saveStructure(room, realPos, STRUCTURE_RAMPART);
             }
         }
     }
 
     //Source links first, it is input link
     for(let source of room.sources) {
-        this.saveStructure(room, posNearby(terrain, source, 2), STRUCTURE_LINK);
+        const pos = posNearby(terrain, source, 2);
+        this.saveStructure(room, pos, STRUCTURE_LINK);
+        this.saveStructure(room, pos, STRUCTURE_RAMPART);
     }
     //Controller link
-    this.saveStructure(room, posNearby(terrain, room.controller, 2), STRUCTURE_LINK);
+    const posControllerLink = posNearby(terrain, room.controller, 2);
+    this.saveStructure(room, posControllerLink, STRUCTURE_LINK);
+    this.saveStructure(room, posControllerLink, STRUCTURE_RAMPART);
 
     //== Road and link near exit ==
     this.initRoad(room, room.sources);
@@ -166,7 +175,9 @@ mod.init = function(room) {
     if(minerals.length>0) {
         const mineral = minerals[0];
         this.saveStructure(room, mineral.pos, STRUCTURE_EXTRACTOR);
-        this.saveStructure(room, posNearby(terrain, mineral, 1), STRUCTURE_CONTAINER);
+        const posMineralContainer = posNearby(terrain, mineral, 1);
+        this.saveStructure(room, posMineralContainer, STRUCTURE_CONTAINER);
+        this.saveStructure(room, posMineralContainer, STRUCTURE_RAMPART);
     }
 
     //Set init flag
@@ -187,6 +198,7 @@ const makeIterateAndPlace = function(room) {
                     for(const structure of arr) {
                         const structureType = structure.structureType;
                         if(structureType === type) return false; //already in place
+                        if(type===STRUCTURE_RAMPART) break;
                         if(structureType===STRUCTURE_RAMPART || (structureType===STRUCTURE_ROAD && type===STRUCTURE_CONTAINER)) continue; //any structure other than themselves can place above
                         //Then we may need to destroy and rebuild
                         if(!Config.RebuildStructures) continue;
@@ -356,6 +368,7 @@ mod.loop = function(room, forceRun=false) {
 
     addToChainIfPossible(STRUCTURE_NUKER);
     addToChainIfPossible(STRUCTURE_POWER_SPAWN);
+    addToChainIfPossible(STRUCTURE_RAMPART);
     chain.add(() => room.memory.lastFullyConstructionCheck = Game.time);
 
     //======== Actually run chain functions ========
