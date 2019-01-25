@@ -12,7 +12,7 @@ const targetInitFunc = function(creep) {
 };
 
 const validateFunc = function(creep, target) {
-    return creep.pos.getRangeTo(target)<=6 && target.energy<target.energyCapacity;
+    return target.memory.type==='source' && target.energy<target.energyCapacity;
 };
 
 mod.nextTarget = function() {

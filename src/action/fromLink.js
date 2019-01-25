@@ -16,7 +16,12 @@ mod.nextTarget = function() {
 };
 
 const validateFunc = function(creep, target) {
-    return creep.pos.getRangeTo(target)<=6 && target.room && target.room.name===creep.room.name && target.energy>0;
+    if(!target.room || target.room.name!==creep.room.name || target.energy===0) return false;
+    if(creep.memory.role===C.UPGRADER) {
+        return target.memory.type === 'controller';
+    } else {
+        return target.memory.type === 'center';
+    }
 };
 
 mod.word = '⬅︎Link';

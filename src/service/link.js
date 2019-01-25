@@ -10,26 +10,26 @@ mod.loop = function(room) {
         return link.energy===link.energyCapacity && link.cooldown===0;
     };
     for(const link of room.links) {
-        if(link.memory.marked) {
-            if(link.memory.source) {
-                if(fullAndNotCooldown(link)) inputLinks.push(link);
+        let linkType = link.memory.type;
+        if(linkType === undefined) {
+            if(link.pos.inRangeTo(room.controller, 3)) {
+                linkType = 'controller';
+            } else {
+                const spawnsAndExtensions = room.cachedFind(FIND_MY_STRUCTURES).filter(s => s.structureType===STRUCTURE_SPAWN || s.structureType===STRUCTURE_EXTENSION);
+                if(link.pos.findInRange(spawnsAndExtensions, 4).length > 0) {
+                    linkType = 'center';
+                } else {
+                    linkType = 'source';
+                }
             }
-            else if(link.energy===0) outputLinks.push(link);
-        } else {
-            let marked = false;
-            if(link.pos.inRangeTo(room.controller, 2)) {
-                link.memory.controller = true;
-                marked = true;
-            }
-            const spawnsAndExtensions = room.cachedFind(FIND_MY_STRUCTURES).filter(s => s.structureType===STRUCTURE_SPAWN || s.structureType===STRUCTURE_EXTENSION);
-            if(link.pos.findInRange(spawnsAndExtensions, 2).length > 0) {
-                link.memory.center = true;
-                marked = true;
-            }
-
-            if(!marked) link.memory.source = true;
-            link.memory.marked = true;
         }
+
+        if(linkType==='source') {
+            if(fullAndNotCooldown(link)) inputLinks.push(link);
+        } else if(link.energy===0) outputLinks.push(link);
+
+        //write back to memory
+        link.memory.type = linkType;
     }
 
     for(const input of inputLinks) {
