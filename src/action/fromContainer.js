@@ -2,7 +2,7 @@ let mod = new ActionObj('FromContainer');
 module.exports = mod;
 
 const targetInitFunc = function(creep) {
-    const need = creep.carryCapacity - creep.carry.energy;
+    const need = creep.carryCapacity - _.sum(creep.carry);
     const role = creep.memory.role;
     const room = creep.room;
     if(role === C.UPGRADER) {
@@ -12,15 +12,6 @@ const targetInitFunc = function(creep) {
             return false;
         }
     }
-    //Find source container
-    let suitableContainer = false;;
-    for(let source of room.sources) {
-        const container = source.container || false;
-        if(container) {
-            if(!suitableContainer || container.store[RESOURCE_ENERGY] > suitableContainer.store[RESOURCE_ENERGY]) suitableContainer = container;
-        }
-    }
-    if(suitableContainer && suitableContainer.store[RESOURCE_ENERGY]>0) return suitableContainer;
 
     //Find mineral container
     if(role === C.HAULER || role === C.REMOTE_HAULER) {
@@ -30,6 +21,16 @@ const targetInitFunc = function(creep) {
         }
     }
 
+    //Find source container
+    let suitableContainer = false;;
+    for(let source of room.sources) {
+        const container = source.container || false;
+        if(container) {
+            if(!suitableContainer || container.store[RESOURCE_ENERGY] > suitableContainer.store[RESOURCE_ENERGY]) suitableContainer = container;
+        }
+    }
+    if(suitableContainer && suitableContainer.store[RESOURCE_ENERGY]>need) return suitableContainer;
+
     return false;
 };
 
@@ -38,7 +39,8 @@ mod.nextTarget = function() {
 };
 
 const validateFunc = function(creep, target) {
-    return target.room && target.room.name===creep.room.name && _.sum(target.store) > 0;
+    const need = creep.carryCapacity - _.sum(creep.carry);
+    return target.room && target.room.name===creep.room.name && _.sum(target.store) > need;
 };
 
 mod.word = '⬅︎Container';
