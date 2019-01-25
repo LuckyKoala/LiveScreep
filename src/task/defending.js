@@ -34,10 +34,9 @@ mod.queueCreeps = function(room) {
     }
 
     if(room.storage && room.storage.store[RESOURCE_ENERGY]>Config.StorageBoundForWallMaintainer && cnt.total[C.WALLMAINTAINER] < 1) {
-        const walls = _.filter(room.cachedFind(FIND_STRUCTURES), function(o) {
-            return o.structureType==STRUCTURE_RAMPART || o.structureType==STRUCTURE_WALL;
-        });
-        if(walls.length>0) {
+        const ramparts = room.cachedFind(FIND_MY_STRUCTURES).filter(o => o.structureType===STRUCTURE_RAMPART);
+        const rampartSites = room.cachedFind(FIND_MY_CONSTRUCTION_SITES).filter(o => o.structureType===STRUCTURE_RAMPART);
+        if((ramparts.length+rampartSites.length) > 0) {
             room.queue.normal.push(C.WALLMAINTAINER);
             cnt.queue[C.WALLMAINTAINER]++;
             cnt.total[C.WALLMAINTAINER]++;
