@@ -20,7 +20,7 @@ mod.loop = function(creep) {
         if(target.container) {
             //Try stay above the container
             if(creep.pos.isEqualTo(target.container)) {
-                creep.harvest(target);
+                if(_.sum(target.container.store) < target.container.storeCapacity) creep.harvest(target);
             } else {
                 creep.moveTo(target.container, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
