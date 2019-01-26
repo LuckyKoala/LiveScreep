@@ -475,6 +475,18 @@ if(!Creep.prototype._moveTo) {
     Creep.prototype._moveTo = Creep.prototype.moveTo;
 }
 
+function getNextPos(pathStr, currentPos) {
+    const path = Room.deserializePath(pathStr);
+    //const idx = _.findIndex(path, {x: currentPos.x, y: currentPos.y});
+    const idx = path.length === 0 ? -1 : 0;
+    if(idx !== -1) {
+        const changeObj = path[idx];
+        return new RoomPosition(currentPos.x+changeObj.dx, currentPos.y+changeObj.dy, currentPos.roomName);
+    } else {
+        return false;
+    }
+}
+
 /**
  * Modified from https://github.com/bonzaiferroni/bonzAI/blob/master/src/prototypes/initPrototypes.ts
  * General-purpose cpu-efficient movement function that uses ignoreCreeps: true, a high reusePath value and stuck-detection
@@ -484,6 +496,8 @@ if(!Creep.prototype._moveTo) {
  * @returns {number} - Error code
  */
 Creep.prototype.moveTo = function(destination, ops, dareDevil = false) {
+    const moveBlock = this.memory.moveBlock || 0;
+    if(moveBlock===Game.time) return ERR_BUSY;
 
     if (this.spawning) {
         return 0;
@@ -528,20 +542,29 @@ Creep.prototype.moveTo = function(destination, ops, dareDevil = false) {
     let stuck = pos.inRangeTo(lastPos.x, lastPos.y, 0) || this.memory.edgeCounter>=2;
     this.memory.position = this.pos;
     if (stuck && movingLastTick) {
-        //Do we encounter a idle creep?
-        let idleCreepFound = false;
-        const state = this.room.State[C.STATE.IDLE_CREEPS];
-        for(const id of state) {
-            const creep = Game.getObjectById(id);
-            if(creep.pos.isNearTo(pos) && creep.move(creep.pos.getDirectionTo(pos))) {
-                idleCreepFound = true;
-                break;
+        //Do we encounter another creep?
+        let switched = false;
+        const moveCache = this.memory._move;
+        if(moveCache) {
+            const path = moveCache.path;
+            const nextPos = getNextPos(path, pos);
+            if(nextPos) {
+                const nextCreep = Util.Movement.getCreepOfPos(nextPos);
+                if(nextCreep && Util.Movement.cmpPriority(pos, nextPos)) {
+                    //switch position with creep which has lower priority
+                    if(nextCreep.move(nextCreep.pos.getDirectionTo(pos))===OK) {
+                        nextCreep.memory.moveBlock = Game.time; //override movement
+                        switched = true;
+                    }
+                    Logger.trace(`[Movement-${this.name}] ${switched?'Success':'Failed'} switch with nextCreep ${JSON.stringify(nextCreep.name)} at ${JSON.stringify(nextPos)}`);
+                }
             }
         }
-        if(!idleCreepFound) {
+        if(!switched) {
             if (!this.memory.stuckCount) this.memory.stuckCount = 0;
             if (!this.memory.edgeCounter) this.memory.edgeCounter = 0;
             this.memory.stuckCount++;
+            this.room.visual.circle(pos, {radius: this.memory.stuckCount * .1, stroke: 'magenta'});
 
 
             if (dareDevil && this.memory.stuckCount > 0) {

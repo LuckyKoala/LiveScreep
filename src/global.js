@@ -283,6 +283,7 @@ global.Util = {
     Smalltask: require('util_smalltask'),
     Stat: require('util_stat'),
     Helper: require('util_helper'),
+    Movement: require('util_movement'),
 };
 //Shorthand
 global.Logger = Util.Logger;

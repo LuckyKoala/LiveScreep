@@ -13,14 +13,6 @@ mod.loop = function() {
 };
 
 mod.dispatch = function(room) {
-    if(room.State===undefined || room.State.lastTick!==Game.time-1) {
-        //We need fresh data, so let's refresh it
-        room.State = {
-            lastTick: Game.time,
-            [C.STATE.IDLE_CREEPS]: []
-        };
-    }
-
     let roomType = room.memory.roomType;
     if(!roomType) {
         const controller = room.controller;

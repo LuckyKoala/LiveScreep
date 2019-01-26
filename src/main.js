@@ -44,7 +44,8 @@ const loop0 = function () {
     try { CreepManager.loop(); } catch (e) { Logger.fatal("error with creep manager loop\n" + e.stack); }
     //Validate and clear data
     Logger.trace('4. Running garbage collection');
-    GC();
+    if(Game.time%100===0) GC();
+    Util.Movement.unregisterAll();
     Logger.trace('<<<====Main Loop End=======');
 };
 
