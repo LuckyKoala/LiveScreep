@@ -59,8 +59,14 @@ function spawnWithSetup (spawn, usedEnergyAmount, urgent, {dynamicExtraAmount, s
     //For low energy capacity available, use SetupConfig.Low
     if(!!setupConfig.Low) {
         const minEnergy = setupConfig.Normal.minEnergy;
-        if(urgent && energyAvailable < minEnergy) setup = setupConfig.Low;
-        if(spawn.room.energyCapacityAvailable < minEnergy) setup = setupConfig.Low;
+        //Urgent situation
+        const urgentAndEnergyAvailableNotEnough = urgent && energyAvailable < minEnergy;
+        //Low rcl
+        const energyCapacityAvailableNotEnough = spawn.room.energyCapacityAvailable < minEnergy;
+        //Recovery mode for low energy state
+        const lowEnergyInStorage = spawn.room.storage && spawn.room.storage.store[RESOURCE_ENERGY]<Config.StorageBoundForSpawnRecovery;
+
+        if(urgentAndEnergyAvailableNotEnough || energyCapacityAvailableNotEnough || lowEnergyInStorage) setup = setupConfig.Low;
     }
     const {minEnergy, essBody, extraBody, prefix, memory, maxExtraAmount} = setup;
 
