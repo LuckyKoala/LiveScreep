@@ -6,7 +6,7 @@ const targetInitFunc = function(creep) {
     const role = creep.memory.role;
     const room = creep.room;
     if(role === C.UPGRADER) {
-        if(room.controller.container && room.controller.container.store[RESOURCE_ENERGY]>need) {
+        if(room.controller.container && room.controller.container.store[RESOURCE_ENERGY]>0) {
             return room.controller.container;
         } else {
             return false;
