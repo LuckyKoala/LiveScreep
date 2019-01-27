@@ -205,7 +205,7 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     //=== Harvest all sources and spawn dedicated hauler ===
     //That is one pair of harvester-hauler for the room
     const energyGenPerTick = room.sources.length*10; //hardcode for 5work*2harvest_power per source
-    const energyHaulPerRound = 1600; //hardcode for 32carry
+    const energyHaulPerRound = queueRoom.storage.store[RESOURCE_ENERGY]>=Config.StorageBoundForSpawnRecovery ? 1600 : 500; //hardcode for 32carry
     const ticksPerRound = avgPathLength*2; //best situation: there are well maintained roads on the path, so move speed is 1 tile/tick
     const haulerLimit = Math.ceil(energyGenPerTick*ticksPerRound/energyHaulPerRound);
     //Logger.debug(`[${queueRoom.name} <-> ${flag.room.name}] ${haulerLimit}`);
