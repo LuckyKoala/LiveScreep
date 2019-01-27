@@ -39,6 +39,7 @@ mod.loop = function(creep) {
     return this.loop0(creep, (creep, target) => {
         if(creep.pos.inRangeTo(target, 3)) {
             creep.repair(target);
+            creep.room.visual.text(`Lowest hits of rampart: ${target.hits}`, 8, 8, {color: 'red', font: 1});
         } else {
             creep.moveTo(target, {maxRooms: 1, range: 3, visualizePathStyle: {stroke: '#ffffff'}});
         }
