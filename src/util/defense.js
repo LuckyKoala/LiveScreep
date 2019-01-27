@@ -38,14 +38,22 @@ mod.tryActivateSafeMode = function(room) {
                 // Then we have to assume this room may not survive
                 //  Try active safe mode.
                 if(room.controller.safeModeAvailable > 0) {
+                    const notified = room.memory.notifiedTime || 0;
                     if(room.controller.safeModeCooldown) {
                         //Safe mode is still cool down, dangerous!
-                        Game.notify(`[${time}]Threat coming,safe mode is cooling down!!!`);
+                        if((Game.time-notified)>3000) {
+                            Game.notify(`[${time}]Threat coming,safe mode is cooling down!!!`, 0);
+                            room.memory.notifiedTime = Game.time;
+                        }
                     } else {
                         //Just activate it!
                         const time = Game.time;
-                        if(OK === room.controller.activateSafeMode()) Game.notify(`[${time}]Threat coming,activated safe mode!!!`);
-                        else Game.notify(`[${time}]Threat coming,can not activate safe mode!!!`);
+                        const result = room.controller.activateSafeMode()
+                        const message = result===OK ? 'activated' : 'failed to activate';
+                        if((Game.time-notified)>3000) {
+                            Game.notify(`[${time}]Threat coming,${message} safe mode!!!`, 0);
+                            room.memory.notifiedTime = Game.time;
+                        }
                     }
                 }
             }
