@@ -84,7 +84,14 @@ mod.loop = function() {
     }
 };
 
+const QueuePeriod = 10;
+
 mod.queueCreeps = function(roomName, destinedTarget) {
+    const flag = Game.flags[destinedTarget];
+    const lastQueueTime = flag.memory.lastQueueTime || 0;
+    if((Game.time-lastQueueTime)<QueuePeriod) return;
+    flag.memory.lastQueueTime = Game.time;
+
     //=== Role count ===
     const roomCreeps = _.filter(Game.creeps, function(creep) { return creep.memory.destinedTarget === destinedTarget; });
     let cnt = {
@@ -116,7 +123,7 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     const extraMemory = {
         destinedTarget: destinedTarget
     };
-    const targetRoomName = Game.flags[destinedTarget].pos.roomName;
+    const targetRoomName = flag.pos.roomName;
     const room = Game.rooms[targetRoomName];
 
     //Do we have vision of that room?
@@ -181,7 +188,6 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     }
 
     //====== Calculate path length between remote sources and home controller ======
-    const flag = Game.flags[destinedTarget];
     let avgPathLength = flag.memory.avgPathLength;
     if(avgPathLength === undefined) {
         let length = 0;

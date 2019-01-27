@@ -36,7 +36,14 @@ mod.loop = function() {
     }
 };
 
+const QueuePeriod = 10;
+
 mod.queueCreeps = function(roomName, destinedTarget) {
+    const flag = Game.flags[destinedTarget];
+    const lastQueueTime = flag.memory.lastQueueTime || 0;
+    if((Game.time-lastQueueTime)<QueuePeriod) return;
+    flag.memory.lastQueueTime = Game.time;
+
     //=== Role count ===
     const roomCreeps = _.filter(Game.creeps, function(creep) { return creep.memory.destinedTarget === destinedTarget; });
     let cnt = {
@@ -67,7 +74,6 @@ mod.queueCreeps = function(roomName, destinedTarget) {
         destinedTarget: destinedTarget
     };
     //Firstly, send a scout to get vision of target room
-    const flag = Game.flags[destinedTarget];
     const logPrefix = `[Outpost(${flag.pos.roomName})]`;
     //Do we have vision of that room?
     if(!flag.room) {
