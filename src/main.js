@@ -24,7 +24,6 @@ const loop0 = function () {
         return;
     }
 
-    Logger.trace('=======Main Loop Start====>>>');
     Util.SourceMark.loop();
     //Version update
     const previoudVersion = Memory.version || 0;
@@ -34,19 +33,14 @@ const loop0 = function () {
         Memory.version = version;
     }
     //Run tasks to get creep spawn queue
-    Logger.trace('1. Running task manager');
     try { TaskManager.loop(); } catch (e) { Logger.fatal("error with task manager loop\n" + e.stack); }
     //Run rooms to get metadata and run structures
-    Logger.trace('2. Running room manager');
     try { RoomManager.loop(); } catch (e) { Logger.fatal("error with room manager loop\n" + e.stack); }
     //Run creeps
-    Logger.trace('3. Running creep manager');
     try { CreepManager.loop(); } catch (e) { Logger.fatal("error with creep manager loop\n" + e.stack); }
     //Validate and clear data
-    Logger.trace('4. Running garbage collection');
     if(Game.time%100===0) GC();
     Util.Movement.unregisterAll();
-    Logger.trace('<<<====Main Loop End=======');
 };
 
 function GC() {
