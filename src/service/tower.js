@@ -4,7 +4,6 @@ module.exports = mod;
 
 const ConstructureMaintainThreshold = {
     [STRUCTURE_CONTAINER]: 80000, //80K
-    [STRUCTURE_ROAD]: 2100
 };
 
 mod.loop = function(room) {
@@ -59,7 +58,7 @@ mod.loop = function(room) {
                         } else if(structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_RAMPART) {
                             return false;
                         } else if(structure.structureType == STRUCTURE_ROAD) {
-                            return structure.hits < ConstructureMaintainThreshold[STRUCTURE_ROAD];
+                            return structure.hits<2/5*structure.hitsMax;
                         }
                         return true;
                     } else {
