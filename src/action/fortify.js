@@ -16,9 +16,9 @@ mod.nextTarget = function() {
 
         if(walls.length>0) {
             const target = walls[0];
-            if(!validateFunc(creep, target)) {
+            if(target.hits >= creep.memory.maxHits) {
                 //time to raise maxHits
-                const newMaxHits = creep.memory.maxHits + 30*Thousand;
+                const newMaxHits = creep.memory.maxHits + 50*Thousand;
                 creep.memory.maxHits = Math.min(newMaxHits, Config.WallMaxHits);
             }
 
@@ -30,7 +30,8 @@ mod.nextTarget = function() {
 };
 
 const validateFunc = function(creep, target) {
-    return target.room && target.room.name===creep.room.name && target.hits<creep.memory.maxHits;
+    //15K extra hits for decay cost while fortify ramparts of whole room
+    return target.room && target.room.name===creep.room.name && target.hits<(creep.memory.maxHits+15*Thousand);
 };
 
 mod.word = '🚧 fortify';
