@@ -2,7 +2,7 @@ var mod = new RoleObj(C.HAULER);
 module.exports = mod;
 
 mod.roleConfig= {
-    inStack: [Action.FromTombstone, Action.FromContainer, Action.FromLink, Action.Pickup],
+    inStack: [Action.FromTombstone, Action.FromContainer, Action.Pickup],
     outStack: [Action.Store, Action.Fill, Action.Help, Action.PutForUpgrade],
 };
 

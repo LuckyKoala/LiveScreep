@@ -3,11 +3,15 @@ var mod = {};
 module.exports = mod;
 
 mod.loop = function(room) {
-    const inputLinks = [];
-    const outputLinks = [];
+    let sourceLinks = [];
+    let centerLink = false;
+    let controllerLink = false;
 
     const fullAndNotCooldown = function(link) {
         return link.energy===link.energyCapacity && link.cooldown===0;
+    };
+    const empty = function(link) {
+        return link.energy===0;
     };
     for(const link of room.links) {
         let linkType = link.memory.type;
@@ -22,19 +26,38 @@ mod.loop = function(room) {
                     linkType = 'source';
                 }
             }
+            //write back to memory
+            link.memory.type = linkType;
         }
 
-        if(linkType==='source') {
-            if(fullAndNotCooldown(link)) inputLinks.push(link);
-        } else if(link.energy===0) outputLinks.push(link);
-
-        //write back to memory
-        link.memory.type = linkType;
+        switch(linkType) {
+            case 'source':
+                if(fullAndNotCooldown(link)) sourceLinks.push(link);
+                break;
+            case 'center':
+                centerLink = link;
+                break;
+            case 'controller':
+                if(empty(link)) controllerLink = link;
+                break;
+        }
     }
 
-    for(const input of inputLinks) {
-        if(outputLinks.length > 0) {
-            input.transferEnergy(outputLinks.pop());
+    //all source link -> center link
+    //centerlink -> empty controllerLink
+    if(centerLink) {
+        if(centerLink.energy>0 && controllerLink) centerLink.transferEnergy(controllerLink);
+        if(empty(centerLink)) {
+            if(sourceLinks.length > 0) {
+                const sourceLink = sourceLinks[0];
+                if(centerLink) sourceLink.transferEnergy(centerLink);
+                else if(controllerLink) sourceLink.transferEnergy(controllerLink);
+            }
+        }
+    } else if(controllerLink) {
+        if(sourceLinks.length > 0) {
+            const sourceLink = sourceLinks[0];
+            sourceLink.transferEnergy(controllerLink);
         }
     }
 };

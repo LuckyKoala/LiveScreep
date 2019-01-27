@@ -4,8 +4,8 @@ var mod = new RoleObj(C.FILLER);
 module.exports = mod;
 
 mod.roleConfig = {
-    inStack: [Action.FromLink, Action.FromStorage, Action.FromTombstone, Action.Renew],
-    outStack: [Action.Fill, Action.Renew],
+    inStack: [Action.FromStorage, Action.FromTombstone, Action.Renew],
+    outStack: [Action.Fill, Action.Fuel, Action.Renew],
 };
 
 mod.loop = function(creep) {

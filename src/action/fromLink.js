@@ -23,7 +23,8 @@ const validateFunc = function(creep, target) {
         //If energy remain in storage is too few, let filler drain energy from controller link too
         return target.memory.type==='controller' || target.memory.type==='center';
     } else {
-        return target.memory.type === 'center';
+        const controllerLinkIsFull = creep.room.links.filter(link => link.memory.type==='controller' && link.energy===0).length === 0;
+        return controllerLinkIsFull && target.memory.type==='center';
     }
 };
 
