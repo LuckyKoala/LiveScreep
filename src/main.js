@@ -24,6 +24,7 @@ const loop0 = function () {
         return;
     }
 
+    Util.Observer.init();
     Util.SourceMark.loop();
     //Version update
     const previoudVersion = Memory.version || 0;

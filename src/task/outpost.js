@@ -69,12 +69,17 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     //Firstly, send a scout to get vision of target room
     const flag = Game.flags[destinedTarget];
     const logPrefix = `[Outpost(${flag.pos.roomName})]`;
+    //Do we have vision of that room?
     if(!flag.room) {
-        //no vision
-        if(cnt[C.SCOUT]===0) {
-            Logger.trace(logPrefix+'Scouting...');
-            queueRoom.queue.extern.unshift([C.SCOUT, extraMemory]);
-            cnt[C.SCOUT]++;
+        //No vision
+        if(!Util.Observer.requestVision(flag.pos.roomName)) {
+            //No observer to use
+            //Spawn a scout
+            if(cnt[C.SCOUT]===0) {
+                Logger.trace(logPrefix+'Scouting...');
+                queueRoom.queue.extern.push([C.SCOUT, extraMemory]);
+                cnt[C.SCOUT]++;
+            }
         }
         return;
     }

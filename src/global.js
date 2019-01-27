@@ -284,6 +284,7 @@ global.Util = {
     Stat: require('util_stat'),
     Helper: require('util_helper'),
     Movement: require('util_movement'),
+    Observer: require('util_observer'),
 };
 //Shorthand
 global.Logger = Util.Logger;

@@ -122,10 +122,13 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     //Do we have vision of that room?
     if(room === undefined) {
         //No vision
-        //Spawn a scout first
-        if(cnt[C.SCOUT]===0) {
-            queueRoom.queue.extern.push([C.SCOUT, extraMemory]);
-            cnt[C.SCOUT]++;
+        if(!Util.Observer.requestVision(targetRoomName)) {
+            //No observer to use
+            //Spawn a scout
+            if(cnt[C.SCOUT]===0) {
+                queueRoom.queue.extern.push([C.SCOUT, extraMemory]);
+                cnt[C.SCOUT]++;
+            }
         }
         return;
     }

@@ -277,7 +277,7 @@ Object.defineProperties(Room.prototype, {
             });
         },
         set: function(value) {
-            return genericSetter(this, 'layout', '_layout');
+            genericSetter(this, 'layout', '_layout', value);
         },
         enumerable: false,
         configurable: true
@@ -294,7 +294,7 @@ Object.defineProperties(Room.prototype, {
             });
         },
         set: function(queue) {
-            return genericSetter(this, 'queue', '_queue');
+            genericSetter(this, 'queue', '_queue', queue);
         },
         enumerable: false,
         configurable: true
@@ -389,6 +389,30 @@ Object.defineProperties(Room.prototype, {
         set: function(mineral) {
             this.memory.mineralId = mineral.id;
             this._mineral = mineral;
+        },
+        enumerable: false,
+        configurable: true
+    },
+    'observer': {
+        get: function() {
+            if(!this.controller || this.controller.level<8) return false;
+            if (!this._observer) {
+                const observerId = this.memory.observerId;
+                if (observerId) {
+                    this._observer = Game.getObjectById(observerId);
+                } else {
+                    const observers = this.cachedFind(FIND_MY_STRUCTURES).filter(s => s.structureType===STRUCTURE_OBSERVER);
+                    if(observers.length>0) {
+                        this.memory.observerId = observers[0].id;
+                        this._observer = observers[0];
+                    }
+                }
+            }
+            return this._observer;
+        },
+        set: function(observer) {
+            this.memory.observerId = observer.id;
+            this._observer = observer;
         },
         enumerable: false,
         configurable: true
