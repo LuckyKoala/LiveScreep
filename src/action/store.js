@@ -3,8 +3,11 @@ module.exports = mod;
 
 const targetInitFunc = function(creep) {
     const storage = Game.rooms[creep.memory.homeRoom].storage;
-    if(storage) {
+    const terminal = Game.rooms[creep.memory.homeRoom].terminal;
+    if(storage && _.sum(storage.store)<storage.storeCapacity) {
         return storage;
+    } else if(terminal && _.sum(terminal.store)<terminal.storeCapacity) {
+        return terminal;
     } else {
         const keepers = _.filter(creep.room.cachedFind(FIND_MY_CREEPS), c => c.memory.role === C.KEEPER);
         if(keepers.length>0) {
@@ -16,7 +19,19 @@ const targetInitFunc = function(creep) {
 };
 
 mod.nextTarget = function() {
-    return Util.Mark.handleMark(this.creep, targetInitFunc, this.actionName);
+    return Util.Mark.handleMark(this.creep, targetInitFunc, this.actionName, validateFunc);
+};
+
+const validateFunc = function(creep, target) {
+    if(!target.room || target.room.name!==creep.room.name) return false;
+    const carryRemain = _.sum(creep.carry);
+    if(target.store) {
+        return (target.storeCapacity-_.sum(target.store)) >= carryRemain;
+    } else if(target.carry) {
+        return (target.carryCapacity-_.sum(target.carry)) >= carryRemain;
+    } else {
+        return false;
+    }
 };
 
 mod.word = '➡︎ store';
