@@ -81,8 +81,12 @@ function isSourceAvailable(workParts, source, dynamic=false) {
         return available.spots>=1 && source.energy>0;
     } else {
         //One harvester per source
-        const takenCnt = _.keys(source.memory.mark.status).length;
-        return takenCnt === 0;
+        let cnt = 0;
+        for(const name of _.keys(source.memory.mark.status)) {
+            const creep = Game.creeps[name];
+            if(creep && creep.ticksToLive>=Setup[creep.memory.role].prespawn) cnt++;
+        }
+        return cnt === 0;
     }
 }
 
@@ -123,7 +127,7 @@ function validateSourceMark(source) {
     for(var name in status) {
         const creep = Game.creeps[name];
         if(_.isUndefined(creep) || creep.memory.role == 'recycler') {
-            //Release mark if creep is dead or creep is recycler 
+            //Release mark if creep is dead or creep is recycler
             //  which means it won't work anymore
             clearSourceMark(creep);
             // release
