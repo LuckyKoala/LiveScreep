@@ -3,28 +3,21 @@ module.exports = mod;
 
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, creep => {
-        const walls = _.sortBy(creep.room.cachedFind(FIND_STRUCTURES).filter(function(o) {
-            return o.structureType==STRUCTURE_RAMPART;
-        }), o=>o.hits);
+        if(creep.memory.maxHits===undefined) creep.memory.maxHits = Math.min(600*Thousand, Config.WallMaxHits);
 
-        const lastMaxHits = creep.memory.maxHits || 0;
-        let maxHits = lastMaxHits;
-        if(lastMaxHits === 0) {
-            maxHits = 300*Thousand;
-            creep.memory.maxHits = Math.min(maxHits, Config.WallMaxHits);
-        }
+        let rampart = _.find(creep.room.cachedFind(FIND_MY_STRUCTURES), function(o) {
+            return o.structureType===STRUCTURE_RAMPART && o.hits<creep.memory.maxHits;
+        });
 
-        if(walls.length>0) {
-            const target = walls[0];
-            if(target.hits >= creep.memory.maxHits) {
-                //time to raise maxHits
-                const newMaxHits = creep.memory.maxHits + 50*Thousand;
-                creep.memory.maxHits = Math.min(newMaxHits, Config.WallMaxHits);
-            }
-
-            return target;
-        } else {
-            return false;
+        if(rampart) return rampart;
+        else {
+            //Increase maxHits
+            creep.memory.maxHits = Math.min(maxHits+60*Thousand, Config.WallMaxHits);
+            rampart = _.find(creep.room.cachedFind(FIND_MY_STRUCTURES), function(o) {
+                return o.structureType==STRUCTURE_RAMPART && o.hits<creep.memory.maxHits;
+            });
+            if(rampart) return rampart;
+            else return false;
         }
     }, this.actionName, validateFunc);
 };
