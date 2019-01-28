@@ -2,12 +2,12 @@ var mod = new RoleObj(C.BUILDER);
 module.exports = mod;
 
 mod.roleConfigOutsideHome = {
-    inStack: [Action.Dismantle, Action.Pickup, Action.Back, Action.FromStorage],
+    inStack: [Action.Dismantle, Action.Pickup, Action.Back],
     outStack: [Action.Build, Action.Repair, Action.Travel, Action.Drop], //not going home, then builder muse be doing action.dismantle, just drop energy on the ground so it can keep dismantling.
 };
 
 mod.roleConfigInHome = {
-    inStack: [Action.FromStorage, Action.Dismantle, Action.Pickup],
+    inStack: [Action.FromStorage, Action.FromTerminal, Action.Pickup],
     //Maintain ramparts first since it will decay and it is a structure for defense
     // then repair hurt structures,roads and walls
     // build structures at last since it can wait

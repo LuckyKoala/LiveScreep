@@ -3,7 +3,7 @@ module.exports = mod;
 
 mod.roleConfig = {
     inStack: [Action.Travel, Action.FromTombstone, Action.FromContainer, Action.Pickup],
-    outStack: [Action.Help, Action.Back, Action.PutToLink, Action.Store, Action.Fill, Action.Fuel, Action.PutForUpgrade],
+    outStack: [Action.Help, Action.Back, Action.PutToLink, Action.PutToStorage, Action.PutToTerminal, Action.PutToKeeper, Action.Fill, Action.Fuel, Action.PutForUpgrade],
 };
 
 mod.loop = function(creep) {

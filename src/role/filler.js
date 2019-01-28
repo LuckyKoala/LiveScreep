@@ -4,7 +4,7 @@ var mod = new RoleObj(C.FILLER);
 module.exports = mod;
 
 mod.roleConfig = {
-    inStack: [Action.FromStorage, Action.FromTombstone, Action.Renew],
+    inStack: [Action.FromStorage, Action.FromTerminal, Action.FromTombstone, Action.Renew],
     outStack: [Action.Fill, Action.Fuel, Action.Renew],
 };
 

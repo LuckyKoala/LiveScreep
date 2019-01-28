@@ -1,17 +1,21 @@
-let mod = new ActionObj('FromStorage');
+let mod = new ActionObj('FromTerminal');
 module.exports = mod;
 
 const targetInitFunc = function(creep) {
     const role = creep.memory.role;
-    const storage = creep.room.storage;
-    const hasEnoughEnergy = storage && (storage.store[RESOURCE_ENERGY]-(creep.carryCapacity-creep.carry.energy))>=0;
+    const terminal = creep.room.terminal;
+    const hasEnoughEnergy = terminal && (terminal.store[RESOURCE_ENERGY]-(creep.carryCapacity-creep.carry.energy))>=0;
 
     if(hasEnoughEnergy) {
-        if(role === C.FILLER) {
-            return storage;
-        } else if(storage && storage.store[RESOURCE_ENERGY]>Config.StorageBoundForSpawn) {
-            //creeps other than filler should honour the StorageBoundForSpawn
-            return storage;
+        if(creep.room.storage) return terminal;
+        else {
+            //No storage, so terminal is main storage now, we need to reserve some energy for spawn
+            if(role === C.FILLER) {
+                return terminal;
+            } else if(terminal && terminal.store[RESOURCE_ENERGY]>Config.StorageBoundForSpawn) {
+                //creeps other than filler should honour the StorageBoundForSpawn
+                return terminal;
+            }
         }
     }
     return false;
@@ -21,11 +25,11 @@ mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, targetInitFunc, this.actionName, validateFunc);
 };
 
-mod.word = '⬅︎Storage';
+mod.word = '⬅︎Terminal';
 
 const validateFunc = function(creep, target) {
     const hasEnoughEnergy = target && (target.store[RESOURCE_ENERGY]-(creep.carryCapacity-creep.carry.energy))>=0;
-    if(creep.memory.role!==C.FILLER && target.store[RESOURCE_ENERGY]<=Config.StorageBoundForSpawn) return false;
+    if(!creep.room.storage && creep.memory.role!==C.FILLER && target.store[RESOURCE_ENERGY]<=Config.StorageBoundForSpawn) return false;
     return target.room && target.room.name === creep.room.name && hasEnoughEnergy;
 };
 

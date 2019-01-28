@@ -21,8 +21,53 @@ function profit(targetRoom, order) {
 
 mod.loop = function(room) {
     if(!room.terminal || room.terminal.cooldown>0) return;
+    const remainAmountOfEnergy = room.terminal.store[RESOURCE_ENERGY];
 
-    const energyforCost = room.terminal.store[RESOURCE_ENERGY];
+    //Terminal will be treated as storage since there is no enough resource in storage
+    const storageNotEnough = function(storage) {
+        return !storage || _.sum(storage.store)<0.5*storage.storeCapacity;
+    };
+    if(storageNotEnough(room.storage)) return;
+
+    //Try balance energy among owned rooms
+    const terminalCanReceiveAmount = function(terminal) {
+        if(!terminal) return 0;
+        return terminal.storeCapacity - _.sum(terminal.store);
+    };
+    for(const roomName in Game.rooms) {
+        //Skip self
+        if(roomName===room.name) continue;
+        const targetRoom = Game.rooms[roomName];
+        const roomType = targetRoom.memory.roomType;
+        const roomTerminalReceiveTime = room.memory.roomTerminalReceiveTime || 0;
+
+        //Help owned room with not enough energy remain in storage
+        if(!roomType || roomType!==C.OWNED_ROOM || !storageNotEnough(targetRoom.storage)) continue;
+
+        const amount = terminalCanReceiveAmount(targetRoom.terminal);
+        const distance = Game.map.getRoomLinearDistance(room.name, roomName, true);
+        //A owned room in range can only be helped once in a tick
+        if(amount===0 || roomTerminalReceiveTime===Game.time || distance>Config.TerminalHelpRoomDistanceMax) continue;
+
+        let sendAmount = Math.min(amount, remainAmountOfEnergy);
+        //Send energy when there is some instead of send few energy multiply times
+        if(sendAmount<Config.TerminalHelpEnergyMin) break;
+
+        const costAmount = Game.market.calcTransactionCost(sendAmount, room.name, roomName);
+        sendAmount -= costAmount;
+        if(sendAmount <= 0) continue;
+
+        //Actually send energy
+        const sendResult = room.terminal.send(RESOURCE_ENERGY, sendAmount, roomName, 'Energy balance among rooms');
+        if(sendResult === OK) {
+            Logger.info(`[${room.name}-Terminal balance]Sending ${sendAmount} x energy to ${roomName}`);
+            targetRoom.memory.roomTerminalReceiveTime = Game.time;
+            return;
+        }
+    }
+
+    //Sell extra resources
+    const energyforCost = remainAmountOfEnergy;
     let sold = false;
     const sell = function(resourceType) {
         const storeAmount = room.terminal.store[resourceType];

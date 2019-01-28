@@ -4,7 +4,8 @@ var mod = {
     StorageBoundForSpawn: 15*Thousand,
     StorageBoundForGuardian: 18*Thousand,
     StorageBoundForAddUpgrader: 50*Thousand,
-    StorageBoundForWallMaintainer: 60*Thousand,
+    StorageBoundForPlaceHighLevelStructures: 60*Thousand,
+    StorageBoundForWallMaintainer: 80*Thousand,
     RampartMaintainThreshold: {
         //this value shouldn't be too high since it is used by getRampartSitesCanBuild(),
         //  if it is too high, then rampart site can only be built by bigger builder which
@@ -16,6 +17,10 @@ var mod = {
     WallMaxHits: 30*Thousand*Thousand,
     EnergyForDefend: 600,
     SellExtraResourceBound: 10*Thousand,
-    RebuildStructures: true
+    RebuildStructures: true,
+    TerminalHelpRoomDistanceMax: 10,
+    TerminalHelpEnergyMin: 10*Thousand,
+    //Storage store configuration
+    StorageReserveForEnergy: 800*Thousand
 };
 module.exports = mod;

@@ -3,12 +3,12 @@ module.exports = mod;
 
 mod.roleConfigNormal = {
     inStack: [Action.FromLink],
-    outStack: [Action.PutForUpgrade, Action.Help, Action.Store],
+    outStack: [Action.PutForUpgrade, Action.Help, Action.PutToStorage, Action.PutToTerminal],
 };
 
 mod.roleConfigControllerContainerIsEmpty = {
-    inStack: [Action.FromLink, Action.FromStorage],
-    outStack: [Action.PutForUpgrade, Action.Help, Action.Store],
+    inStack: [Action.FromLink, Action.FromStorage, Action.FromTerminal],
+    outStack: [Action.PutForUpgrade, Action.Help, Action.PutToStorage, Action.PutToTerminal],
 };
 
 mod.loop = function(creep) {
