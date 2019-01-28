@@ -2,10 +2,11 @@ let mod = {};
 module.exports = mod;
 
 const MovementPriority = [
-    //vital for spawning and defending
+    //=== Moving roles ===
+    //Vital for spawning and defending
     C.FILLER,
     C.GUARDIAN,
-    //precious body role
+    //Precious body role
     C.CLAIMER,
     C.RESERVER,
     //FixWorker which will nor stay in bunker
@@ -15,13 +16,14 @@ const MovementPriority = [
     C.HARVESTER,
     C.REMOTE_WORKER,
     C.REMOTE_HARVESTER,
-    C.UPGRADER,
-    //bring resource
+    //Bring resource
     C.HAULER,
     C.REMOTE_HAULER,
     C.RECYCLER,
     //take resource
     C.KEEPER,
+    //=== Nearly stationary roles ===
+    C.UPGRADER,
     C.BUILDER,
     C.WALLMAINTAINER,
     C.WORKER
