@@ -1,21 +1,31 @@
 var mod = new RoleObj(C.KEEPER);
 module.exports = mod;
 
-mod.roleConfigNormal = {
-    inStack: [Action.FromLink],
-    outStack: [Action.PutForUpgrade, Action.Help, Action.PutToStorage, Action.PutToTerminal],
-};
-
 mod.roleConfigControllerContainerIsEmpty = {
     inStack: [Action.FromLink, Action.FromStorage, Action.FromTerminal],
-    outStack: [Action.PutForUpgrade, Action.Help, Action.PutToStorage, Action.PutToTerminal],
+    outStack: [Action.PutForUpgrade],
+};
+
+mod.roleConfigBalance = {
+    inStack: [Action.FromLink, Action.FromTerminal],
+    outStack: [Action.PutToStorage],
+};
+
+mod.roleConfigNormal = {
+    inStack: [Action.FromLink],
+    outStack: [Action.PutToStorage, Action.PutToTerminal, Action.Help],
 };
 
 mod.loop = function(creep) {
     const controllerContainer = creep.room.controller.container;
     if(controllerContainer && controllerContainer.store[RESOURCE_ENERGY]===0) {
+        //haul energy to controller container
         this.roleConfig = this.roleConfigControllerContainerIsEmpty;
+    } else if(creep.room.storage && creep.room.storage.store[RESOURCE_ENERGY]<Config.StorageReserveForEnergy) {
+        //Move energy from terminal to storage
+        this.roleConfig = this.roleConfigBalance;
     } else {
+        //Redistribute energy from center link to storage/terminal
         this.roleConfig = this.roleConfigNormal;
     }
 
