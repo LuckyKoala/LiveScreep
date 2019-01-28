@@ -363,12 +363,14 @@ mod.loop = function(room, forceRun=false) {
     addToChainIfPossible(STRUCTURE_CONTAINER);
 
     addToChainIfPossible(STRUCTURE_EXTRACTOR);
-    addToChainIfPossible(STRUCTURE_LAB);
     addToChainIfPossible(STRUCTURE_OBSERVER);
 
-    addToChainIfPossible(STRUCTURE_NUKER);
-    addToChainIfPossible(STRUCTURE_POWER_SPAWN);
-    addToChainIfPossible(STRUCTURE_RAMPART);
+    if(room.storage && room.storage.store[RESOURCE_ENERGY]>Config.StorageBoundForPlaceHighLevelStructures) {
+        addToChainIfPossible(STRUCTURE_LAB);
+        addToChainIfPossible(STRUCTURE_NUKER);
+        addToChainIfPossible(STRUCTURE_RAMPART);
+        addToChainIfPossible(STRUCTURE_POWER_SPAWN);
+    }
     chain.add(() => room.memory.lastFullyConstructionCheck = Game.time);
 
     //======== Actually run chain functions ========
