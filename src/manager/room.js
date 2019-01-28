@@ -132,7 +132,7 @@ mod.loopOwnedRoom = function(room) {
     room.visual.text(`EnergyInSpawn: ${room.energyAvailable}/${room.energyCapacityAvailable}`, 8, 6, {color: 'gold', font: 1});
     //Energy in storage
     if(room.storage) {
-        room.visual.text(`Energy in storage: ${room.storage.store[RESOURCE_ENERGY]}`, 8, 7, {color: 'gold', font: 1});
+        room.visual.text(`Stored energy: ${room.storage.store[RESOURCE_ENERGY]} ${room.terminal ? ' || '+room.terminal.store[RESOURCE_ENERGY] : ''}`, 8, 7, {color: 'green', font: 1});
     }
     //Roles count in room
     const showRoleCount = (index, roleName, cnt) => room.visual.text(`${roleName}:   ${cnt}`, 5, 9+index, {font: 1});
