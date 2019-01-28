@@ -4,13 +4,18 @@
 
 Latest Release => `v0.5-Bunker`
 
-* Simple room plan system
-* Burn extra energy of storage to controller(more upgrader, bigger upgrader)
-* Implemented drop-mining, container-mining, link-mining and remote-mining.
-* Running links and towers
+* Base room plan system(Schedule all structures in the base room and then build/rebuild those structures)
+* Implemented drop-mining, container-mining, link-mining and remote-mining(including on-demand builder/guardian).
+* Simple tower logic for defending/healing/repairing.
 * Guardian will try stay in rampart and fight invaders
 * Automatically active safe mode and send notification to player if the room can't handle the attack
+* Burn extra energy of storage to controller(more upgrader, bigger upgrader)
+* Link among controller, center(a dedicated creep will redistribute energy from it) and sources(including links near exits for remoteHauler)
+* Prespawn creeps to reduce time waiting for creeps to be spawned
 * Task system which manipulate spawn queue and adjust target of chosen creeps
+* Balance energy among owned rooms through terminal
+* Sell extra resources for credits through terminal
+* Share observers in all room to get vision of rooms
 
 # Declaration
 
