@@ -171,10 +171,9 @@ mod.init = function(room) {
     this.initRoad(room, room.sources);
 
     //== Extractor ==
-    const minerals = room.cachedFind(FIND_MINERALS);
-    if(minerals.length>0) {
-        const mineral = minerals[0];
-        this.saveStructure(room, mineral.pos, STRUCTURE_EXTRACTOR);
+    const mineral = room.mineral;
+    if(mineral) {
+        this.saveStructure(room, [mineral.pos.x, mineral.pos.y], STRUCTURE_EXTRACTOR);
         const posMineralContainer = posNearby(terrain, mineral, 1);
         this.saveStructure(room, posMineralContainer, STRUCTURE_CONTAINER);
         this.saveStructure(room, posMineralContainer, STRUCTURE_RAMPART);
