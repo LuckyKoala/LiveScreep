@@ -84,7 +84,7 @@ function isSourceAvailable(workParts, source, dynamic=false) {
         let cnt = 0;
         for(const name of _.keys(source.memory.mark.status)) {
             const creep = Game.creeps[name];
-            if(creep && creep.ticksToLive>=Setup[creep.memory.role].prespawn) cnt++;
+            if(creep && (creep.spawning || creep.ticksToLive>=Setup[creep.memory.role].prespawn)) cnt++;
         }
         return cnt === 0;
     }
