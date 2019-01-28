@@ -11,7 +11,7 @@ mod.roleConfigInHome = {
     //Maintain ramparts first since it will decay and it is a structure for defense
     // then repair hurt structures,roads and walls
     // build structures at last since it can wait
-    outStack: [Action.Build, Action.Repair, Action.Travel],
+    outStack: [Action.Build, Action.Repair, Action.Travel, Action.Fortify],
 };
 
 mod.loop = function(creep) {
