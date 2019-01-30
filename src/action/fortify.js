@@ -12,7 +12,7 @@ mod.nextTarget = function() {
         if(rampart) return rampart;
         else {
             //Increase maxHits
-            creep.memory.maxHits = Math.min(maxHits+60*Thousand, Config.WallMaxHits);
+            creep.memory.maxHits = Math.min(creep.memory.maxHits+60*Thousand, Config.WallMaxHits);
             rampart = _.find(creep.room.cachedFind(FIND_MY_STRUCTURES), function(o) {
                 return o.structureType==STRUCTURE_RAMPART && o.hits<creep.memory.maxHits;
             });
