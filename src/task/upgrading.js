@@ -22,13 +22,22 @@ mod.queueCreeps = function(room) {
         Logger.trace('skip task.upgrading.queueCreeps due to low energyCapacityAvailable');
         return;
     }
-    if(room.storage && room.storage.store[RESOURCE_ENERGY] < Config.StorageBoundForSpawn) {
+    //=== Role count ===
+    const cnt = room.cachedRoleCount();
+
+    //Storage rebuild routine
+    if(room.terminal && room.storage && room.terminal.store[RESOURCE_ENERGY]>room.storage.store[RESOURCE_ENERGY] && cnt.total[C.KEEPER]===0) {
+        room.queue.normal.push(C.KEEPER);
+        cnt.queue[C.KEEPER]++;
+        cnt.total[C.KEEPER]++;
+    }
+
+    const storage = room.storage || room.terminal;
+    if(storage && storage.store[RESOURCE_ENERGY] < Config.StorageBoundForSpawn) {
         Logger.trace('skip task.upgrading.queueCreeps due to lack of energy in storage');
         return;
     }
 
-    //=== Role count ===
-    const cnt = room.cachedRoleCount();
 
     let upgraderAmount;
     if(room.controller.level === 8) {
@@ -49,7 +58,7 @@ mod.queueCreeps = function(room) {
         if(upgraderAmount > 0) {
             //Only spawn keeper if storage present
             //spawn keeper first, so there will be energy source for upgrader
-            if(room.storage && cnt.total[C.KEEPER] === 0) {
+            if(storage && cnt.total[C.KEEPER] === 0) {
                 room.queue.normal.push(C.KEEPER);
                 cnt.queue[C.KEEPER]++;
                 cnt.total[C.KEEPER]++;

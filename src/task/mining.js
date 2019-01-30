@@ -23,7 +23,8 @@ mod.queueCreeps = function(room) {
 
     //=== Can we keep spawning? ===
     let canKeepSpawning = false;
-    if(room.storage && room.storage.store[RESOURCE_ENERGY] > 20000) {
+    const storage = room.storage || room.terminal;
+    if(storage && storage.store[RESOURCE_ENERGY] > 20000) {
         //We still have energy in storage
         // Do we have a filler to transfer energy from storage to spawns/extensions?
         if(cnt.existed[C.FILLER]>=1) canKeepSpawning = true;

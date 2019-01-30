@@ -23,7 +23,8 @@ mod.queueCreeps = function(room) {
         Logger.trace('skip task.defending.queueCreeps due to low energyCapacityAvailable');
         return;
     }
-    if(room.storage && room.storage.store[RESOURCE_ENERGY] < Config.StorageBoundForGuardian) {
+    const storage = room.storage || room.terminal;
+    if(storage && storage.store[RESOURCE_ENERGY] < Config.StorageBoundForGuardian) {
         Logger.trace('skip task.defending.queueCreeps due to lack of energy in storage');
         return;
     }
