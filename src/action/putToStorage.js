@@ -3,7 +3,7 @@ module.exports = mod;
 
 const targetInitFunc = function(creep) {
     const storage = Game.rooms[creep.memory.homeRoom].storage;
-    if(validateFunc(creep, storage)) return storage;
+    if(storage && validateFunc(creep, storage)) return storage;
     else return false;
 };
 
