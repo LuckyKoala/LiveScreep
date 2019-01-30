@@ -25,7 +25,7 @@ mod.loop = function(room) {
 
     //Terminal will be treated as storage since there is no enough resource in storage
     const storageNotEnough = function(storage) {
-        return !storage || _.sum(storage.store)<0.5*storage.storeCapacity;
+        return !storage || _.sum(storage.store)<Config.StorageReserveForEnergy;
     };
     if(storageNotEnough(room.storage)) return;
 
