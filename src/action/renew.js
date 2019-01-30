@@ -3,7 +3,8 @@ module.exports = mod;
 
 mod.nextTarget = function() {
     return Util.Mark.handleMark(this.creep, creep => {
-        if(creep.ticksToLive < 500) {
+        const renewLimit = creep.getActiveBodyparts(CLAIM)>0 ? 300 : 900;
+        if(creep.ticksToLive < renewLimit) {
             const spawns = creep.room.spawns.filter(spawn => validateFunc(creep, spawn));
             if(spawns.length>0) return spawns[0];
         }

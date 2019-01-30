@@ -3,9 +3,9 @@ module.exports = mod;
 
 mod.setupConfig = {
     Low: {
-        minEnergy: 150,
-        essBody: [CARRY, CARRY, MOVE],
-        extraBody: [CARRY, CARRY, MOVE],
+        minEnergy: 100,
+        essBody: [CARRY, MOVE],
+        extraBody: [CARRY, MOVE],
         maxExtraAmount: 1,
         prefix: `[Low${C.FILLER}]`,
         memory: {role: C.FILLER},
@@ -14,10 +14,10 @@ mod.setupConfig = {
         minEnergy: 300,
         essBody: [CARRY, CARRY, MOVE, CARRY, CARRY, MOVE],
         extraBody: [CARRY, CARRY, MOVE],
-        maxExtraAmount: 6,
+        maxExtraAmount: 10,
         prefix: `[${C.FILLER}]`,
         memory: {role: C.FILLER},
     },
 };
 
-mod.prespawn = 150;
+mod.prespawn = 100;
