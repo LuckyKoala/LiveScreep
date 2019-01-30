@@ -21,6 +21,6 @@ var mod = {
     TerminalHelpRoomDistanceMax: 10,
     TerminalHelpEnergyMin: 10*Thousand,
     //Storage store configuration
-    StorageReserveForEnergy: 800*Thousand
+    StorageReserveForEnergy: 233*Thousand
 };
 module.exports = mod;
