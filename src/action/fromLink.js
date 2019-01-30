@@ -19,7 +19,7 @@ const validateFunc = function(creep, target) {
     if(!target.room || target.room.name!==creep.room.name || target.energy===0) return false;
     if(creep.memory.role===C.UPGRADER) {
         return target.memory.type === 'controller';
-    } else if(creep.room.storage.store[RESOURCE_ENERGY] < Config.StorageBoundForSpawn) {
+    } else if(creep.room.storage && creep.room.storage.store[RESOURCE_ENERGY] < Config.StorageBoundForSpawn) {
         //If energy remain in storage is too few, let filler drain energy from controller link too
         return target.memory.type==='controller' || target.memory.type==='center';
     } else {
