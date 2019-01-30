@@ -30,11 +30,15 @@ function roomPlanCmdHandler(args) {
         const roomName = args[1];
         //roomPlan on/off
         if(op === 'on') {
+            Memory.rooms[roomName].layout.init = false;
             Memory.rooms[roomName].showRoomPlan = true;
+            Logger.info(`[${roomName}] Room plan opened.`);
         } else if(op === 'off') {
             Memory.rooms[roomName].showRoomPlan = false;
-        } else if(op === 'reinit') {
-            Memory.rooms[roomName].layout.init = false;
+            Memory.rooms[roomName].layout.init = true;
+            const flag = Game.flags[`anchor_${roomName}`];
+            if(flag) flag.remove();
+            Logger.info(`[${roomName}] Room plan scheduled.`);
         }
     } else {
         wrongAmountOfArgs();

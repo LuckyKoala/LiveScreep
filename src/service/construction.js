@@ -47,19 +47,19 @@ const dissiFlower = {
 
 const bunker = {
     vector: [
-        [0,4,4,1,1,4,4,4,1,4,4,4,0],
-        [4,0,1,1,4,1,1,1,4,1,1,0,4],
+        [4,4,4,1,1,4,4,4,1,4,4,4,4],
+        [4,4,1,1,4,1,1,1,4,1,1,4,4],
         [4,1,1,4,1,4,1,4,1,4,1,1,4],
         [4,1,4,1,1,1,4,1,1,1,4,1,1],
         [1,4,1,1,3,4,5,4,3,1,1,4,1],
-        [1,1,4,1,4,0,3,0,4,1,4,1,4],
+        [1,1,4,1,4,4,3,4,4,1,4,1,4],
         [4,1,1,4,5,3,6,4,7,4,1,1,4],
-        [4,1,4,1,4,0,3,0,4,11,4,0,4],
-        [1,4,1,1,3,4,5,4,8,9,9,4,0],
+        [4,1,4,1,4,4,3,4,4,11,4,4,4],
+        [1,4,1,1,3,4,5,4,8,9,9,4,4],
         [4,1,4,1,1,1,4,12,9,9,4,9,4],
         [4,1,1,4,1,4,1,4,9,4,9,9,4],
-        [4,10,1,1,4,1,1,0,4,9,9,0,4],
-        [0,4,4,4,1,1,4,4,0,4,4,4,0]
+        [4,10,1,1,4,1,1,4,4,9,9,4,4],
+        [4,4,4,4,1,1,4,4,4,4,4,4,4]
     ],
     typeMap: [false,
               STRUCTURE_EXTENSION,
@@ -78,7 +78,8 @@ const bunker = {
 
 mod.showRoomPlan = function(room) {
     for(const type in room.layout) {
-        if(type === 'init') continue; //skip init flag
+        if(type==='init' || type==='anchors') continue; //skip metadata
+        if(type===STRUCTURE_RAMPART) continue; //not to show ramparts
         const entry = room.layout[type];
         for(const pos of entry) {
             const x = pos[0];
@@ -94,28 +95,52 @@ function wrap2DArray(array) {
     };
 }
 
-mod.init = function(room) {
+mod.init = function(room, setInitFlag=false) {
+    //=== Locate anchor ===
+    const anchorInMemory = room.layout.anchors.anchor;
+    //Find/restore anchor flag
+    const anchorFlagName = `anchor_${room.name}`;
+    let anchorFlag = Game.flags[anchorFlagName];
+    if(anchorFlag===undefined) {
+        if(anchorInMemory) {
+            //Restore anchor flag from memory
+            const createResult = room.createFlag(anchorInMemory[0], anchorInMemory[1], anchorFlagName, FlagUtil.bunkerAnchor.color, FlagUtil.bunkerAnchor.secondaryColor);
+            if(createResult===anchorFlagName) {
+                Logger.info(`[${room.name}] Anchor flag restored from memory.`);
+                anchorFlag = Game.flags[anchorFlagName];
+            } else {
+                Logger.warning(`[${room.name}](errno: ${createResult}) Can't restore anchor flag from memory.`);
+                return false;
+            }
+        } else {
+            //Request player to place anchor flag
+            Logger.warning(`[${room.name}] Please place a anchorFlag named '${anchorFlagName}'.`);
+            return false;
+        }
+    } else {
+        //Validate anchorFlag
+        if(anchorFlag.pos.roomName != room.name) {
+            anchorFlag.remove();
+            Logger.warning(`[${room.name}] Found anchor flag ${anchorFlagName} in the wrong room, removed it`);
+            return false;
+        }
+    }
+
+    //Check whether to re-init room plan
+    if(anchorInMemory) {
+        const oldPos = new RoomPosition(anchorInMemory[0], anchorInMemory[1], room.name);
+        const newPos = anchorFlag.pos;
+        //Anchor was not moved
+        if(oldPos.isEqualTo(newPos)) return false;
+    }
+
+    //Anchor was moved or placed first time
+    // Clear old room plan
     delete room._layout; //re init
     delete room.memory.layout; //re init
-    const terrain = room.getTerrain();
-    //== Controller container ==
-    //Firstly, we need a container for upgrader so it won't move
-    const posControllerContainer = posNearby(terrain, room.controller, 1);
-    this.saveStructure(room, posControllerContainer, STRUCTURE_CONTAINER);
-    this.saveStructure(room, posControllerContainer, STRUCTURE_RAMPART);
-    //Then we need a container per source
-    for(let source of room.sources) {
-        const posContainer = posNearby(terrain, source, 1);
-        this.saveStructure(room, posContainer, STRUCTURE_CONTAINER);
-        this.saveStructure(room, posContainer, STRUCTURE_RAMPART);
-    }
-    //== Bunker ==
-    const anchorFlags = _.filter(room.cachedFind(FIND_FLAGS), f => FlagUtil.bunkerAnchor.examine(f));
-    if(anchorFlags.length !== 1) {
-        Logger.warning(`[${room.name}] Can't find exactly one anchorFlag[${FlagUtil.bunkerAnchor.describe()}], please check`);
-        return;
-    }
-    const anchorFlag = anchorFlags[0];
+    // Memorized new anchor pos
+    room.layout.anchors.anchor = [anchorFlag.pos.x, anchorFlag.pos.y];
+    // Extract metadata from memory of flag and layout configuration
     const rotation = anchorFlag.memory.rotation || 0;
     const xlen = bunker.vector[0].length;
     const ylen = bunker.vector.length;
@@ -137,9 +162,22 @@ mod.init = function(room) {
             return (x, y) => [initialX+x, initialY+y];
         }
     })(rotation);
+    room.layout.anchors.diagonal = posMapper(xlen-1, ylen-1);
 
-    anchorFlag.memory.diagonal = posMapper(xlen-1, ylen-1);
+    const terrain = room.getTerrain();
+    //== Schedule common containers/ramparts for controller and sources ==
+    //Firstly, we need a container for upgrader so it won't move
+    const posControllerContainer = posNearby(terrain, room.controller, 1);
+    this.saveStructure(room, posControllerContainer, STRUCTURE_CONTAINER);
+    this.saveStructure(room, posControllerContainer, STRUCTURE_RAMPART);
+    //Then we need a container per source
+    for(let source of room.sources) {
+        const posContainer = posNearby(terrain, source, 1);
+        this.saveStructure(room, posContainer, STRUCTURE_CONTAINER);
+        this.saveStructure(room, posContainer, STRUCTURE_RAMPART);
+    }
 
+    //== Schedule bunker for all other structures ==
     for(let x=0; x<xlen; x++) {
         for(let y=0; y<ylen; y++) {
             const structureTypeVal = arrayWraper(x,y);
@@ -179,8 +217,10 @@ mod.init = function(room) {
         this.saveStructure(room, posMineralContainer, STRUCTURE_RAMPART);
     }
 
-    //Set init flag
-    room.layout.init = true;
+    //Let roomPlan interface set init flag
+    if(setInitFlag) room.layout.init = true;
+
+    return true;
 };
 
 //== Common iterate function ==
@@ -247,16 +287,19 @@ const makeIterateAndPlace = function(room) {
                 } else if(result === ERR_RCL_NOT_ENOUGH) {
                     //We may have some structures outside bunker
                     if(Config.RebuildStructures) {
-                        const anchorFlags = _.filter(room.cachedFind(FIND_FLAGS), f => FlagUtil.bunkerAnchor.examine(f));
-                        if(anchorFlags.length !== 1) return false;
-                        const anchorFlag = anchorFlags[0];
+                        const anchor = room.layout.anchors.anchor;
+                        if(anchor === undefined) {
+                            Logger.warning(`[${room.name}] Can't find anchor of bunker in memory while trying rebuild`);
+                            continue;
+                        }
+
                         const inAABB = (function(xmin, xmax, ymin, ymax) {
                             return (c) => (xmin <= c.pos.x && c.pos.x <= xmax) &&
                                 (ymin <= c.pos.y && c.pos.y <= ymax);
-                        })(Math.min(anchorFlag.pos.x, anchorFlag.memory.diagonal[0]),
-                           Math.max(anchorFlag.pos.x, anchorFlag.memory.diagonal[0]),
-                           Math.min(anchorFlag.pos.y, anchorFlag.memory.diagonal[1]),
-                           Math.max(anchorFlag.pos.y, anchorFlag.memory.diagonal[1]));
+                        })(Math.min(anchor[0], room.layout.anchors.diagonal[0]),
+                           Math.max(anchor[0], room.layout.anchors.diagonal[0]),
+                           Math.min(anchor[1], room.layout.anchors.diagonal[1]),
+                           Math.max(anchor[1], room.layout.anchors.diagonal[1]));
 
                         const fakeRoomObject = {pos: {
                             x: x,
@@ -302,11 +345,12 @@ const ChainHelper = function() {
 //==============================
 
 mod.loop = function(room, forceRun=false) {
-    //Do not init twice
-    if(!room.layout.init) this.init(room);
     //Show room plan if ask
     const show = room.memory.showRoomPlan;
     if(show) this.showRoomPlan(room);
+    //Do not init twice
+    if(!room.layout.init) this.init(room);
+
     //Do not loop room.layout every tick
     const lastConstruct = room.memory.lastConstruct || 0;
     const lastFullyConstructionCheck = room.memory.lastFullyConstructionCheck || 0;

@@ -257,6 +257,7 @@ Object.defineProperties(Room.prototype, {
             return genericGetter(this, 'layout', '_layout', () => {
                 const value = {
                     'init': false,
+                    'anchors': {},
                     [STRUCTURE_SPAWN]: [],
                     [STRUCTURE_EXTENSION]: [],
                     [STRUCTURE_ROAD]: [],
