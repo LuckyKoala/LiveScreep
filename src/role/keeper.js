@@ -11,6 +11,11 @@ mod.roleConfigBalance = {
     outStack: [Action.PutToStorage],
 };
 
+mod.roleConfigUrgent = {
+    inStack: [Action.Pickup, Action.FromLink],
+    outStack: [Action.PutToTerminal, Action.Help],
+};
+
 mod.roleConfigNormal = {
     inStack: [Action.FromLink],
     outStack: [Action.PutToStorage, Action.PutToTerminal, Action.Help],
@@ -18,7 +23,10 @@ mod.roleConfigNormal = {
 
 mod.loop = function(creep) {
     const controllerContainer = creep.room.controller.container;
-    if(controllerContainer && controllerContainer.store[RESOURCE_ENERGY]===0) {
+    if(!creep.room.storage && creep.room.terminal) {
+        //Pickup resources dropped from storage to terminal
+        this.roleConfig = this.roleConfigUrgent;
+    } else if(controllerContainer && controllerContainer.store[RESOURCE_ENERGY]===0) {
         //haul energy to controller container
         this.roleConfig = this.roleConfigControllerContainerIsEmpty;
     } else if(creep.room.storage && creep.room.storage.store[RESOURCE_ENERGY]<Config.StorageReserveForEnergy) {
