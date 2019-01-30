@@ -140,7 +140,8 @@ mod.queueCreeps = function(roomName, destinedTarget) {
         return;
     }
 
-    if(!queueRoom.storage) {
+    const storage = queueRoom.storage || queueRoom.terminal;
+    if(!storage) {
         //Can't afford spawn cost of claimer
         // sent remoteWorkers instead of a remote group
         if(room) {
@@ -196,7 +197,7 @@ mod.queueCreeps = function(roomName, destinedTarget) {
             // so we path next to it.
             return { pos: source.pos, range: 1 };
         });
-        const pathObj = PathFinder.search(queueRoom.storage.pos, goals);
+        const pathObj = PathFinder.search(storage.pos, goals);
         avgPathLength = pathObj.path.length;
         //Write back
         flag.memory.avgPathLength = avgPathLength;
@@ -205,7 +206,7 @@ mod.queueCreeps = function(roomName, destinedTarget) {
     //=== Harvest all sources and spawn dedicated hauler ===
     //That is one pair of harvester-hauler for the room
     const energyGenPerTick = room.sources.length*10; //hardcode for 5work*2harvest_power per source
-    const energyHaulPerRound = queueRoom.storage.store[RESOURCE_ENERGY]>=Config.StorageBoundForSpawnRecovery ? 1600 : 500; //hardcode for 32carry
+    const energyHaulPerRound = storage.store[RESOURCE_ENERGY]>=Config.StorageBoundForSpawnRecovery ? 1600 : 500; //hardcode for 32carry
     const ticksPerRound = avgPathLength*2; //best situation: there are well maintained roads on the path, so move speed is 1 tile/tick
     const haulerLimit = Math.ceil(energyGenPerTick*ticksPerRound/energyHaulPerRound);
     //Logger.debug(`[${queueRoom.name} <-> ${flag.room.name}] ${haulerLimit}`);
