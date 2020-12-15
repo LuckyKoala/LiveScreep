@@ -2,6 +2,8 @@
 
 ![Bunker layout in real world](img/realworld.jpg)
 
+[中文介绍](README-zh.md)
+
 Latest Release => `v0.5-Bunker`
 
 * Base room plan system(Schedule all structures in the base room and then build/rebuild those structures)
