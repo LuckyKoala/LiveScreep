@@ -348,6 +348,8 @@ mod.loop = function(room, forceRun=false) {
     //Show room plan if ask
     const show = room.memory.showRoomPlan;
     if(show) this.showRoomPlan(room);
+
+    if(room.controller && (room.controller.level < 3 || room.controller.ticksToDowngrade < 5000)) return;
     //Do not init twice
     if(!room.layout.init) this.init(room);
 
