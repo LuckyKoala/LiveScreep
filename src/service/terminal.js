@@ -81,6 +81,7 @@ mod.loop = function(room) {
                 const costAmount = Game.market.calcTransactionCost(amount, room.name, order.roomName);
                 amount -= costAmount;
             }
+            if(amount === 0) return;
             Logger.info(`[${room.name}-Market][${order.id}]Selling ${amount} x ${resourceType} for ${amount*order.price}`);
             const result = Game.market.deal(order.id, amount, room.name);
             if(result === OK) sold = true;
