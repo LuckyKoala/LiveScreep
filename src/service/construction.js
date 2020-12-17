@@ -390,8 +390,6 @@ mod.loop = function(room, forceRun=false) {
         }
     };
 
-    //Make sure there is a path inside bunker
-    addToChainIfPossible(STRUCTURE_ROAD);
     //Spawns and extensions is vital for spawning
     addToChainIfPossible(STRUCTURE_SPAWN, () => {
         const spawnLimit = CONTROLLER_STRUCTURES[STRUCTURE_SPAWN][room.controller.level];
@@ -400,6 +398,10 @@ mod.loop = function(room, forceRun=false) {
     addToChainIfPossible(STRUCTURE_EXTENSION);
     //Defense unit!
     addToChainIfPossible(STRUCTURE_TOWER);
+
+    //Make sure there is a path inside bunker
+    addToChainIfPossible(STRUCTURE_ROAD);
+
     //Storage and terminal
     addToChainIfPossible(STRUCTURE_STORAGE, () => room.storage===undefined);
     addToChainIfPossible(STRUCTURE_TERMINAL, () => room.terminal===undefined);
