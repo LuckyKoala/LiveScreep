@@ -2,7 +2,7 @@ var mod = new RoleObj(C.UPGRADER);
 module.exports = mod;
 
 mod.roleConfig = {
-    inStack: [Action.FromLink, Action.FromContainer],
+    inStack: [Action.FromLink, Action.FromContainer, Action.Pickup],
     outStack: [Action.Sign, Action.Upgrade],
 };
 

@@ -69,5 +69,11 @@ mod.queueCreeps = function(room) {
             cnt.queue[C.UPGRADER]++;
             cnt.total[C.UPGRADER]++;
         }
+    } else {
+        if(cnt.total[C.UPGRADER] < upgraderAmount) {
+            room.queue.normal.push(C.UPGRADER);
+            cnt.queue[C.UPGRADER]++;
+            cnt.total[C.UPGRADER]++;
+        }
     }
 };
