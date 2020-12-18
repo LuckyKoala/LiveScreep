@@ -259,8 +259,9 @@ const makeIterateAndPlace = function(room) {
                                 if(!spawn.spawning && spawn.destroy()===OK) {
                                     rebuildStatus = true;
                                 }
-                                return false;
                             }
+                            
+                            return false;
                         }
 
                         if(structureType===STRUCTURE_STORAGE) return false;
